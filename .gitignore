@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+
+# PyInstaller build output
+build/
+dist/
+
+# Stale duplicate build workspace
+Building Test/
+
+# Web version (unused proof-of-concept)
+files/
+
+# Backups
+Old Backups/
+character_creator_backup*.py
+skill_data_backup*.json
+skill_data_with_broken_skills.json
+
+# User-generated exports (test data)
+character_*.json
+weapon_*.json
+
+# Private / local-only files
+class_data.json
+class_template.json
+Improvements.txt

@@ -1,0 +1,1753 @@
+{
+    "HP +5": {
+        "cost": 3.75,
+        "groups": [
+            "Stat"
+        ],
+        "desc": "Maximum HP +5"
+    },
+    "Strength +2": {
+        "cost": 4.06,
+        "groups": [
+            "Stat"
+        ],
+        "desc": "Strength +2"
+    },
+    "Magic +2": {
+        "cost": 4.47,
+        "groups": [
+            "Stat"
+        ],
+        "desc": "Magic +2"
+    },
+    "Skill +2": {
+        "cost": 3.95,
+        "groups": [
+            "Stat"
+        ],
+        "desc": "Skill +2"
+    },
+    "Speed +2": {
+        "cost": 4.27,
+        "groups": [
+            "Stat"
+        ],
+        "desc": "Speed +2"
+    },
+    "Luck +4": {
+        "cost": 3.85,
+        "groups": [
+            "Stat"
+        ],
+        "desc": "Luck +4"
+    },
+    "Defense +2": {
+        "cost": 4.37,
+        "groups": [
+            "Stat"
+        ],
+        "desc": "Defence +2"
+    },
+    "Resistance +2": {
+        "cost": 4.16,
+        "groups": [
+            "Stat"
+        ],
+        "desc": "Resistance +2"
+    },
+    "Dancing Blade": {
+        "cost": 4.22,
+        "groups": [
+            "Stat"
+        ],
+        "desc": "Speed +3, Defence -1"
+    },
+    "Heavy Blade": {
+        "cost": 3.96,
+        "groups": [
+            "Stat"
+        ],
+        "desc": "Strength +3, Speed -1"
+    },
+    "Aptitude": {
+        "cost": 29.29,
+        "groups": [
+            "Stat"
+        ],
+        "desc": "Adds 10% to all growth rates during Level Ups. Note: This skill is always learned first"
+    },
+    "Supportive": {
+        "cost": 13.81,
+        "groups": [
+            "Support Unit",
+            "Hit",
+            "Damage",
+            "Damage Reduction"
+        ],
+        "desc": "When user is the support unit, if the lead unit has a C Support or higher, the lead unit’s Hit Rate +10, damage +2 and damage received -2"
+    },
+    "Miraculous Save": {
+        "cost": 0.15,
+        "groups": [
+            "Support Unit",
+            "Luck%",
+            "Miracle"
+        ],
+        "desc": "When user is the support unit, the lead unit has a Luck% chance of surviving a fatal attack with 1 HP"
+    },
+    "Fierce Rival": {
+        "cost": 9.77,
+        "groups": [
+            "Support Unit",
+            "Crit"
+        ],
+        "desc": "When user is the support unit, if the lead unit triggers a critical hit, the user is guaranteed a critical hit (if their attack connects)"
+    },
+    "Gallant": {
+        "cost": 4.92,
+        "groups": [
+            "Support Unit",
+            "Female",
+            "Damage"
+        ],
+        "desc": "When user is the support unit, if the lead unit is female, the lead unit’s damage +2"
+    },
+    "Dual Striker": {
+        "cost": 6.03,
+        "groups": [
+            "Attack Stance",
+            "Damage"
+        ],
+        "desc": "When user is the support unit during Tag Team, Dual Strike damage +3"
+    },
+    "Dual Guarder": {
+        "cost": 29.5,
+        "groups": [
+            "Support Unit",
+            "Pairup"
+        ],
+        "desc": "When user is the support unit while paired up, shield gauge gain +1"
+    },
+    "Tactical Advice": {
+        "cost": 7.15,
+        "groups": [
+            "Support Unit",
+            "Pairup"
+        ],
+        "desc": "When user is the support unit while paired up, lead unit’s Hit rate +10"
+    },
+    "Competitive": {
+        "cost": 8.2,
+        "groups": [
+            "Lead",
+            "Pairup",
+            "Crit",
+            "Damage",
+            "Damage Reduction",
+            "Lower Level"
+        ],
+        "desc": "When user is the lead unit and their Level is lower than their support unit’s Level, Critical rate +10, damage +3 and damage received -1"
+    },
+    "Bushido": {
+        "cost": 17.97,
+        "groups": [
+            "Lead",
+            "Pairup",
+            "Crit",
+            "Damage",
+            "Damage Reduction",
+            "Higher Level"
+        ],
+        "desc": "When user is the lead unit, if their Level is higher than their support unit’s Level, Critical rate +10, damage +2 and damage received -2"
+    },
+    "Noble Cause": {
+        "cost": 4.97,
+        "groups": [
+            "Lead",
+            "Pairup",
+            "Below Full HP",
+            "Crit",
+            "Damage",
+            "Damage Reduction"
+        ],
+        "desc": "When user is the lead unit, if their support unit doesn’t have full HP, damage +3 and damage received +1"
+    },
+    "Guarded Bravery": {
+        "cost": 4.72,
+        "groups": [
+            "Lead",
+            "Pairup",
+            "Damage Reduction"
+        ],
+        "desc": "When user is the lead unit, damage received -2. If no support unit available, damage received +2"
+    },
+    "Sisterhood": {
+        "cost": 9.72,
+        "groups": [
+            "Lead",
+            "Pairup",
+            "Female",
+            "Damage",
+            "Damage Reduction"
+        ],
+        "desc": "When user is the lead unit, if their support unit is female, damage +2 and damage received -2"
+    },
+    "Bold Stance": {
+        "cost": 30.99,
+        "groups": [
+            "Lead",
+            "Pairup",
+            "Attack Stance"
+        ],
+        "desc": "When user is the lead unit, even when paired up, the support unit can trigger Dual Strikes, but enemy Dual Strikes are not passively negated"
+    },
+    "Defender": {
+        "cost": 10.12,
+        "groups": [
+            "Lead",
+            "Pairup",
+            "Stat"
+        ],
+        "desc": "When user is the lead unit while paired up, all stats +1"
+    },
+    "Nohrian Trust": {
+        "cost": 7.87,
+        "groups": [
+            "Lead",
+            "Pairup",
+            "Skill%",
+            "Luck%"
+        ],
+        "desc": "User shares their support unit’s battle skills"
+    },
+    "Devoted Partner": {
+        "cost": 8.84,
+        "groups": [
+            "Lead",
+            "Pairup",
+            "Avatar",
+            "Damage",
+            "Damage Reduction"
+        ],
+        "desc": "If the Avatar is the lead unit, Avatar’s damage +2, damage received -2"
+    },
+    "Evasive Partner": {
+        "cost": 13.76,
+        "groups": [
+            "Lead",
+            "Pairup",
+            "Avatar",
+            "Avoid",
+            "Damage Reduction"
+        ],
+        "desc": "If the Avatar is the lead unit, Avatar’s Avoid +15, damage received -3"
+    },
+    "Forceful Partner": {
+        "cost": 16.46,
+        "groups": [
+            "Lead",
+            "Pairup",
+            "Avatar",
+            "Hit",
+            "Damage"
+        ],
+        "desc": "If the Avatar is the lead unit, Avatar’s Hit rate +15, damage +3"
+    },
+    "Perfectionist": {
+        "cost": 15.26,
+        "groups": [
+            "Full HP",
+            "Hit",
+            "Avoid"
+        ],
+        "desc": "When user’s HP is at maximum, Hit rate and Avoid +15"
+    },
+    "Perspicacious": {
+        "cost": 48.75,
+        "groups": [
+            "Hit"
+        ],
+        "desc": "Hit rate +5 for all allies"
+    },
+    "Born Steward": {
+        "cost": 0,
+        "groups": [
+            "Useless"
+        ],
+        "desc": "When fighting in My Castle, Hit rate and Avoid +20, damage +2 and damage received -2"
+    },
+    "Wind Disciple": {
+        "cost": 10.17,
+        "groups": [
+            "Below Full HP",
+            "Hit",
+            "Avoid"
+        ],
+        "desc": "When user’s HP is not full, Hit rate and Avoid +10"
+    },
+    "Lancebreaker": {
+        "cost": 9.42,
+        "groups": [
+            "Hit",
+            "Avoid",
+            "Weapon Restricted"
+        ],
+        "desc": "Hit rate and Avoid +50 when the enemy is equipped with a Lance"
+    },
+    "Shurikenbreaker": {
+        "cost": 10.36,
+        "groups": [
+            "Hit",
+            "Avoid",
+            "Weapon Restricted"
+        ],
+        "desc": "Hit rate and Avoid +50 when the enemy is equipped with a Dagger"
+    },
+    "Axebreaker": {
+        "cost": 9.42,
+        "groups": [
+            "Hit",
+            "Avoid",
+            "Weapon Restricted"
+        ],
+        "desc": "Hit rate and Avoid +50 when the enemy is equipped with an Axe"
+    },
+    "Tomebreaker": {
+        "cost": 9.42,
+        "groups": [
+            "Hit",
+            "Avoid",
+            "Weapon Restricted"
+        ],
+        "desc": "Hit rate and Avoid +50 when the enemy is equipped with a Tome"
+    },
+    "Bowbreaker": {
+        "cost": 9.42,
+        "groups": [
+            "Hit",
+            "Avoid",
+            "Weapon Restricted"
+        ],
+        "desc": "Hit rate and Avoid +50 when the enemy is equipped with a Bow"
+    },
+    "Swordbreaker": {
+        "cost": 9.42,
+        "groups": [
+            "Hit",
+            "Avoid",
+            "Weapon Restricted"
+        ],
+        "desc": "Hit rate and Avoid +50 when the enemy is equipped with a Sword"
+    },
+    "Quixotic": {
+        "cost": 22.16,
+        "groups": [
+            "Hit",
+            "Skill%",
+            "Luck%"
+        ],
+        "desc": "User and enemy’s Hit rate +30 and skill activation rate +15% during battle"
+    },
+    "Lucky Charm": {
+        "cost": 0.32,
+        "groups": [
+            "Luck%"
+        ],
+        "desc": "Skills with an activation rate dependent on the Luck stat have their rate increased by 20%"
+    },
+    "Hoshidan Unity": {
+        "cost": 7.37,
+        "groups": [
+            "Skill%",
+            "Luck%"
+        ],
+        "desc": "Adds 10% to skill activation rates"
+    },
+    "Air Superiority": {
+        "cost": 8.48,
+        "groups": [
+            "Hit",
+            "Avoid"
+        ],
+        "desc": "Hit rate and Avoid +30 when facing Flying enemies"
+    },
+    "Certain Blow": {
+        "cost": 14.3,
+        "groups": [
+            "Hit",
+            "Player Phase"
+        ],
+        "desc": "When user triggers the battle, Hit rate +40"
+    },
+    "Highwayman": {
+        "cost": 5.62,
+        "groups": [
+            "Player Phase",
+            "Enfeeble"
+        ],
+        "desc": "When user triggers the battle, if the enemy cannot counter-attack, enemy’s Strength and Speed -3 after the battle (stats recover by 1 each Turn)"
+    },
+    "Seal Strength": {
+        "cost": 10.96,
+        "groups": [
+            "Enfeeble"
+        ],
+        "desc": "After battle, enemy’s Strength -6"
+    },
+    "Seal Resistance": {
+        "cost": 11.23,
+        "groups": [
+            "Enfeeble"
+        ],
+        "desc": "After battle, enemy’s Resistance -6"
+    },
+    "Seal Defence": {
+        "cost": 11.8,
+        "groups": [
+            "Enfeeble"
+        ],
+        "desc": "After battle, enemy’s Defence -6"
+    },
+    "Seal Speed": {
+        "cost": 11.53,
+        "groups": [
+            "Enfeeble"
+        ],
+        "desc": "After battle, enemy’s Speed -6"
+    },
+    "Seal Magic": {
+        "cost": 12.07,
+        "groups": [
+            "Enfeeble"
+        ],
+        "desc": "After battle, enemy’s Magic -6"
+    },
+    "Draconic Hex": {
+        "cost": 28.8,
+        "groups": [
+            "Enfeeble"
+        ],
+        "desc": "After battle, enemy’s stats -4"
+    },
+    "Grisly Wound": {
+        "cost": 13.79,
+        "groups": [
+            "%Damage"
+        ],
+        "desc": "The enemy’s HP is reduced by 20% after the battle"
+    },
+    "Fearsome Blow": {
+        "cost": 7.05,
+        "groups": [
+            "Player Phase",
+            "%Damage",
+            "Defeat Enemy"
+        ],
+        "desc": "When user triggers the battle and defeats an enemy, enemies adjacent to the user have their HP reduced by 20%"
+    },
+    "Playthings": {
+        "cost": 0.08,
+        "groups": [
+            "Player Phase",
+            "Damage",
+            "Adjacent"
+        ],
+        "desc": "After the start of the user’s Turn, all enemies that are adjacent to the user have their HP reduced by 5"
+    },
+    "Heartseeker": {
+        "cost": 14.45,
+        "groups": [
+            "Adjacent",
+            "Avoid"
+        ],
+        "desc": "When fighting adjacent to an enemy, enemy’s Avoid -20"
+    },
+    "Fierce Mien": {
+        "cost": 11.92,
+        "groups": [
+            "Aura",
+            "Avoid",
+            "Hit"
+        ],
+        "desc": "Enemies within a 2 tile radius have their Avoid reduced by 10"
+    },
+    "Misfortunate": {
+        "cost": 12.05,
+        "groups": [
+            "Aura",
+            "Dodge"
+        ],
+        "desc": "Enemies within a 2 tile radius have their Critical Evade reduced by 15, while the user’s Critical Evade is reduced by 5"
+    },
+    "Veteran Intuition": {
+        "cost": 9.63,
+        "groups": [
+            "Dodge"
+        ],
+        "desc": "Critical Evade +15 during battles"
+    },
+    "Solidarity": {
+        "cost": 12.62,
+        "groups": [
+            "Adjacent",
+            "Avoid",
+            "Dodge"
+        ],
+        "desc": "Adjacent allies receive Avoid +10 and Critical Evade +10"
+    },
+    "Lilys Poise": {
+        "cost": 10.99,
+        "groups": [
+            "Adjacent",
+            "Damage",
+            "Damage Reduction"
+        ],
+        "desc": "Adjacent allies deal 1 extra damage and received 3 less damage"
+    },
+    "Roses Thorn": {
+        "cost": 11.11,
+        "groups": [
+            "Adjacent",
+            "Damage",
+            "Damage Reduction"
+        ],
+        "desc": "Adjacent allies deal 3 extra damage and receive 1 less damage"
+    },
+    "Dragon Ward": {
+        "cost": 1.62,
+        "groups": [
+            "Adjacent",
+            "Luck%",
+            "Reduction%"
+        ],
+        "desc": "Allies adjacent to the user have a Luck x 0.5% chance of receiving half damage from enemy attacks"
+    },
+    "Divine Retribution": {
+        "cost": 4.39,
+        "groups": [
+            "Adjacent",
+            "Counter"
+        ],
+        "desc": "When user doesn’t have a weapon equipped and they sustain damage from an adjacent enemy, the enemy receives half the same damage."
+    },
+    "Counter": {
+        "cost": 12.53,
+        "groups": [
+            "Adjacent",
+            "Counter"
+        ],
+        "desc": "When an adjacent enemy triggers the battle and inflicts damage, the enemy receives the same damage"
+    },
+    "Countercurse": {
+        "cost": 6.27,
+        "groups": [
+            "Counter"
+        ],
+        "desc": "When enemy triggers the battle and inflicts magical damage, the enemy receives half the same damage"
+    },
+    "Countermagic": {
+        "cost": 12.53,
+        "groups": [
+            "Counter"
+        ],
+        "desc": "When the enemy triggers the battle and inflicts magical damage, the enemy receives the same damage"
+    },
+    "Icy Blood": {
+        "cost": 12.39,
+        "groups": [
+            "Below Full HP",
+            "Counter",
+            "Enfeeble"
+        ],
+        "desc": "When user’s HP is not full and they sustain damage, the enemy receives the same damage and the enemy’s Skill and Speed is reduced by 3"
+    },
+    "Triple Threat": {
+        "cost": 0.94,
+        "groups": [
+            "Below Half HP",
+            "Weapon Restricted",
+            "Counter"
+        ],
+        "desc": "When user is under half HP, half the damage received by Swords, Lances or Axes is also dealt to the enemy"
+    },
+    "Shuriken Mastery": {
+        "cost": 1.15,
+        "groups": [
+            "Weapon Restricted",
+            "Counter",
+            "Enfeeble"
+        ],
+        "desc": "When user receives damage from a Dagger attack, the enemy receives half the same damage and the Dagger’s stat reduction effect"
+    },
+    "Foreign Princess": {
+        "cost": 0,
+        "groups": [
+            "Useless"
+        ],
+        "desc": "“Foreign Army” enemies within a 2 tile radius deal 2 less damage and receive 2 extra damage"
+    },
+    "Malefic Aura": {
+        "cost": 7.45,
+        "groups": [
+            "Aura",
+            "Damage"
+        ],
+        "desc": "Enemies within a 2 tile radius receive 2 extra damage from magical attacks"
+    },
+    "Voice of Peace": {
+        "cost": 7.28,
+        "groups": [
+            "Aura",
+            "Damage Reduction"
+        ],
+        "desc": "Enemies within a 2 tile radius deal 2 less physical damage"
+    },
+    "Peacebringer": {
+        "cost": 0,
+        "groups": [
+            "Aura",
+            "Damage Reduction"
+        ],
+        "desc": "Allies and enemies within a 2 tile radius deal 2 less damage"
+    },
+    "Quiet Strength": {
+        "cost": 6.41,
+        "groups": [
+            "Aura",
+            "Damage Reduction"
+        ],
+        "desc": "Allies within a 2 tile radius receive 2 less damage"
+    },
+    "Gentilhomme": {
+        "cost": 2.91,
+        "groups": [
+            "Aura",
+            "Damage Reduction",
+            "Female"
+        ],
+        "desc": "Female allies within a 2 tile radius receive 2 less damage during battles"
+    },
+    "Demoiselle": {
+        "cost": 2.91,
+        "groups": [
+            "Aura",
+            "Damage Reduction",
+            "Male"
+        ],
+        "desc": "Male allies within a 2 tile radius receive 2 less damage during battles"
+    },
+    "Rallying Cry": {
+        "cost": 6.56,
+        "groups": [
+            "Aura",
+            "Damage"
+        ],
+        "desc": "Allies within a 2 tile radius deal 2 extra damage"
+    },
+    "Charm": {
+        "cost": 6.56,
+        "groups": [
+            "Aura",
+            "Damage"
+        ],
+        "desc": "Allies within a 2 tile radius deal 2 extra damage during battles"
+    },
+    "Inspiration": {
+        "cost": 12.97,
+        "groups": [
+            "Aura",
+            "Damage",
+            "Damage Reduction"
+        ],
+        "desc": "Allies within a 2 tile radius deal 2 extra damage and receive 2 less damage during battles"
+    },
+    "Fortunate Son": {
+        "cost": 14.44,
+        "groups": [
+            "Aura",
+            "Damage"
+        ],
+        "desc": "Allies within a 2 tile radius have their Critical Evade increased by 15, while the user’s Critical Evade is increased by 5"
+    },
+    "Perfect Pitch": {
+        "cost": 15.04,
+        "groups": [
+            "Rally",
+            "Heal%"
+        ],
+        "desc": "Allies within a 2 tile radius who have lower HP than the user recover 10% HP when the “Rally” command is used"
+    },
+    "Fancy Footwork": {
+        "cost": 5,
+        "groups": [
+            "Rally"
+        ],
+        "desc": "Strength and Speed +1 to all allies within a 2 tile radius for one Turn when the “Rally” command is used"
+    },
+    "Rally Magic": {
+        "cost": 11.92,
+        "groups": [
+            "Rally"
+        ],
+        "desc": "Magic +4 to all allies within a 2 tile radius for one Turn when the “Rally” command is used"
+    },
+    "Rally Luck": {
+        "cost": 10.27,
+        "groups": [
+            "Rally"
+        ],
+        "desc": "Luck +8 to all allies within a 2 tile radius for one Turn when the “Rally” command is used"
+    },
+    "Rally Speed": {
+        "cost": 11.39,
+        "groups": [
+            "Rally"
+        ],
+        "desc": "Speed +4 to all allies within a 2 tile radius for one Turn when the “Rally” command is used"
+    },
+    "Rally Strength": {
+        "cost": 10.83,
+        "groups": [
+            "Rally"
+        ],
+        "desc": "Strength +4 to all allies within a 2 tile radius for one Turn when the “Rally” command is used"
+    },
+    "Rally Skill": {
+        "cost": 10.53,
+        "groups": [
+            "Rally"
+        ],
+        "desc": "Skill +4 to all allies within a 2 tile radius for one Turn when the “Rally” command is used"
+    },
+    "Rally Defence": {
+        "cost": 11.65,
+        "groups": [
+            "Rally"
+        ],
+        "desc": "Defence +4 to all allies within a 2 tile radius for one Turn when the “Rally” command is used"
+    },
+    "Rally Resistance": {
+        "cost": 11.25,
+        "groups": [
+            "Rally"
+        ],
+        "desc": "Resistance +4 to all allies within a 2 tile radius for one Turn when the “Rally” command is used"
+    },
+    "Rally Movement": {
+        "cost": 31.17,
+        "groups": [
+            "Rally"
+        ],
+        "desc": "Movement +1 to all allies within a 2 tile radius for one Turn when the “Rally” command is used"
+    },
+    "Rally Spectrum": {
+        "cost": 48.36,
+        "groups": [
+            "Rally"
+        ],
+        "desc": "All Stats +2 to all allies within a 4 tile radius for one Turn when the Rally command is used"
+    },
+    "Movement +1": {
+        "cost": 5.26,
+        "groups": [
+            "Movement"
+        ],
+        "desc": "Movement +1"
+    },
+    "Surefooted": {
+        "cost": 6.43,
+        "groups": [
+            "Movement",
+            "Ballistician"
+        ],
+        "desc": "When user is a Ballistician, Movement +1 and all traversable terrain costs 1 movement point to cross"
+    },
+    "Healing Descant": {
+        "cost": 8.36,
+        "groups": [
+            "Player Phase",
+            "Heal%",
+            "Aura"
+        ],
+        "desc": "Allies within a 2 tile radius recover 10% HP at the start of the user’s Turn"
+    },
+    "Forager": {
+        "cost": 5.01,
+        "groups": [
+            "Player Phase",
+            "Heal%"
+        ],
+        "desc": "When standing on Mountain, Woods, Waste or Field terrain, the user recovers 20% HP at the start of the Turn"
+    },
+    "Draconic Heir": {
+        "cost": 9.4,
+        "groups": [
+            "Player Phase",
+            "Heal%"
+        ],
+        "desc": "When user is equipped with a Dragonstone, they recover 15% HP at the start of their Turn"
+    },
+    "Haiku": {
+        "cost": 1.6,
+        "groups": [
+            "Player Phase",
+            "Heal",
+            "Aura"
+        ],
+        "desc": "At the start of the Turn, when two allies are directly above and below Mitama, Mitama recovers 7 HP, while the the two allies recover 5 HP"
+    },
+    "Renewal": {
+        "cost": 18.8,
+        "groups": [
+            "Player Phase",
+            "Heal%"
+        ],
+        "desc": "Recover 30% HP at the start of the user’s Turn"
+    },
+    "Camaraderie": {
+        "cost": 5.64,
+        "groups": [
+            "Player Phase",
+            "Heal%"
+        ],
+        "desc": "Recover 10% HP at the start of the user’s Turn if there are allies within a 2 tile radius"
+    },
+    "Amaterasu": {
+        "cost": 16.71,
+        "groups": [
+            "Player Phase",
+            "Heal%",
+            "Aura"
+        ],
+        "desc": "Allies within a 2 tile radius recover 20% HP at the start of the user’s Turn"
+    },
+    "Even Better": {
+        "cost": 12.53,
+        "groups": [
+            "Player Phase",
+            "Heal%"
+        ],
+        "desc": "Recover 40% HP at the start of even-numbered Turns"
+    },
+    "Better Odds": {
+        "cost": 12.53,
+        "groups": [
+            "Player Phase",
+            "Heal%"
+        ],
+        "desc": "Recover 40% HP at the start of odd-numbered Turns"
+    },
+    "Relief": {
+        "cost": 9.4,
+        "groups": [
+            "Player Phase",
+            "Heal%"
+        ],
+        "desc": "Recover 20% HP at the start of the user’s Turn if no units are within a 2 tile radius"
+    },
+    "Opportunity Shot": {
+        "cost": 16.8,
+        "groups": [
+            "Player Phase",
+            "Skill%",
+            "Ballistician"
+        ],
+        "desc": "When user is a Ballistician, Skill% chance of attacking an enemy within range at the start of the users Turn"
+    },
+    "Self-Destruct": {
+        "cost": 0,
+        "groups": [
+            "Useless"
+        ],
+        "desc": "At the start of the user’s Turn, if user’s HP is under half, inflicts damage to all enemies and walls within a 2 tile radius; afterwards, the user disappears"
+    },
+    "Capture": {
+        "cost": 38.07,
+        "groups": [
+            "Imprison"
+        ],
+        "desc": "When there is a Prison in My Castle, the user can select the “Capture” command. If a generic enemy is defeated, they will be sent to the Prison. Note: There is no unit limit in Chatquest 2.0. You can learn this skill early"
+    },
+    "Kidnap": {
+        "cost": 38.07,
+        "groups": [
+            "Imprison"
+        ],
+        "desc": "When there is a Prison in My Castle, the user can select the “Capture” command. If a generic enemy is defeated, they will be sent to the Prison. Note: There is no unit limit in Chatquest 2.0. You can learn this skill early"
+    },
+    "Shove": {
+        "cost": 0,
+        "groups": [
+            "Movement"
+        ],
+        "desc": "Select the “Shove” command to push an adjacent ally 1 tile"
+    },
+    "Swap": {
+        "cost": 0,
+        "groups": [
+            "Movement"
+        ],
+        "desc": "Select the “Swap” command to swap places with an adjacent ally on the map"
+    },
+    "Shelter": {
+        "cost": 0,
+        "groups": [
+            "Movement"
+        ],
+        "desc": "Select the “Shelter” command to make an adjacent ally the user’s support unit"
+    },
+    "Replicate": {
+        "cost": 38.14,
+        "groups": [
+            "Unique"
+        ],
+        "desc": "Select the “Replicate” command once per map to create a replica with the same appearance, stats, inventory and HP as the user (Anything that happens to the replica happens to the user and vice versa–even death)"
+    },
+    "Lunge": {
+        "cost": 0,
+        "groups": [
+            "Movement"
+        ],
+        "desc": "Select the “Lunge” command to swap places with an enemy after an attack"
+    },
+    "Survey": {
+        "cost": 5.85,
+        "groups": [
+            "Ballisitcian",
+            "Hit"
+        ],
+        "desc": "When using the “Cannon” command, Hit rate +10"
+    },
+    "Rifled Barrel": {
+        "cost": 2.5,
+        "groups": [
+            "Ballisitcian"
+        ],
+        "desc": "When using the “Cannon” command, range +1 and inner/outer range -1"
+    },
+    "Warp": {
+        "cost": 46.76,
+        "groups": [
+            "Movement"
+        ],
+        "desc": "Select the “Warp” command to instantly move adjacent to an ally and perform another action"
+    },
+    "Strengthtaker": {
+        "cost": 20.3,
+        "groups": [
+            "Defeat Enemy",
+            "Stat"
+        ],
+        "desc": "When user defeats the enemy, Strength +2 (up to 10) (does not overlap with other Taker skills and expires after the chapter)"
+    },
+    "Magictaker": {
+        "cost": 22.35,
+        "groups": [
+            "Defeat Enemy",
+            "Stat"
+        ],
+        "desc": "When user defeats the enemy, Magic +2 (up to 10) (does not overlap with other Taker skills and expires after the chapter)"
+    },
+    "Skilltaker": {
+        "cost": 19.75,
+        "groups": [
+            "Defeat Enemy",
+            "Stat"
+        ],
+        "desc": "When user defeats the enemy, Skill +2 (up to 10) (does not overlap with other Taker skills and expires after the chapter)"
+    },
+    "Speedtaker": {
+        "cost": 21.35,
+        "groups": [
+            "Defeat Enemy",
+            "Stat"
+        ],
+        "desc": "When user defeats the enemy, Speed +2 (up to 10) (does not overlap with other Taker skills and expires after the chapter)"
+    },
+    "Lucktaker": {
+        "cost": 9.63,
+        "groups": [
+            "Defeat Enemy",
+            "Stat"
+        ],
+        "desc": "When user defeats the enemy, Luck +2 (up to 10) (does not overlap with other Taker skills and expires after the chapter)"
+    },
+    "Defensetaker": {
+        "cost": 21.85,
+        "groups": [
+            "Defeat Enemy",
+            "Stat"
+        ],
+        "desc": "When user defeats the enemy, Defence +2 (up to 10) (does not overlap with other Taker skills and expires after the chapter)"
+    },
+    "Resistancetaker": {
+        "cost": 20.8,
+        "groups": [
+            "Defeat Enemy",
+            "Stat"
+        ],
+        "desc": "When user defeats the enemy, Resistance +2 (up to 10) (does not overlap with other Taker skills and expires after the chapter)"
+    },
+    "Pyrotechnics": {
+        "cost": 6.27,
+        "groups": [
+            "Player Phase",
+            "Below Half HP",
+            "Damage%"
+        ],
+        "desc": "When user triggers the battle at under half HP, the user and enemies within a 2 tile radius have their HP reduced by 20%"
+    },
+    "Vantage": {
+        "cost": 0.66,
+        "groups": [
+            "Below Half HP"
+        ],
+        "desc": "At the start of battle, when the user has under half HP, they attack first"
+    },
+    "Morbid Celebration": {
+        "cost": 11.28,
+        "groups": [
+            "Player Phase",
+            "Heal%",
+            "Defeat Enemy"
+        ],
+        "desc": "When user triggers the battle, recover 20% HP after defeating the enemy"
+    },
+    "Mischievous": {
+        "cost": 3.28,
+        "groups": [
+            "Player Phase",
+            "Enfeeble"
+        ],
+        "desc": "When user triggers the battle and their attack connects with the enemy, enemy’s Defence -3 and enemy is stripped"
+    },
+    "Bloodthirst": {
+        "cost": 6.7,
+        "groups": [
+            "Player Phase",
+            "Stat",
+            "Defeat Enemy"
+        ],
+        "desc": "When user triggers the battle and defeats the enemy, Strength, Magic, Skill and Speed +4 for one turn"
+    },
+    "Duelists Blow": {
+        "cost": 6.48,
+        "groups": [
+            "Player Phase",
+            "Avoid"
+        ],
+        "desc": "When user triggers the battle, Avoid +30"
+    },
+    "Darting Blow": {
+        "cost": 5.87,
+        "groups": [
+            "Player Phase"
+        ],
+        "desc": "When user triggers the battle, follow up attack speed +5"
+    },
+    "Wary Fighter": {
+        "cost": 42.7,
+        "groups": [
+            "Unique"
+        ],
+        "desc": "During battles, neither the user or enemy can perform follow up attacks"
+    },
+    "Poison Strike": {
+        "cost": 6.27,
+        "groups": [
+            "Player Phase",
+            "Damage%"
+        ],
+        "desc": "When user triggers the battle, the enemy’s HP is reduced by 20% after the battle"
+    },
+    "Savage Blow": {
+        "cost": 10.44,
+        "groups": [
+            "Player Phase",
+            "Damage%"
+        ],
+        "desc": "When user triggers the battle, enemies within a 2 tile radius have their HP reduced by 20% after the battle"
+    },
+    "Lifetaker": {
+        "cost": 18,
+        "groups": [
+            "Player Phase",
+            "Heal%",
+            "Defeat Enemy"
+        ],
+        "desc": "When user triggers the battle, recover 50% HP after defeating the enemy"
+    },
+    "Galeforce": {
+        "cost": 53.64,
+        "groups": [
+            "Player Phase",
+            "Defeat Enemy"
+        ],
+        "desc": "When user triggers the battle, allows a full action if the user defeats the enemy (once per Turn and no help from a support unit)"
+    },
+    "Toxic Brew": {
+        "cost": 6.45,
+        "groups": [
+            "Player Phase",
+            "Skill%",
+            "Freeze"
+        ],
+        "desc": "When user triggers the battle, Skill x 1.5% chance of reducing the enemy’s Movement to 0 and Avoid by 20 after the battle (until the next Turn)"
+    },
+    "Astra": {
+        "cost": 7.87,
+        "groups": [
+            "Skill%"
+        ],
+        "desc": "Skill x 0.5% chance of triggering 5 consecutive hits with half damage"
+    },
+    "Rend Heaven": {
+        "cost": 9.66,
+        "groups": [
+            "Skill%"
+        ],
+        "desc": "Skill x 1.5% chance of adding half the enemy’s Strength (if user has a physical weapon) or Magic (if user has a magical weapon) as damage"
+    },
+    "Lethality": {
+        "cost": 6.44,
+        "groups": [
+            "Skill%"
+        ],
+        "desc": "Skill x 0.25% chance of instantly defeating the enemy when dealing 1 or more damage"
+    },
+    "Dragon Fang": {
+        "cost": 5.36,
+        "groups": [
+            "Skill%"
+        ],
+        "desc": "Skill x.0.75% chance of adding 50% of the user’s Attack Power as damage"
+    },
+    "Luna": {
+        "cost": 4.02,
+        "groups": [
+            "Skill%"
+        ],
+        "desc": "Skill% chance of ignoring half the enemy’s Defence (if user has a physical weapon) or Resistance (if user has a magical weapon)"
+    },
+    "Sol": {
+        "cost": 7.15,
+        "groups": [
+            "Skill%"
+        ],
+        "desc": "Skill% chance of restoring half the damage dealt to the enemy"
+    },
+    "Vengeance": {
+        "cost": 3.76,
+        "groups": [
+            "Skill%"
+        ],
+        "desc": "Skill x 1.5% chance of adding half the user’s (Max HP – Current HP) as damage"
+    },
+    "Aether": {
+        "cost": 5.59,
+        "groups": [
+            "Skill%"
+        ],
+        "desc": "Skill x 0.5% chance of triggering a Sol hit followed by a Luna hit"
+    },
+    "Ignis": {
+        "cost": 7.87,
+        "groups": [
+            "Skill%"
+        ],
+        "desc": "Skill% chance of adding half the user’s Strength (if user has a physical weapon) or Magic (if user has a magical weapon) as damage"
+    },
+    "Underdog": {
+        "cost": 8.48,
+        "groups": [
+            "Hit",
+            "Avoid",
+            "Lower Level"
+        ],
+        "desc": "Hit rate and Avoid +15 when user’s Level is lower than the enemy (promoted units count as Level +20)"
+    },
+    "Lucky Seven": {
+        "cost": 7.91,
+        "groups": [
+            "Hit",
+            "Avoid"
+        ],
+        "desc": "Hit rate and Avoid +20 for the first seven Turns"
+    },
+    "Awakening": {
+        "cost": 45.39,
+        "groups": [
+            "Below Half HP",
+            "Hit",
+            "Avoid",
+            "Crit",
+            "Dodge"
+        ],
+        "desc": "When HP is under half, Hit rate, Avoid, Critical rate and Critical Evade +30"
+    },
+    "Hit/Avo +10": {
+        "cost": 11.3,
+        "groups": [
+            "Hit",
+            "Avoid"
+        ],
+        "desc": "Hit rate and Avoid +10"
+    },
+    "Hit/Avo +20": {
+        "cost": 22.6,
+        "groups": [
+            "Hit",
+            "Avoid"
+        ],
+        "desc": "Hit rate and Avoid +20"
+    },
+    "Vow of Friendship": {
+        "cost": 3.64,
+        "groups": [
+            "Avatar",
+            "Below Half HP",
+            "Damage",
+            "Damage Reduction"
+        ],
+        "desc": "If the Avatar is an ally, when the Avatar is under half HP, user’s damage +3 and damage received -3. Note: It's unlikely that Avatar is pairing up"
+    },
+    "Fiery Blood": {
+        "cost": 8.05,
+        "groups": [
+            "Below Full HP",
+            "Damage"
+        ],
+        "desc": "When user’s HP is not full, damage +4"
+    },
+    "Pride": {
+        "cost": 3.35,
+        "groups": [
+            "Lower Level",
+            "Damage"
+        ],
+        "desc": "When user’s Level is lower than the enemy’s (promoted units count as Level +20), damage +3"
+    },
+    "Nohr Enmity": {
+        "cost": 2.24,
+        "groups": [
+            "Damage"
+        ],
+        "desc": "When engaging a Nohr-related enemy, damage +3"
+    },
+    "Prodigy": {
+        "cost": 5.96,
+        "groups": [
+            "Damage"
+        ],
+        "desc": "At the start of the battle, if the enemy’s Strength or Magic (whichever is highest) is higher than Caeldori’s corresponding stat, damage +4"
+    },
+    "Vendetta": {
+        "cost": 0.45,
+        "groups": [
+            "Player Phase",
+            "Damage"
+        ],
+        "desc": "When user triggers the battle, if they’ve already fought the enemy in the same map, damage +4"
+    },
+    "Puissance": {
+        "cost": 5.94,
+        "groups": [
+            "Damage"
+        ],
+        "desc": "When user’s Strength is 5 or more points higher than the enemy’s Strength, damage +3 during battle"
+    },
+    "Opportunist": {
+        "cost": 4.47,
+        "groups": [
+            "Player Phase",
+            "Damage"
+        ],
+        "desc": "When user triggers the battle, if the enemy cannot counter-attack, damage +4"
+    },
+    "Unmask": {
+        "cost": 3.74,
+        "groups": [
+            "Damage"
+        ],
+        "desc": "When engaging a female enemy, Damage +4 and Critical rate +20"
+    },
+    "Pragmatic": {
+        "cost": 6.03,
+        "groups": [
+            "Damage"
+        ],
+        "desc": "When enemy’s HP is not full, damage +3 and damage received -1 during the battle"
+    },
+    "Chivalry": {
+        "cost": 4.92,
+        "groups": [
+            "Damage"
+        ],
+        "desc": "When enemy’s HP is at maximum, damage +2 and damage received -2 during the battle"
+    },
+    "Fierce Counter": {
+        "cost": 4.15,
+        "groups": [
+            "Enemy Phase",
+            "Damage"
+        ],
+        "desc": "When a male enemy triggers the battle, damage +2"
+    },
+    "Daydream": {
+        "cost": 4.02,
+        "groups": [
+            "Male",
+            "Damage",
+            "Damage Reduction"
+        ],
+        "desc": "When user is adjacent to two male units paired up, damage +2 and damage received -2"
+    },
+    "Swordfaire": {
+        "cost": 12.29,
+        "groups": [
+            "Weapon Restricted",
+            "Damage"
+        ],
+        "desc": "When user is equipped with a Sword, damage +5 during battle"
+    },
+    "Lancefaire": {
+        "cost": 12.29,
+        "groups": [
+            "Weapon Restricted",
+            "Damage"
+        ],
+        "desc": "When user is equipped with a Lance, damage +5 during battle"
+    },
+    "Tomefaire": {
+        "cost": 12.29,
+        "groups": [
+            "Weapon Restricted",
+            "Damage"
+        ],
+        "desc": "When user is equipped with a Tome, damage +5 during battle"
+    },
+    "Bowfaire": {
+        "cost": 12.29,
+        "groups": [
+            "Weapon Restricted",
+            "Damage"
+        ],
+        "desc": "When user is equipped with a Bow, damage +5 during battle"
+    },
+    "Shurikenfaire": {
+        "cost": 13.52,
+        "groups": [
+            "Weapon Restricted",
+            "Damage"
+        ],
+        "desc": "When user is equipped with a Dagger, damage +5 during battle"
+    },
+    "Axefaire": {
+        "cost": 12.29,
+        "groups": [
+            "Weapon Restricted",
+            "Damage"
+        ],
+        "desc": "When user is equipped with an Axe, damage +5 during battle"
+    },
+    "Life and Death": {
+        "cost": 20.12,
+        "groups": [
+            "Damage"
+        ],
+        "desc": "During battles, damage +10, damage received +10"
+    },
+    "Quick Draw": {
+        "cost": 8.05,
+        "groups": [
+            "Player Phase",
+            "Damage"
+        ],
+        "desc": "When user triggers the battle, damage +4"
+    },
+    "Spendthrift": {
+        "cost": 6.71,
+        "groups": [
+            "Player Phase",
+            "Damage",
+            "Damage Reduction"
+        ],
+        "desc": "During battles, user spends a Gold Bar for damage +10 and damage received -10"
+    },
+    "Evenhanded": {
+        "cost": 4.47,
+        "groups": [
+            "Even Turns",
+            "Damage"
+        ],
+        "desc": "During even-numbered Turns, damage +4"
+    },
+    "Odd Shaped": {
+        "cost": 4.47,
+        "groups": [
+            "Odd Turns",
+            "Damage"
+        ],
+        "desc": "During odd-numbered Turns, damage +4"
+    },
+    "Elbow Room": {
+        "cost": 7.38,
+        "groups": [
+            "Damage"
+        ],
+        "desc": "When user fights in terrain with no terrain effects, damage +3 during battles"
+    },
+    "Strong Riposte": {
+        "cost": 7.38,
+        "groups": [
+            "Enemy Phase",
+            "Damage"
+        ],
+        "desc": "When enemy triggers the battle, damage +3"
+    },
+    "Trample": {
+        "cost": 7.71,
+        "groups": [
+            "Damage"
+        ],
+        "desc": "Unless enemy is on a mount, damage +5"
+    },
+    "Aggressor": {
+        "cost": 14.08,
+        "groups": [
+            "Player Phase",
+            "Damage"
+        ],
+        "desc": "When user triggers the battle, Damage +7"
+    },
+    "Warding Blow": {
+        "cost": 14.56,
+        "groups": [
+            "Player Phase",
+            "Damage Reduction"
+        ],
+        "desc": "When user triggers the battle, magical damage received -20"
+    },
+    "Armored Blow": {
+        "cost": 10.93,
+        "groups": [
+            "Player Phase",
+            "Damage Reduction"
+        ],
+        "desc": "When user triggers the battle, physical damage received -10"
+    },
+    "Natural Cover": {
+        "cost": 4.59,
+        "groups": [
+            "Damage Reduction"
+        ],
+        "desc": "When user fights in terrain with terrain effects, damage received -3 during battles"
+    },
+    "Even Keel": {
+        "cost": 4.16,
+        "groups": [
+            "Even Turns",
+            "Damage Reduction"
+        ],
+        "desc": "During even-numbered Turns, magical damage received -4"
+    },
+    "Iron Will": {
+        "cost": 7.49,
+        "groups": [
+            "Enemy Phase",
+            "Damage Reduction"
+        ],
+        "desc": "When enemy triggers the battle, magical damage received -4"
+    },
+    "Collector": {
+        "cost": 0,
+        "groups": [
+            "Luck%",
+            "Useless"
+        ],
+        "desc": "Luck% chance of obtaining 3 Minerals or Foodstuffs after moving up to the 7th Turn"
+    },
+    "Goody Basket": {
+        "cost": 2.51,
+        "groups": [
+            "Luck%",
+            "Heal%"
+        ],
+        "desc": "At the start of the Turn, Luck% chance of recovering 10% HP"
+    },
+    "Make a Killing": {
+        "cost": 1.4,
+        "groups": [
+            "Luck%",
+            "Player Phase"
+        ],
+        "desc": "Luck% chance of obtaining Gold after defeating an enemy"
+    },
+    "Salvage Blow": {
+        "cost": 5,
+        "groups": [
+            "Player Phase",
+            "Luck%",
+            "Defeat Enemy"
+        ],
+        "desc": "When user triggers the battle, Luck% chance of receiving a Katana, Naginata, Club, Yumi or Shuriken if the user defeats the enemy"
+    },
+    "Future Sight": {
+        "cost": 0.1,
+        "groups": [
+            "Player Phase",
+            "Luck%",
+            "Experience",
+            "Defeat Enemy"
+        ],
+        "desc": "When user triggers the battle, Luck% chance of gaining double experience when user defeats the enemy"
+    },
+    "Nobility": {
+        "cost": 2.84,
+        "groups": [
+            "Experience"
+        ],
+        "desc": "Experience gained x 1.2. Note: Also gives Dragon Blood"
+    },
+    "Paragon": {
+        "cost": 14.21,
+        "groups": [
+            "Experience"
+        ],
+        "desc": "Experience gained is doubled"
+    },
+    "Void Curse": {
+        "cost": 0,
+        "groups": [
+            "Useless"
+        ],
+        "desc": "No experience is gained from fighting this enemy"
+    },
+    "Miracle": {
+        "cost": 0.15,
+        "groups": [
+            "Luck%",
+            "Miracle"
+        ],
+        "desc": "Luck% chance of leaving the user with 1 HP when they have 2 or more HP"
+    },
+    "Profiteer": {
+        "cost": 2.1,
+        "groups": [
+            "Luck%"
+        ],
+        "desc": "Luck% chance of obtaining a Gold Bar after moving during the first seven Turns"
+    },
+    "Good Fortune": {
+        "cost": 5.01,
+        "groups": [
+            "Luck%",
+            "Heal%"
+        ],
+        "desc": "Luck% chance of recovering 20% HP at the start of the user’s Turn"
+    },
+    "Witchs Brew": {
+        "cost": 1.05,
+        "groups": [
+            "Luck%"
+        ],
+        "desc": "Luck% chance of obtaining a potion item (eg. Vulnerary) after moving during the first seven Turns"
+    },
+    "In Extremis": {
+        "cost": 4.5,
+        "groups": [
+            "Crit"
+        ],
+        "desc": "When user’s HP is under a quarter, Critical rate +30"
+    },
+    "Aching Blood": {
+        "cost": 7.5,
+        "groups": [
+            "Crit"
+        ],
+        "desc": "When equipped with a forged weapon whose name is at least 12 characters, Critical rate +10"
+    },
+    "Bibliophile": {
+        "cost": 7.5,
+        "groups": [
+            "Crit"
+        ],
+        "desc": "When user is carrying 3 or more Tomes, Critical rate +10"
+    },
+    "Death Blow": {
+        "cost": 7.5,
+        "groups": [
+            "Player Phase",
+            "Crit"
+        ],
+        "desc": "When user triggers the battle, Critical rate +20"
+    },
+    "Gamble": {
+        "cost": 1,
+        "groups": [
+            "Crit"
+        ],
+        "desc": "Hit rate -10, Critical rate +10"
+    },
+    "Pavise": {
+        "cost": 2.16,
+        "groups": [
+            "Skill%",
+            "Weapon Restricted",
+            "Reduction%"
+        ],
+        "desc": "Skill% chance of halving damage from Sword, Lance, Axe, Beaststone, Claw or Puppet attacks"
+    },
+    "Aegis": {
+        "cost": 2.16,
+        "groups": [
+            "Skill%",
+            "Weapon Restricted",
+            "Reduction%"
+        ],
+        "desc": "Skill% chance of halving damage from Bow, Magic, Dagger, Dragonstone, Breath or Stone attacks"
+    },
+    "Shadowgift": {
+        "cost": 0,
+        "groups": [
+            "Weapon Access"
+        ],
+        "desc": "User can equip Dark Mage exclusive Tomes (only Nosferatu so far)"
+    },
+    "Point Blank": {
+        "cost": 6.6,
+        "groups": [
+            "Weapon Access"
+        ],
+        "desc": "User can attack enemies at 1 Range with a Bow"
+    },
+    "Optimist": {
+        "cost": 0.2,
+        "groups": [
+            "Staff"
+        ],
+        "desc": "When user is healed by a staff, they recover 1.5 times the normal HP"
+    },
+    "Reciprocity": {
+        "cost": 12.53,
+        "groups": [
+            "Staff"
+        ],
+        "desc": "When a unit uses a healing staff on the user, that unit has their HP recovered by half the same amount"
+    },
+    "Live to Serve": {
+        "cost": 25.06,
+        "groups": [
+            "Staff"
+        ],
+        "desc": "When healing an ally, the user recovers the same amount of HP"
+    },
+    "Optimistic": {
+        "cost": 8.12,
+        "groups": [
+            "Wait",
+            "Stat"
+        ],
+        "desc": "After choosing to Wait, Speed +4 and Luck +8 for one Turn"
+    },
+    "Sweet Tooth": {
+        "cost": 1.5,
+        "groups": [
+            "Wait",
+            "Heal"
+        ],
+        "desc": "After choosing to Wait, user recovers 4 HP by eating hidden treats"
+    },
+    "Calm": {
+        "cost": 8.11,
+        "groups": [
+            "Wait",
+            "Stat"
+        ],
+        "desc": "After choosing to Wait, Skill and Resistance +4 for one Turn"
+    },
+    "Locktouch": {
+        "cost": 0,
+        "groups": [
+            "Unique"
+        ],
+        "desc": "User can open doors and chests without requiring keys"
+    },
+    "Golembane": {
+        "cost": 0.08,
+        "groups": [
+            "Effective Damage"
+        ],
+        "desc": "Attacks are effective against Mechanists, Automatons and Stoneborn"
+    },
+    "Beastbane": {
+        "cost": 29.75,
+        "groups": [
+            "Effective Damage"
+        ],
+        "desc": "When user is a Wolfskin or Kitsune, their attacks are effective against Beast units. Note: Your character becomes a furry"
+    },
+    "Potent Potion": {
+        "cost": 4.42,
+        "groups": [
+            "Potion"
+        ],
+        "desc": "The effect of HP recovery and stat-boosting potions is increased by 50%"
+    },
+    "Quick Salve": {
+        "cost": 1.35,
+        "groups": [
+            "Potion"
+        ],
+        "desc": "After consuming a HP recovery or stat-boosting potion, the user can perform another action"
+    },
+    "Inspiring Song": {
+        "cost": 30.25,
+        "groups": [
+            "Dance"
+        ],
+        "desc": "Skill, Speed and Luck +3 for one Turn for the unit who receives the user’s song. Note: Gives your character the sing command from the very start"
+    },
+    "Pass": {
+        "cost": 0,
+        "groups": [
+            "Movement"
+        ],
+        "desc": "User can pass through tiles occupied by enemy units"
+    },
+    "Clarity": {
+        "cost": 3.2,
+        "groups": [
+            "Resist"
+        ],
+        "desc": "User recovers from status reduction effects twice as fast"
+    },
+    "Resist Status": {
+        "cost": 8.86,
+        "groups": [
+            "Resist"
+        ],
+        "desc": "Halves status reduction effects, Poison damage and status staff Hit rate"
+    },
+    "Winged Shield": {
+        "cost": 12.86,
+        "groups": [
+            "Unique"
+        ],
+        "desc": "When user is a Flying unit, their Flying weakness is nullified and they will receive terrain effects"
+    },
+    "Beast Shield": {
+        "cost": 11.69,
+        "groups": [
+            "Unique"
+        ],
+        "desc": "User’s Beast-type weakness is nullified"
+    },
+    "Armor Shield": {
+        "cost": 10.52,
+        "groups": [
+            "Unique"
+        ],
+        "desc": "User’s Armour-type weakness is nullified"
+    }
+}

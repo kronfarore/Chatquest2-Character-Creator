@@ -1,0 +1,227 @@
+Skill	Description
+HP +5	Maximum HP +5
+Strength +2	Strength +2
+Magic +2	Magic +2
+Skill +2	Skill +2
+Speed +2	Speed +2
+Luck +4	Luck +4
+Defense +2	Defence +2
+Resistance +2	Resistance +2
+Dancing Blade	Speed +3, Defence -1
+Heavy Blade	Strength +3, Speed -1
+Aptitude	Adds 10% to all growth rates during Level Ups
+Supportive	When user is the support unit, if the lead unit has a C Support or higher, the lead unit’s Hit Rate +10, damage +2 and damage received -2
+Miraculous Save	When user is the support unit, the lead unit has a Luck% chance of surviving a fatal attack with 1 HP
+Fierce Rival	When user is the support unit, if the lead unit triggers a critical hit, the user is guaranteed a critical hit (if their attack connects)
+Gallant	When user is the support unit, if the lead unit is female, the lead unit’s damage +2
+Dual Striker	When user is the support unit during Tag Team, Dual Strike damage +3
+Dual Guarder	When user is the support unit while paired up, shield gauge gain +1
+Tactical Advice	When user is the support unit while paired up, lead unit’s Hit rate +10
+Competitive	When user is the lead unit and their Level is lower than their support unit’s Level, Critical rate +10, damage +3 and damage received -1
+Bushido	When user is the lead unit, if their Level is higher than their support unit’s Level, Critical rate +10, damage +2 and damage received -2
+Noble Cause	When user is the lead unit, if their support unit doesn’t have full HP, damage +3 and damage received +1
+Guarded Bravery	When user is the lead unit, damage received -2. If no support unit available, damage received +2
+Sisterhood	When user is the lead unit, if their support unit is female, damage +2 and damage received -2
+Bold Stance	When user is the lead unit, even when paired up, the support unit can trigger Dual Strikes, but enemy Dual Strikes are not passively negated
+Defender	When user is the lead unit while paired up, all stats +1
+Nohrian Trust	User shares their support unit’s battle skills *2
+Devoted Partner	If the Avatar is the lead unit, Avatar’s damage +2, damage received -2
+Evasive Partner	If the Avatar is the lead unit, Avatar’s Avoid +15, damage received -3
+Forceful Partner	If the Avatar is the lead unit, Avatar’s Hit rate +15, damage +3
+Perfectionist	When user’s HP is at maximum, Hit rate and Avoid +15
+Perspicacious	Hit rate +5 for all allies
+Born Steward	When fighting in My Castle, Hit rate and Avoid +20, damage +2 and damage received -2
+Wind Disciple	When user’s HP is not full, Hit rate and Avoid +10
+Lancebreaker	Hit rate and Avoid +50 when the enemy is equipped with a Lance
+Shurikenbreaker	Hit rate and Avoid +50 when the enemy is equipped with a Dagger
+Axebreaker	Hit rate and Avoid +50 when the enemy is equipped with an Axe
+Tomebreaker	Hit rate and Avoid +50 when the enemy is equipped with a Tome
+Bowbreaker	Hit rate and Avoid +50 when the enemy is equipped with a Bow
+Swordbreaker	Hit rate and Avoid +50 when the enemy is equipped with a Sword
+Quixotic	User and enemy’s Hit rate +30 and skill activation rate +15% during battle
+Lucky Charm	Skills with an activation rate dependent on the Luck stat have their rate increased by 20%
+Hoshidan Unity	Adds 10% to skill activation rates
+Air Superiority	Hit rate and Avoid +30 when facing Flying enemies
+Certain Blow	When user triggers the battle, Hit rate +40
+Highwayman	When user triggers the battle, if the enemy cannot counter-attack, enemy’s Strength and Speed -3 after the battle (stats recover by 1 each Turn)
+Seal Strength	After battle, enemy’s Strength -6 *1
+Seal Resistance	After battle, enemy’s Resistance -6 *1
+Seal Defence	After battle, enemy’s Defence -6 *1
+Seal Speed	After battle, enemy’s Speed -6 *1
+Seal Magic	After battle, enemy’s Magic -6 *1
+Draconic Hex	After battle, enemy’s stats -4 *1
+Inevitable End	Stat reduction effects on the enemy will stack
+Grisly Wound	The enemy’s HP is reduced by 20% after the battle
+Fearsome Blow	When user triggers the battle and defeats an enemy, enemies adjacent to the user have their HP reduced by 20%
+Playthings	After the start of the user’s Turn, all enemies that are adjacent to the user have their HP reduced by 5
+Heartseeker	When fighting adjacent to an enemy, enemy’s Avoid -20
+Fierce Mien	Enemies within a 2 tile radius have their Avoid reduced by 10
+Misfortunate	Enemies within a 2 tile radius have their Critical Evade reduced by 15, while the user’s Critical Evade is reduced by 5
+Veteran Intuition	Critical Evade +15 during battles
+Solidarity	Adjacent allies receive Avoid +10 and Critical Evade +10
+Lily’s Poise	Adjacent allies deal 1 extra damage and received 3 less damage
+Rose’s Thorn	Adjacent allies deal 3 extra damage and receive 1 less damage
+Dragon Ward	Allies adjacent to the user have a Luck x 0.5% chance of receiving half damage from enemy attacks
+Divine Retribution	When user doesn’t have a weapon equipped and they sustain damage from an adjacent enemy, the enemy receives half the same damage.
+Counter	When an adjacent enemy triggers the battle and inflicts damage, the enemy receives the same damage
+Countercurse	When enemy triggers the battle and inflicts magical damage, the enemy receives half the same damage
+Countermagic	When the enemy triggers the battle and inflicts magical damage, the enemy receives the same damage
+Icy Blood	When user’s HP is not full and they sustain damage, the enemy receives the same damage and the enemy’s Skill and Speed is reduced by 3
+Triple Threat	When user is under half HP, half the damage received by Swords, Lances or Axes is also dealt to the enemy
+Shuriken Mastery	When user receives damage from a Dagger attack, the enemy receives half the same damage and the Dagger’s stat reduction effect
+Foreign Princess	“Foreign Army” enemies within a 2 tile radius deal 2 less damage and receive 2 extra damage
+Malefic Aura	Enemies within a 2 tile radius receive 2 extra damage from magical attacks
+Voice of Peace	Enemies within a 2 tile radius deal 2 less physical damage
+Peacebringer	Allies and enemies within a 2 tile radius deal 2 less damage
+Quiet Strength	Allies within a 2 tile radius receive 2 less damage
+Gentilhomme	Female allies within a 2 tile radius receive 2 less damage during battles
+Demoiselle	Male allies within a 2 tile radius receive 2 less damage during battles
+Rallying Cry	Allies within a 2 tile radius deal 2 extra damage
+Charm	Allies within a 2 tile radius deal 2 extra damage during battles
+Inspiration	Allies within a 2 tile radius deal 2 extra damage and receive 2 less damage during battles
+Fortunate Son	Allies within a 2 tile radius have their Critical Evade increased by 15, while the user’s Critical Evade is increased by 5
+Perfect Pitch	Allies within a 2 tile radius who have lower HP than the user recover 10% HP when the “Rally” command is used
+Fancy Footwork	Strength and Speed +1 to all allies within a 2 tile radius for one Turn when the “Rally” command is used
+Rally Magic	Magic +4 to all allies within a 2 tile radius for one Turn when the “Rally” command is used
+Rally Luck	Luck +8 to all allies within a 2 tile radius for one Turn when the “Rally” command is used
+Rally Speed	Speed +4 to all allies within a 2 tile radius for one Turn when the “Rally” command is used
+Rally Strength	Strength +4 to all allies within a 2 tile radius for one Turn when the “Rally” command is used
+Rally Skill	Skill +4 to all allies within a 2 tile radius for one Turn when the “Rally” command is used
+Rally Defence	Defence +4 to all allies within a 2 tile radius for one Turn when the “Rally” command is used
+Rally Resistance	Resistance +4 to all allies within a 2 tile radius for one Turn when the “Rally” command is used
+Rally Movement	Movement +1 to all allies within a 2 tile radius for one Turn when the “Rally” command is used
+Rally Spectrum	All Stats +2 to all allies within a 4 tile radius for one Turn when the Rally command is used
+Movement +1	Movement +1
+Surefooted	When user is a Ballistician, Movement +1 and all traversable terrain costs 1 movement point to cross
+Healing Descant	Allies within a 2 tile radius recover 10% HP at the start of the user’s Turn
+Forager	When standing on Mountain, Woods, Waste or Field terrain, the user recovers 20% HP at the start of the Turn
+Draconic Heir	When user is equipped with a Dragonstone, they recover 15% HP at the start of their Turn
+Haiku	At the start of the Turn, when two allies are directly above and below Mitama, Mitama recovers 7 HP, while the the two allies recover 5 HP
+Renewal	Recover 30% HP at the start of the user’s Turn
+Camaraderie	Recover 10% HP at the start of the user’s Turn if there are allies within a 2 tile radius
+Amaterasu	Allies within a 2 tile radius recover 20% HP at the start of the user’s Turn
+Even Better	Recover 40% HP at the start of even-numbered Turns
+Better Odds	Recover 40% HP at the start of odd-numbered Turns
+Relief	Recover 20% HP at the start of the user’s Turn if no units are within a 2 tile radius
+Opportunity Shot	When user is a Ballistician, Skill% chance of attacking an enemy within range at the start of the users Turn
+Self-Destruct	At the start of the user’s Turn, if user’s HP is under half, inflicts damage to all enemies and walls within a 2 tile radius; afterwards, the user disappears
+Capture	When there is a Prison in My Castle, the user can select the “Capture” command. If a generic enemy is defeated, they will be sent to the Prison
+Kidnap	When there is a Prison in My Castle, the user can select the “Capture” command. If a generic enemy is defeated, they will be sent to the Prison
+Shove	Select the “Shove” command to push an adjacent ally 1 tile
+Swap	Select the “Swap” command to swap places with an adjacent ally on the map
+Shelter	Select the “Shelter” command to make an adjacent ally the user’s support unit
+Replicate	Select the “Replicate” command once per map to create a replica with the same appearance, stats, inventory and HP as the user (Anything that happens to the replica happens to the user and vice versa–even death)
+Lunge	Select the “Lunge” command to swap places with an enemy after an attack
+Survey	When using the “Cannon” command, Hit rate +10
+Rifled Barrel	When using the “Cannon” command, range +1 and inner/outer range -1
+Warp	Select the “Warp” command to instantly move adjacent to an ally and perform another action
+Strengthtaker	When user defeats the enemy, Strength +2 (up to 10) (does not overlap with other Taker skills and expires after the chapter)
+Magictaker	When user defeats the enemy, Magic +2 (up to 10) (does not overlap with other Taker skills and expires after the chapter)
+Skilltaker	When user defeats the enemy, Skill +2 (up to 10) (does not overlap with other Taker skills and expires after the chapter)
+Speedtaker	When user defeats the enemy, Speed +2 (up to 10) (does not overlap with other Taker skills and expires after the chapter)
+Lucktaker	When user defeats the enemy, Luck +2 (up to 10) (does not overlap with other Taker skills and expires after the chapter)
+Defensetaker	When user defeats the enemy, Defence +2 (up to 10) (does not overlap with other Taker skills and expires after the chapter)
+Resistancetaker	When user defeats the enemy, Resistance +2 (up to 10) (does not overlap with other Taker skills and expires after the chapter)
+Pyrotechnics	When user triggers the battle at under half HP, the user and enemies within a 2 tile radius have their HP reduced by 20%
+Vantage	At the start of battle, when the user has under half HP, they attack first
+Morbid Celebration	When user triggers the battle, recover 20% HP after defeating the enemy
+Mischievous	When user triggers the battle and their attack connects with the enemy, enemy’s Defence -3 and enemy is stripped
+Bloodthirst	When user triggers the battle and defeats the enemy, Strength, Magic, Skill and Speed +4 for one turn
+Duelist’s Blow	When user triggers the battle, Avoid +30
+Darting Blow	When user triggers the battle, follow up attack speed +5
+Wary Fighter	During battles, neither the user or enemy can perform follow up attacks
+Poison Strike	When user triggers the battle, the enemy’s HP is reduced by 20% after the battle
+Savage Blow	When user triggers the battle, enemies within a 2 tile radius have their HP reduced by 20% after the battle
+Lifetaker	When user triggers the battle, recover 50% HP after defeating the enemy
+Galeforce	When user triggers the battle, allows a full action if the user defeats the enemy (once per Turn and no help from a support unit)
+Toxic Brew	When user triggers the battle, Skill x 1.5% chance of reducing the enemy’s Movement to 0 and Avoid by 20 after the battle (until the next Turn)
+Astra	Skill x 0.5% chance of triggering 5 consecutive hits with half damage
+Rend Heaven	Skill x 1.5% chance of adding half the enemy’s Strength (if user has a physical weapon) or Magic (if user has a magical weapon) as damage
+Lethality	Skill x 0.25% chance of instantly defeating the enemy when dealing 1 or more damage
+Dragon Fang	Skill x.0.75% chance of adding 50% of the user’s Attack Power as damage
+Luna	Skill% chance of ignoring half the enemy’s Defence (if user has a physical weapon) or Resistance (if user has a magical weapon)
+Sol	Skill% chance of restoring half the damage dealt to the enemy
+Vengeance	Skill x 1.5% chance of adding half the user’s (Max HP – Current HP) as damage
+Aether	Skill x 0.5% chance of triggering a Sol hit followed by a Luna hit
+Ignis	Skill% chance of adding half the user’s Strength (if user has a physical weapon) or Magic (if user has a magical weapon) as damage
+Immobilize	If user’s attack connects with the enemy, the enemy’s Movement is reduced to 0 and Avoid reduced by 20 until the next Turn
+Underdog	Hit rate and Avoid +15 when user’s Level is lower than the enemy (promoted units count as Level +20)
+Lucky Seven	Hit rate and Avoid +20 for the first seven Turns
+Awakening	When HP is under half, Hit rate, Avoid, Critical rate and Critical Evade +30
+Hit/Avo +10	Hit rate and Avoid +10
+Hit/Avo +20	Hit rate and Avoid +20
+Vow of Friendship	If the Avatar is an ally, when the Avatar is under half HP, user’s damage +3 and damage received -3
+Fiery Blood	When user’s HP is not full, damage +4
+Pride	When user’s Level is lower than the enemy’s (promoted units count as Level +20), damage +3
+Nohr Enmity	When engaging a Nohr-related enemy, damage +3
+Prodigy	At the start of the battle, if the enemy’s Strength or Magic (whichever is highest) is higher than Caeldori’s corresponding stat, damage +4
+Vendetta	When user triggers the battle, if they’ve already fought the enemy in the same map, damage +4
+Puissance	When user’s Strength is 5 or more points higher than the enemy’s Strength, damage +3 during battle
+Opportunist	When user triggers the battle, if the enemy cannot counter-attack, damage +4
+Unmask	When engaging a female enemy, Damage +4 and Critical rate +20
+Pragmatic	When enemy’s HP is not full, damage +3 and damage received -1 during the battle
+Chivalry	When enemy’s HP is at maximum, damage +2 and damage received -2 during the battle
+Fierce Counter	When a male enemy triggers the battle, damage +2
+Daydream	When user is adjacent to two male units paired up, damage +2 and damage received -2
+Swordfaire	When user is equipped with a Sword, damage +5 during battle
+Lancefaire	When user is equipped with a Lance, damage +5 during battle
+Tomefaire	When user is equipped with a Tome, damage +5 during battle
+Bowfaire	When user is equipped with a Bow, damage +5 during battle
+Shurikenfaire	When user is equipped with a Dagger, damage +5 during battle
+Axefaire	When user is equipped with an Axe, damage +5 during battle
+Life and Death	During battles, damage +10, damage received +10
+Quick Draw	When user triggers the battle, damage +4
+Spendthrift	During battles, user spends a Gold Bar for damage +10 and damage received -10
+Evenhanded	During even-numbered Turns, damage +4
+Odd Shaped	During odd-numbered Turns, damage +4
+Elbow Room	When user fights in terrain with no terrain effects, damage +3 during battles
+Strong Riposte	When enemy triggers the battle, damage +3
+Trample	Unless enemy is on a mount, damage +5
+Aggressor	When user triggers the battle, Damage +7
+Warding Blow	When user triggers the battle, magical damage received -20
+Armored Blow	When user triggers the battle, physical damage received -10
+Natural Cover	When user fights in terrain with terrain effects, damage received -3 during battles
+Even Keel	During even-numbered Turns, magical damage received -4
+Iron Will	When enemy triggers the battle, magical damage received -4
+Collector	Luck% chance of obtaining 3 Minerals or Foodstuffs after moving up to the 7th Turn
+Goody Basket	At the start of the Turn, Luck% chance of recovering 10% HP
+Make a Killing	Luck% chance of obtaining Gold after defeating an enemy
+Salvage Blow	When user triggers the battle, Luck% chance of receiving a Katana, Naginata, Club, Yumi or Shuriken if the user defeats the enemy
+Future Sight	When user triggers the battle, Luck% chance of gaining double experience when user defeats the enemy
+Nobility	Experience gained x 1.2
+Paragon	Experience gained is doubled
+Void Curse	No experience is gained from fighting this enemy
+Miracle	Luck% chance of leaving the user with 1 HP when they have 2 or more HP
+Profiteer	Luck% chance of obtaining a Gold Bar after moving during the first seven Turns
+Good Fortune	Luck% chance of recovering 20% HP at the start of the user’s Turn
+Witch’s Brew	Luck% chance of obtaining a potion item (eg. Vulnerary) after moving during the first seven Turns
+In Extremis	When user’s HP is under a quarter, Critical rate +30
+Aching Blood	When equipped with a forged weapon whose name is at least 12 characters, Critical rate +10
+Bibliophile	When user is carrying 3 or more Tomes, Critical rate +10
+Death Blow	When user triggers the battle, Critical rate +20
+Gamble	Hit rate -10, Critical rate +10
+Pavise	Skill% chance of halving damage from Sword, Lance, Axe, Beaststone, Claw or Puppet attacks
+Aegis	Skill% chance of halving damage from Bow, Magic, Dagger, Dragonstone, Breath or Stone attacks
+Shadowgift	User can equip Dark Mage exclusive Tomes (only Nosferatu so far)
+Point Blank	User can attack enemies at 1 Range with a Bow
+Optimist	When user is healed by a staff, they recover 1.5 times the normal HP
+Reciprocity	When a unit uses a healing staff on the user, that unit has their HP recovered by half the same amount
+Live to Serve	When healing an ally, the user recovers the same amount of HP
+Optimistic	After choosing to Wait, Speed +4 and Luck +8 for one Turn
+Sweet Tooth	After choosing to Wait, user recovers 4 HP by eating hidden treats
+Calm	After choosing to Wait, Skill and Resistance +4 for one Turn
+Locktouch	User can open doors and chests without requiring keys
+Golembane	Attacks are effective against Mechanists, Automatons and Stoneborn
+Beastbane	When user is a Wolfskin or Kitsune, their attacks are effective against Beast units
+Potent Potion	The effect of HP recovery and stat-boosting potions is increased by 50%
+Quick Salve	After consuming a HP recovery or stat-boosting potion, the user can perform another action
+Inspiring Song	Skill, Speed and Luck +3 for one Turn for the unit who receives the user’s song
+Pass	User can pass through tiles occupied by enemy units
+Clarity	User recovers from status reduction effects twice as fast
+Resist Status	Halves status reduction effects, Poison damage and status staff Hit rate
+Immune Status	Negates status reduction effects, Poison damage and status staff Hit rate
+Divine Shield	Halves damage and negates Lethality, Poison and Counter-type skills.
+Dragonskin	Halves damage, weakens critical hits and special skills (eg. Astra, Luna, Sol) and negates Lethality, Poison and Counter-type skills.
+Winged Shield	When user is a Flying unit, their Flying weakness is nullified and they will receive terrain effects
+Beast Shield	User’s Beast-type weakness is nullified
+Armor Shield	User’s Armour-type weakness is nullified
