@@ -51,9 +51,7 @@ source and names the output accordingly:
 python build_exe.py
 ```
 
-The resulting `.exe` lands in the `dist/` folder. The `.spec` files are
-alternative PyInstaller recipes; note that `FE_Fates_Character_Creator.spec`
-references an `icon.ico` that is not included here.
+The resulting `.exe` lands in the `dist/` folder. 
 
 ## Repository layout
 
