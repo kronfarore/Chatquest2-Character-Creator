@@ -5,6 +5,7 @@ __pycache__/
 # PyInstaller build output
 build/
 dist/
+*.spec
 
 # Stale duplicate build workspace
 Building Test/

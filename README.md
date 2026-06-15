@@ -51,7 +51,7 @@ source and names the output accordingly:
 python build_exe.py
 ```
 
-The resulting `.exe` lands in the `dist/` folder. 
+The resulting `.exe` lands in the `dist/` folder.
 
 ## Repository layout
 
@@ -60,7 +60,6 @@ The resulting `.exe` lands in the `dist/` folder.
 | `character_creator.py`   | The application (single-file tkinter app).   |
 | `skill_data.json`        | Skill catalog: costs, groups, descriptions.  |
 | `build_exe.py`           | Convenience PyInstaller build script.        |
-| `*.spec`                 | PyInstaller build recipes.                   |
 | `Skill_Description.txt`  | Reference text for skill descriptions.       |
 
 ## License
