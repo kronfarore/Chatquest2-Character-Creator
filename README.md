@@ -1,7 +1,8 @@
 # Chatquest 2 Character Creator
 
 A desktop tool for designing custom characters and personal (prf) weapons for
-**Chatquest 2**, a Fire Emblem Fates-based project. Every character is built
+**Chatquest 2**, a Fire Emblem Fates-based project, meant to be eventually 
+streamed live on twitch.tv/kronfarore. Every character is built
 against a fixed point budget, so each stat, skill, and weapon effect has a cost —
 the tool keeps the running total and stops you from going over budget.
 
