@@ -9,7 +9,7 @@ import os
 # VERSION
 # ============================================================================
 
-VERSION = "0.58.d"
+VERSION = "0.59.a"
 
 print("Program starting...")
 # ============================================================================
@@ -17,7 +17,7 @@ print("Program starting...")
 # ============================================================================
 
 initial_points = 180
-MAX_SKILLS = 4  # Maximum number of skills a character may select (Skills section)
+MAX_SKILLS = 6  # Maximum number of skills a character may select (Skills section)
 skill_data = {}
 
 # Stats that use increments of 5
@@ -46,6 +46,10 @@ PERSONAL_SKILLS = {
     "Pass": 0,
     "Nobility / Dragon Blood": 1,
 }
+
+# Personal-skill labels whose name differs from the matching skill_data.json
+# entry. Used for description lookups and personal/normal overlap checks.
+PERSONAL_SKILL_ALIASES = {"Nobility / Dragon Blood": "Nobility"}
 
 MOVEMENT_COSTS = {
     "Infantry": 0,
@@ -789,9 +793,15 @@ class SkillSelectionWindow:
                 command=lambda s=skill, v=var: self.on_skill_toggle(s, v)
             )
             chk.grid(row=row, column=col, sticky="w", padx=8, pady=2)
+            tip_parts = []
             desc = info.get("desc", "")
             if desc:
-                Tooltip(chk, desc)
+                tip_parts.append(desc)
+            groups = info.get("groups", [])
+            if groups:
+                tip_parts.append("Groups: " + ", ".join(groups))
+            if tip_parts:
+                Tooltip(chk, "\n\n".join(tip_parts))
             self.skill_vars[skill] = var
             self.skill_widgets[skill] = chk
 
@@ -4123,6 +4133,33 @@ class CharacterCreator:
                                                 state="readonly")
         self.personal_skill_menu.grid(row=9, column=1, sticky="ew", pady=(10,0))
         self.personal_skill_menu.bind("<<ComboboxSelected>>", lambda e: self.update_total_cost())
+        # Hover tooltip showing the selected personal skill's description.
+        # A trace keeps it current through selection, reset, and import.
+        self._personal_skill_tip = Tooltip(self.personal_skill_menu, "")
+        self.personal_skill_var.trace_add(
+            "write", lambda *_: self._update_personal_skill_tooltip())
+        self._update_personal_skill_tooltip()
+        _info_ps = tk.Label(frame, text=" ? ", relief="groove",
+                            background="#4a90d9", foreground="white",
+                            font=("TkDefaultFont", 9, "bold"), cursor="hand2")
+        _info_ps.grid(row=9, column=2, sticky="w", padx=(10, 0), pady=(10, 0))
+        Tooltip(_info_ps,
+                "Hover over the skill after selection for a skill description. "
+                "Can't pick the same skill as personal skill and a normal skill.",
+                delay_ms=400)
+
+    def _personal_skill_description(self):
+        """Description text for the currently selected personal skill."""
+        name = self.personal_skill_var.get().split(" (")[0]
+        if name not in PERSONAL_SKILLS:
+            return "No personal skill selected — one is required to export."
+        lookup = PERSONAL_SKILL_ALIASES.get(name, name)
+        desc = skill_data.get(lookup, {}).get("desc", "")
+        return desc or f"{name}: (no description available)"
+
+    def _update_personal_skill_tooltip(self):
+        if hasattr(self, "_personal_skill_tip"):
+            self._personal_skill_tip.update_text(self._personal_skill_description())
 
 
     # ------------------------------------------------------------------------
@@ -4214,11 +4251,10 @@ class CharacterCreator:
         frame = ttk.LabelFrame(parent, text="Skills", padding=10)
         frame.pack(fill="none", expand=False, padx=10, pady=5, anchor="w")
 
-        self.skills_text = scrolledtext.ScrolledText(frame, height=4, width=60, state="disabled", wrap=tk.WORD)
-        self.skills_text.pack(fill="both", expand=True)
-        self.skills_text.config(state="normal")
-        self.skills_text.insert(tk.END, "No skills selected")
-        self.skills_text.config(state="disabled")
+        # Selected skills shown as an aligned table (rebuilt by _render_skills_list)
+        self.skills_list_frame = ttk.Frame(frame)
+        self.skills_list_frame.pack(fill="x", anchor="w")
+        self._render_skills_list()
 
         skills_row = ttk.Frame(frame)
         skills_row.pack(pady=5)
@@ -4231,8 +4267,44 @@ class CharacterCreator:
         Tooltip(_info,
                 "Skills are automatically sorted by their cost, which is also "
                 "the order in which they are acquired.\n\n"
-                "For Chatquest 2 you learn skills at levels: 1, 10, 20, 25.",
+                "For Chatquest 2 you learn 6 skills total at levels:\n"
+                "1, 5, 10, 15, 20, 25.",
                 delay_ms=400)
+
+    def _render_skills_list(self):
+        """Rebuild the selected-skills table, sorted by cost (acquisition order)."""
+        for w in self.skills_list_frame.winfo_children():
+            w.destroy()
+
+        skills = getattr(self, "selected_skills", []) or []
+        if not skills:
+            ttk.Label(self.skills_list_frame, text="No skills selected",
+                      foreground="gray").grid(row=0, column=0, sticky="w")
+            return
+
+        ordered = sorted(skills, key=lambda s: scaled_skill_cost(skill_data[s]["cost"]))
+        for col, header in enumerate(("#", "Skill", "Cost")):
+            ttk.Label(self.skills_list_frame, text=header,
+                      font=("TkDefaultFont", 9, "bold")).grid(
+                row=0, column=col, sticky="w", padx=(0, 16), pady=(0, 2))
+
+        for i, skill in enumerate(ordered, 1):
+            cost = scaled_skill_cost(skill_data[skill]["cost"])
+            ttk.Label(self.skills_list_frame, text=str(i)).grid(
+                row=i, column=0, sticky="w", padx=(0, 16))
+            name_lbl = ttk.Label(self.skills_list_frame, text=skill)
+            name_lbl.grid(row=i, column=1, sticky="w", padx=(0, 16))
+            ttk.Label(self.skills_list_frame, text=str(int(cost))).grid(
+                row=i, column=2, sticky="w")
+
+            info = skill_data.get(skill, {})
+            tip_parts = []
+            if info.get("desc"):
+                tip_parts.append(info["desc"])
+            if info.get("groups"):
+                tip_parts.append("Groups: " + ", ".join(info["groups"]))
+            if tip_parts:
+                Tooltip(name_lbl, "\n\n".join(tip_parts))
 
     def setup_growth_frame(self, parent):
         frame = ttk.LabelFrame(parent, text="Attribute Growth", padding=10)
@@ -4587,24 +4659,7 @@ class CharacterCreator:
     def update_skills_and_points(self, selected_skills, skill_cost):
         self.selected_skills = selected_skills
         self.update_total_cost()
-
-        self.skills_text.config(state="normal")
-        self.skills_text.delete(1.0, tk.END)
-
-        if not selected_skills:
-            self.skills_text.insert(tk.END, "No skills selected")
-        else:
-            sorted_skills = sorted(selected_skills, key=lambda s: scaled_skill_cost(skill_data[s]["cost"]))
-            max_name_len = max(len(skill) for skill in sorted_skills)
-            skills_list = []
-            for skill in sorted_skills:
-                cost = scaled_skill_cost(skill_data[skill]["cost"])
-                padded_name = skill.ljust(max_name_len + 2)
-                cost_str = str(int(cost))
-                skills_list.append(f"{padded_name}Cost: {cost_str}")
-            self.skills_text.insert(tk.END, "\n".join(skills_list))
-
-        self.skills_text.config(state="disabled")
+        self._render_skills_list()
 
     def validate_growth(self, attribute):
         value = self._safe_get(self.growth_vars[attribute], 0)
@@ -5052,6 +5107,17 @@ class CharacterCreator:
             errors.append(
                 f"\u2022 Too many skills selected ({len(self.selected_skills)}), maximum is {MAX_SKILLS}."
             )
+        # Personal skill: one must be chosen (None is not allowed) and it must
+        # not also be selected as a normal skill.
+        personal = self.personal_skill_var.get().split(" (")[0]
+        if personal not in PERSONAL_SKILLS:
+            errors.append("\u2022 A personal skill must be selected (None is not allowed).")
+        else:
+            eff = PERSONAL_SKILL_ALIASES.get(personal, personal)
+            if eff in self.selected_skills or personal in self.selected_skills:
+                errors.append(
+                    f"\u2022 '{personal}' is chosen as both the personal skill and a normal "
+                    f"skill \u2014 pick a different one.")
         return len(errors) == 0, errors
 
     def export_character(self):
@@ -5204,6 +5270,16 @@ class CharacterCreator:
         valid_skills = [s for s in char_data.get("skills", []) if s in skill_data]
         if len(valid_skills) > MAX_SKILLS:
             issues.append(f"{len(valid_skills)} skills selected; the limit is {MAX_SKILLS}")
+
+        # --- Personal skill: must be chosen and not overlap a normal skill ---
+        personal = char_data.get("personal_skill", "")
+        if personal not in PERSONAL_SKILLS:
+            issues.append(f"No valid personal skill selected (personal_skill = {personal!r})")
+        else:
+            eff = PERSONAL_SKILL_ALIASES.get(personal, personal)
+            file_skills = char_data.get("skills", [])
+            if eff in file_skills or personal in file_skills:
+                issues.append(f"Personal skill '{personal}' is also selected as a normal skill")
 
         # --- Pairup limits (raw, before loading reduces over-limit rows) ---
         pairup_limits = {"No Support": 2, "C Support": 3, "B Support": 2,
@@ -5431,10 +5507,7 @@ class CharacterCreator:
         self.personal_skill_var.set("None (0 pts)")
 
         self.selected_skills = []
-        self.skills_text.config(state="normal")
-        self.skills_text.delete(1.0, tk.END)
-        self.skills_text.insert(tk.END, "No skills selected")
-        self.skills_text.config(state="disabled")
+        self._render_skills_list()
 
         for attr in self.attributes:
             self.growth_vars[attr].set(0)
