@@ -17,6 +17,7 @@ print("Program starting...")
 # ============================================================================
 
 initial_points = 180
+MAX_SKILLS = 4  # Maximum number of skills a character may select (Skills section)
 skill_data = {}
 
 # Stats that use increments of 5
@@ -374,6 +375,75 @@ if skill_data_load_error:
     sys.exit(1)
 
 # ============================================================================
+# IMPORT VERIFICATION HELPERS
+# ============================================================================
+
+def _verify_weapon_raw(weapon_data):
+    """Data-only legality checks for a weapon dict (no UI/engine required).
+
+    Inspects the raw file values, so forged out-of-range stats are caught even
+    though loading would silently clamp them. Returns a list of issue strings."""
+    issues = []
+    stat_keys = [
+        ("might", "Might"), ("hit", "Hit"), ("crit", "Crit"), ("avoid", "Avoid"),
+        ("dodge", "Dodge"), ("mov", "Mov"),
+        ("effective_speed_offensive", "Effective Speed Offensive"),
+        ("effective_speed_defensive", "Effective Speed Defensive"),
+        ("base_staff_exp", "Base Staff Exp"), ("uses", "Uses"),
+    ]
+    for key, name in stat_keys:
+        if key not in weapon_data:
+            continue
+        val = weapon_data[key]
+        if not isinstance(val, (int, float)):
+            issues.append(f"{name} = {val!r} is not a number")
+            continue
+        lo, hi = WEAPON_STAT_MIN[name], WEAPON_STAT_MAX[name]
+        if val < lo or val > hi:
+            issues.append(f"{name} = {val} is outside the allowed range [{lo}, {hi}]")
+    # Range validity
+    wtype = weapon_data.get("type")
+    rng = weapon_data.get("range")
+    if wtype in ("Staff", "Rod"):
+        try:
+            n = int(rng)
+            if n < 1 or n > 15:
+                issues.append(f"Staff range {rng} is outside 1-15")
+        except (TypeError, ValueError):
+            issues.append(f"Staff range {rng!r} is not a valid number")
+    elif rng is not None and rng not in WEAPON_RANGE_COSTS:
+        issues.append(f"Range {rng!r} is not one of {list(WEAPON_RANGE_COSTS)}")
+    # Claimed cost bounds
+    tc = weapon_data.get("total_cost")
+    if isinstance(tc, (int, float)) and tc > WEAPON_TOTAL_POINTS + 0.5:
+        issues.append(f"Claimed cost {round(tc)} exceeds the {WEAPON_TOTAL_POINTS}-point budget")
+    return issues
+
+
+def _show_import_verification(parent, kind, name, file_version, issues, show_success=True):
+    """Post-import review dialog. Always informational — never blocks the load.
+
+    When show_success is False, stays silent on a clean result — used by the
+    weapon-creator load paths so opening your own weapon doesn't nag you."""
+    if not issues:
+        if show_success:
+            messagebox.showinfo(
+                "Import Successful",
+                f"{kind.capitalize()} '{name}' loaded successfully!", parent=parent)
+        return
+    header = ""
+    if file_version and file_version != VERSION:
+        header = (f"Note: this file was made in version {file_version} (current is "
+                  f"{VERSION}); some differences may be version changes, not tampering.\n\n")
+    body = "\n".join(f"  • {i}" for i in issues)
+    messagebox.showwarning(
+        "⚠ Verification — please review",
+        f"The {kind} '{name}' was loaded, but the following values do not add up "
+        f"and should be looked at / changed:\n\n{header}{body}",
+        parent=parent)
+
+
+# ============================================================================
 # SKILL SELECTION WINDOW
 # ============================================================================
 
@@ -445,7 +515,7 @@ class SkillSelectionWindow:
         self.skill_vars = {}
         self.skill_widgets = {}
         self.confirmed_selection = []
-        self.MAX_SKILLS = 4
+        self.MAX_SKILLS = MAX_SKILLS
         self.preselected = preselected or []
         self._selected_set = set(self.preselected)  # source of truth for selections
         self._after_id = None          # debounce handle for resize
@@ -3693,6 +3763,39 @@ class CustomWeaponCreator:
                         self.update_debuff_cost(stat_cap)
         self.update_total_cost()
 
+        # Full recompute-and-verify on any loaded weapon (pre-load when opening the
+        # creator, or auto-reload while it is already open). Silent when clean.
+        issues = self._verify_imported_weapon(weapon_data)
+        _show_import_verification(self.window, "weapon",
+                                  weapon_data.get("name", ""),
+                                  weapon_data.get("version"), issues,
+                                  show_success=False)
+
+    def _verify_imported_weapon(self, weapon_data):
+        """Compare a freshly loaded weapon file against the tool's recomputed cost.
+
+        The UI has already loaded and recalculated, so self.remaining_weapon_points
+        is the true cost. Returns a list of discrepancy strings (empty = clean)."""
+        issues = list(_verify_weapon_raw(weapon_data))
+        recomputed = WEAPON_TOTAL_POINTS - self.remaining_weapon_points
+        claimed = weapon_data.get("total_cost")
+        if isinstance(claimed, (int, float)) and abs(round(claimed) - round(recomputed)) >= 1:
+            issues.append(
+                f"Claimed cost {round(claimed)} does not match the recomputed cost "
+                f"{round(recomputed)}")
+        if recomputed > WEAPON_TOTAL_POINTS + 0.5:
+            issues.append(
+                f"Recomputed cost {round(recomputed)} is over the {WEAPON_TOTAL_POINTS}-point "
+                f"budget by {round(recomputed - WEAPON_TOTAL_POINTS)}")
+        claimed_ve = weapon_data.get("value_effects_cost")
+        if isinstance(claimed_ve, (int, float)):
+            true_ve = float(self.effect_value_total_cost_var.get())
+            if abs(round(claimed_ve) - round(true_ve)) >= 1:
+                issues.append(
+                    f"Claimed value-effects cost {round(claimed_ve)} does not match the "
+                    f"recomputed {round(true_ve)}")
+        return issues
+
     def import_weapon(self):
         """Import a weapon from a JSON file and load all its data."""
         
@@ -3818,7 +3921,10 @@ class CustomWeaponCreator:
             self.update_value_effect_costs()
             self.update_value_effects_availability()
             
-            messagebox.showinfo("Import Successful", f"Weapon '{weapon_data['name']}' loaded successfully!", parent=self.window)
+            issues = self._verify_imported_weapon(weapon_data)
+            _show_import_verification(self.window, "weapon",
+                                      weapon_data.get("name", ""),
+                                      weapon_data.get("version"), issues)
             
         except Exception as e:
             messagebox.showerror("Import Failed", f"Failed to load weapon:\n{str(e)}", parent=self.window)
@@ -4941,10 +5047,10 @@ class CharacterCreator:
                 errors.append(
                     f"\u2022 Attack Stance '{level}': {checked} bonuses selected, max is {max_sel}."
                 )
-        # Skills: cannot exceed MAX_SKILLS (4)
-        if len(self.selected_skills) > 4:
+        # Skills: cannot exceed MAX_SKILLS
+        if len(self.selected_skills) > MAX_SKILLS:
             errors.append(
-                f"\u2022 Too many skills selected ({len(self.selected_skills)}), maximum is 4."
+                f"\u2022 Too many skills selected ({len(self.selected_skills)}), maximum is {MAX_SKILLS}."
             )
         return len(errors) == 0, errors
 
@@ -5056,6 +5162,83 @@ class CharacterCreator:
         except Exception as e:
             messagebox.showerror("Export Failed", f"Failed to save character:\n{str(e)}")
     
+    def _verify_imported_character(self, char_data):
+        """Compare a freshly loaded character file against the tool's recomputed truth.
+
+        update_total_cost() has already run, so self.remaining_points and
+        calculate_base_stats() reflect the real values. Raw file fields are also
+        inspected directly, so forgeries that loading would clamp are still caught.
+        Returns a list of discrepancy strings (empty = clean)."""
+        issues = []
+
+        # --- Budget: recomputed remaining vs the file's claim ---
+        true_remaining = self.remaining_points
+        ps = char_data.get("points_summary", {})
+        claimed_remaining = ps.get("remaining_points")
+        if isinstance(claimed_remaining, (int, float)) and abs(round(claimed_remaining) - round(true_remaining)) >= 1:
+            issues.append(
+                f"Claimed remaining points {round(claimed_remaining)} does not match the "
+                f"recomputed {round(true_remaining)}")
+        if true_remaining < 0:
+            issues.append(
+                f"Over budget: the build costs {round(initial_points - true_remaining)} points, "
+                f"limit is {initial_points}")
+
+        # --- Forged base stats (base stats are derived from growths) ---
+        growths = char_data.get("growths", {})
+        true_bs = self.calculate_base_stats()
+        claimed_bs = char_data.get("base_stats", {})
+        for attr in self.attributes:
+            cv = claimed_bs.get(attr)
+            tv = true_bs.get(attr)
+            if cv is not None and tv is not None and int(cv) != int(tv):
+                issues.append(
+                    f"Base {attr} = {cv} but growth {growths.get(attr, 0)}% yields {tv}")
+
+        # --- Growth legality (raw, before loading clamps it) ---
+        for attr, g in growths.items():
+            if not isinstance(g, int) or g < 0 or g > 100 or g % 5 != 0:
+                issues.append(f"Growth {attr} = {g} is not a valid 0-100 value in steps of 5")
+
+        # --- Skill count (raw count of skills that exist in this version) ---
+        valid_skills = [s for s in char_data.get("skills", []) if s in skill_data]
+        if len(valid_skills) > MAX_SKILLS:
+            issues.append(f"{len(valid_skills)} skills selected; the limit is {MAX_SKILLS}")
+
+        # --- Pairup limits (raw, before loading reduces over-limit rows) ---
+        pairup_limits = {"No Support": 2, "C Support": 3, "B Support": 2,
+                         "A Support": 3, "S Support": 3}
+        for level, bonuses in char_data.get("pairup_bonuses", {}).items():
+            if level not in pairup_limits or not isinstance(bonuses, dict):
+                continue
+            weighted = 0
+            for stat, v in bonuses.items():
+                try:
+                    v = int(v)
+                except (TypeError, ValueError):
+                    continue
+                weighted += v * 2 if stat == "Move" else v
+            if weighted > pairup_limits[level]:
+                issues.append(
+                    f"Pairup '{level}': weighted total {weighted} exceeds the limit of "
+                    f"{pairup_limits[level]}")
+
+        # --- Attack-stance limits (raw) ---
+        stance_limits = {"C Support": 1, "B Support": 1, "A Support": 1, "S Support": 2}
+        for level, bonuses in char_data.get("stance_bonuses", {}).items():
+            if level in stance_limits and isinstance(bonuses, list) and len(bonuses) > stance_limits[level]:
+                issues.append(
+                    f"Attack Stance '{level}': {len(bonuses)} bonuses selected, max is "
+                    f"{stance_limits[level]}")
+
+        # --- Embedded custom weapon (raw legality only) ---
+        cw = char_data.get("custom_weapon")
+        if isinstance(cw, dict):
+            for wi in _verify_weapon_raw(cw):
+                issues.append("Custom weapon: " + wi)
+
+        return issues
+
     def import_character(self):
         """Import a character from a JSON file and load all data."""
         
@@ -5215,7 +5398,10 @@ class CharacterCreator:
             # Force a full UI update
             self.update_total_cost()
             
-            messagebox.showinfo("Import Successful", f"Character '{char_data['name']}' loaded successfully!")
+            issues = self._verify_imported_character(char_data)
+            _show_import_verification(self.root, "character",
+                                      char_data.get("name", ""),
+                                      char_data.get("version"), issues)
             
         except Exception as e:
             messagebox.showerror("Import Failed", f"Failed to load character:\n{str(e)}")
