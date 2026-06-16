@@ -449,6 +449,31 @@ def _show_import_verification(parent, kind, name, file_version, issues, show_suc
         parent=parent)
 
 
+def _safe_get(var, default=0):
+    """tk var .get() that returns a default instead of raising on empty input."""
+    try:
+        return var.get()
+    except (tk.TclError, ValueError):
+        var.set(default)
+        return default
+
+
+def _make_int_vcmd(widget, allow_negative=True):
+    """Return a (command, '%P') validatecommand pair that restricts typed input
+    to integers. allow_negative=False also blocks the minus sign."""
+    def _validate(new_val):
+        if new_val == "":
+            return True
+        if allow_negative and new_val == "-":
+            return True
+        try:
+            value = int(new_val)
+        except ValueError:
+            return False
+        return allow_negative or value >= 0
+    return (widget.register(_validate), "%P")
+
+
 # ============================================================================
 # SKILL SELECTION WINDOW
 # ============================================================================
@@ -1069,25 +1094,8 @@ class CustomWeaponCreator:
         """Round a cost value to nearest integer for display."""
         return str(round(value))
 
-    def _safe_get(self, var, default=0):
-        """IntVar.get() crashes on empty string — return default instead."""
-        try:
-            return var.get()
-        except (tk.TclError, ValueError):
-            var.set(default)
-            return default
-
     def _int_vcmd(self):
-        """Return a (cmd, pattern) pair that blocks non-integer typed input."""
-        def _validate(new_val):
-            if new_val == "" or new_val == "-":
-                return True
-            try:
-                int(new_val)
-                return True
-            except ValueError:
-                return False
-        return (self.window.register(_validate), "%P")
+        return _make_int_vcmd(self.window)
 
     def setup_stats_frame(self):
         self.stats_frame = ttk.LabelFrame(self.scrollable_frame, text="Weapon Stats", padding=10)
@@ -2158,7 +2166,7 @@ class CustomWeaponCreator:
     # ------------------------------------------------------------------------
     
     def on_effect_value_change(self):
-        value = self._safe_get(self.effect_value_var, 0)
+        value = _safe_get(self.effect_value_var, 0)
         
         # Find min and max allowed based on selected effects
         min_allowed = -100  # Default min
@@ -2480,7 +2488,7 @@ class CustomWeaponCreator:
         var = self.stat_vars[stat]["value"]
         info = self.weapon_stats[stat]
 
-        value = self._safe_get(var, info["base"])
+        value = _safe_get(var, info["base"])
         if value < info["min"]:
             value = info["min"]
             var.set(value)
@@ -2644,7 +2652,7 @@ class CustomWeaponCreator:
         var = self.debuff_vars[stat]["var"]
         info = DEBUFF_COSTS[stat]
 
-        value = self._safe_get(var, 0)
+        value = _safe_get(var, 0)
         if value < 0:
             value = 0
             var.set(value)
@@ -3510,7 +3518,7 @@ class CustomWeaponCreator:
                 f"(limit is {WEAPON_TOTAL_POINTS:.0f})."
             )
         active_value_effects = [e for e, var in self.value_effect_vars.items() if var.get()]
-        if active_value_effects and self._safe_get(self.effect_value_var, 0) == 0:
+        if active_value_effects and _safe_get(self.effect_value_var, 0) == 0:
             errors.append(
                 f"\u2022 Value effect(s) selected ({', '.join(active_value_effects)}) "
                 f"but the shared effect value is 0 - set a non-zero value."
@@ -3702,8 +3710,13 @@ class CustomWeaponCreator:
         except Exception as e:
             messagebox.showerror("Export Failed", f"Failed to save weapon:\n{str(e)}", parent=self.window)
             
-    def _load_weapon_data(self, weapon_data):
-        """Load a weapon data dict into the UI (shared by import and pre-load)."""
+    def _load_weapon_data(self, weapon_data, announce=False):
+        """Load a weapon data dict into the UI. Shared by file import, the
+        open-creator pre-load, and the character-import auto-reload.
+
+        announce=True shows a success popup when the file verifies clean (used by
+        explicit Import); otherwise the post-load verification is silent on success.
+        """
         required = ["name", "type", "might", "hit", "crit"]
         if not all(f in weapon_data for f in required):
             return
@@ -3754,6 +3767,9 @@ class CustomWeaponCreator:
                     if effect in self.staff_effect_vars:
                         self.staff_effect_vars[effect].set(True)
                         self.on_staff_effect_toggle(effect, self.staff_effect_vars[effect])
+            if weapon_data.get("unlimited_uses"):
+                self.staff_effect_vars["Unlimited Uses"].set(True)
+                self.on_staff_effect_toggle("Unlimited Uses", self.staff_effect_vars["Unlimited Uses"])
             # Buff User / Buff Ally
             if weapon_data.get("buff_user"):
                 self.staff_effect_vars["Buff User"].set(True)
@@ -3766,22 +3782,28 @@ class CustomWeaponCreator:
                     if stat in self.buff_checkboxes:
                         self.buff_checkboxes[stat].set(True)
                         self.update_buff_cost(stat)
-            # Debuffs
-            if "debuffs" in weapon_data:
-                for stat, value in weapon_data["debuffs"].items():
-                    stat_cap = stat.capitalize()
-                    if stat_cap in self.debuff_vars:
-                        self.debuff_vars[stat_cap]["var"].set(value)
-                        self.update_debuff_cost(stat_cap)
-        self.update_total_cost()
+        # Debuffs (any weapon type; ensure the debuff frame is visible first)
+        if "debuffs" in weapon_data:
+            if not self.debuff_frame.winfo_viewable() and "Debuff on Hit" in self.fixed_effect_vars:
+                self.fixed_effect_vars["Debuff on Hit"].set(True)
+                self.on_fixed_effect_toggle("Debuff on Hit", self.fixed_effect_vars["Debuff on Hit"])
+            for stat, value in weapon_data["debuffs"].items():
+                stat_cap = stat.capitalize()
+                if stat_cap in self.debuff_vars:
+                    self.debuff_vars[stat_cap]["var"].set(value)
+                    self.update_debuff_cost(stat_cap)
 
-        # Full recompute-and-verify on any loaded weapon (pre-load when opening the
-        # creator, or auto-reload while it is already open). Silent when clean.
+        # Force a full UI refresh
+        self.update_total_cost()
+        self.update_value_effect_costs()
+        self.update_value_effects_availability()
+
+        # Recompute-and-verify the loaded weapon. Silent on clean unless announce.
         issues = self._verify_imported_weapon(weapon_data)
         _show_import_verification(self.window, "weapon",
                                   weapon_data.get("name", ""),
                                   weapon_data.get("version"), issues,
-                                  show_success=False)
+                                  show_success=announce)
 
     def _verify_imported_weapon(self, weapon_data):
         """Compare a freshly loaded weapon file against the tool's recomputed cost.
@@ -3810,134 +3832,24 @@ class CustomWeaponCreator:
 
     def import_weapon(self):
         """Import a weapon from a JSON file and load all its data."""
-        
         filename = filedialog.askopenfilename(
             title="Select Weapon File",
             filetypes=[("JSON files", "*.json"), ("All files", "*.*")]
         )
-        
         if not filename:
             return
-        
         try:
             with open(filename, "r", encoding="utf-8") as f:
                 weapon_data = json.load(f)
-            
-            # Validate required fields
+
             required_fields = ["name", "type", "might", "hit", "crit", "avoid", "dodge", "mov", "range"]
             for field in required_fields:
                 if field not in weapon_data:
                     raise ValueError(f"Missing required field: {field}")
-            
-            # Load basic info
-            self.name_entry.delete(0, tk.END)
-            self.name_entry.insert(0, weapon_data["name"])
-            self.weapon_data["name"] = weapon_data["name"]
-            
-            # Set weapon type
-            if weapon_data["type"] in self.type_combobox['values']:
-                self.type_combobox.set(weapon_data["type"])
-            else:
-                # Handle custom type
-                self.type_combobox.set("Other")
-                self.custom_type_entry.delete(0, tk.END)
-                self.custom_type_entry.insert(0, weapon_data["type"])
-                self.custom_type_frame.grid()
-            
-            # Load stats
-            stat_mapping = {
-                "Might": "might", "Hit": "hit", "Crit": "crit", "Avoid": "avoid",
-                "Dodge": "dodge", "Mov": "mov",
-                "Effective Speed Offensive": "effective_speed_offensive",
-                "Effective Speed Defensive": "effective_speed_defensive",
-                "Base Staff Exp": "base_staff_exp", "Uses": "uses"
-            }
-            
-            for stat_name, key in stat_mapping.items():
-                if key in weapon_data:
-                    self.stat_vars[stat_name]["value"].set(weapon_data[key])
-                    self.validate_stat(stat_name)
-            
-            # Load range
-            if "range" in weapon_data:
-                self.range_var.set(weapon_data["range"])
-                self.on_range_change()
-            
-            # Load fixed effects
-            if "fixed_effects" in weapon_data:
-                for effect, var in self.fixed_effect_vars.items():
-                    if effect in weapon_data["fixed_effects"]:
-                        var.set(True)
-                        self.on_fixed_effect_toggle(effect, var)
-            
-            # Load value effects
-            if "value_effects" in weapon_data:
-                for effect in weapon_data["value_effects"]:
-                    if effect in self.value_effect_vars:
-                        self.value_effect_vars[effect].set(True)
-                        self.on_value_effect_toggle(effect, self.value_effect_vars[effect])
-            
-            # Load effect value
-            if "effect_value" in weapon_data:
-                self.effect_value_var.set(weapon_data["effect_value"])
-                self.on_effect_value_change()
-            
-            # Load description
-            if "description" in weapon_data:
-                self.desc_text.delete("1.0", tk.END)
-                self.desc_text.insert("1.0", weapon_data["description"])
-            
-            # Load staff-specific data
-            if self.type_combobox.get() in ["Staff", "Rod"]:
-                if "staff_effects" in weapon_data:
-                    for effect in weapon_data["staff_effects"]:
-                        if effect in self.staff_effect_vars:
-                            self.staff_effect_vars[effect].set(True)
-                            self.on_staff_effect_toggle(effect, self.staff_effect_vars[effect])
-                
-                if "unlimited_uses" in weapon_data and weapon_data["unlimited_uses"]:
-                    self.staff_effect_vars["Unlimited Uses"].set(True)
-                    self.on_staff_effect_toggle("Unlimited Uses", self.staff_effect_vars["Unlimited Uses"])
-                
-                if "buff_user" in weapon_data and weapon_data["buff_user"]:
-                    self.staff_effect_vars["Buff User"].set(True)
-                    self.on_staff_effect_toggle("Buff User", self.staff_effect_vars["Buff User"])
-                
-                if "buff_ally" in weapon_data and weapon_data["buff_ally"]:
-                    self.staff_effect_vars["Buff Ally"].set(True)
-                    self.on_staff_effect_toggle("Buff Ally", self.staff_effect_vars["Buff Ally"])
-                
-                if "buffs" in weapon_data and (weapon_data.get("buff_user") or weapon_data.get("buff_ally")):
-                    for stat in weapon_data["buffs"]:
-                        if stat in self.buff_checkboxes:
-                            self.buff_checkboxes[stat].set(True)
-                            self.update_buff_cost(stat)
-            
-            # Load debuffs
-            if "debuffs" in weapon_data:
-                # First ensure debuff frame is visible
-                if not self.debuff_frame.winfo_viewable():
-                    # Need to enable debuff on hit or something to show frame
-                    if "Debuff on Hit" in self.fixed_effect_vars:
-                        self.fixed_effect_vars["Debuff on Hit"].set(True)
-                        self.on_fixed_effect_toggle("Debuff on Hit", self.fixed_effect_vars["Debuff on Hit"])
-                
-                for stat, value in weapon_data["debuffs"].items():
-                    stat_cap = stat.capitalize()
-                    if stat_cap in self.debuff_vars:
-                        self.debuff_vars[stat_cap]["var"].set(value)
-                        self.update_debuff_cost(stat_cap)
-            
-            # Force a full UI update
-            self.update_total_cost()
-            self.update_value_effect_costs()
-            self.update_value_effects_availability()
-            
-            issues = self._verify_imported_weapon(weapon_data)
-            _show_import_verification(self.window, "weapon",
-                                      weapon_data.get("name", ""),
-                                      weapon_data.get("version"), issues)
-            
+
+            # Shared loader handles all field loading + recompute-and-verify.
+            self._load_weapon_data(weapon_data, announce=True)
+
         except Exception as e:
             messagebox.showerror("Import Failed", f"Failed to load weapon:\n{str(e)}", parent=self.window)
             import traceback
@@ -4041,36 +3953,11 @@ class CharacterCreator:
         self.setup_pairup_frame(scrollable_frame)
         self.setup_secondary_frame(scrollable_frame)
 
-    def _safe_get(self, var, default=0):
-        """IntVar.get() crashes on empty string — return default instead."""
-        try:
-            return var.get()
-        except (tk.TclError, ValueError):
-            var.set(default)
-            return default
-
     def _int_vcmd(self):
-        """Return a (cmd, pattern) pair that blocks non-integer typed input."""
-        def _validate(new_val):
-            if new_val == "" or new_val == "-":
-                return True
-            try:
-                int(new_val)
-                return True
-            except ValueError:
-                return False
-        return (self.root.register(_validate), "%P")
+        return _make_int_vcmd(self.root)
 
     def _uint_vcmd(self):
-        """Like _int_vcmd but also blocks the minus sign (non-negative only)."""
-        def _validate(new_val):
-            if new_val == "":
-                return True
-            try:
-                return int(new_val) >= 0
-            except ValueError:
-                return False
-        return (self.root.register(_validate), "%P")
+        return _make_int_vcmd(self.root, allow_negative=False)
 
     def setup_info_frame(self, parent):
         frame = ttk.LabelFrame(parent, text="Character Info", padding=10)
@@ -4664,7 +4551,7 @@ class CharacterCreator:
         self._render_skills_list()
 
     def validate_growth(self, attribute):
-        value = self._safe_get(self.growth_vars[attribute], 0)
+        value = _safe_get(self.growth_vars[attribute], 0)
         rounded_value = max(0, min(100, (round(value / 5) * 5)))
         if value != rounded_value:
             self.growth_vars[attribute].set(rounded_value)
@@ -4677,7 +4564,7 @@ class CharacterCreator:
         support_levels = ["No Support", "C Support", "B Support", "A Support", "S Support"]
         current_level = support_levels[row - 1]
 
-        current_values = [self._safe_get(var, 0) for var in self.pairup_vars[current_level]]
+        current_values = [_safe_get(var, 0) for var in self.pairup_vars[current_level]]
         weighted_values = [val * 2 if i == 0 else val for i, val in enumerate(current_values)]
         total = sum(weighted_values)
 
@@ -4689,7 +4576,7 @@ class CharacterCreator:
                     self.pairup_vars[current_level][i].set(new_value)
                     break
 
-        current_values = [self._safe_get(var, 0) for var in self.pairup_vars[current_level]]
+        current_values = [_safe_get(var, 0) for var in self.pairup_vars[current_level]]
         weighted_total = sum(val * 2 if i == 0 else val for i, val in enumerate(current_values))
 
         if weighted_total > limit:
@@ -4720,7 +4607,7 @@ class CharacterCreator:
         """Update the total growth% checksum label."""
         if not hasattr(self, "total_growth_var"):
             return
-        total = sum(self._safe_get(v, 0) for v in self.growth_vars.values())
+        total = sum(_safe_get(v, 0) for v in self.growth_vars.values())
         self.total_growth_var.set(f"{total}%")
 
     def reset_attributes(self):
@@ -4939,12 +4826,12 @@ class CharacterCreator:
         return math.ceil(base * (100 + steps) / 100 * steps * 5)
 
     def validate_secondary_stat(self, stat):
-        value = self._safe_get(self.secondary_stats_vars[stat], 0)
+        value = _safe_get(self.secondary_stats_vars[stat], 0)
         rounded_value = max(0, min(100, (round(value / 5) * 5)))
         if value != rounded_value:
             self.secondary_stats_vars[stat].set(rounded_value)
 
-        value = self._safe_get(self.secondary_stats_vars[stat], 0)
+        value = _safe_get(self.secondary_stats_vars[stat], 0)
         self.secondary_cost_vars[stat].set(str(self._secondary_stat_cost(stat, value)))
         self.update_total_cost()
 
@@ -5045,14 +4932,14 @@ class CharacterCreator:
             errors.append(
                 f"\u2022 Over budget by {abs(round(self.remaining_points))} points (limit is {initial_points})."
             )
-        if all(self._safe_get(v, 0) == 0 for v in self.growth_vars.values()):
+        if all(_safe_get(v, 0) == 0 for v in self.growth_vars.values()):
             errors.append("\u2022 All growth rates are 0 - please set at least one.")
         support_levels = ["No Support", "C Support", "B Support", "A Support", "S Support"]
         limits = [2, 3, 2, 3, 3]
         for level, limit in zip(support_levels, limits):
             if level not in self.pairup_vars:
                 continue
-            values = [self._safe_get(v, 0) for v in self.pairup_vars[level]]
+            values = [_safe_get(v, 0) for v in self.pairup_vars[level]]
             weighted = sum(val * 2 if i == 0 else val for i, val in enumerate(values))
             if weighted > limit:
                 errors.append(
