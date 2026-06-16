@@ -192,13 +192,15 @@ DEBUFF_MAX = {
 TEN_HEALTH_PERCENT_MOD = 12.53
 TEN_DAMAGE_PERCENT_MOD = TEN_HEALTH_PERCENT_MOD / 2
 
-STAFF_MIGHT_COST_FORMULA = "cost * (1/3)"
+def _staff_might_cost_per_point(cost):
+    """Staff/Rod Might cost per point, before the strictly-increasing table."""
+    return cost * (1 / 3)
 
 # Precomputed Staff Might cumulative cost table.
 # Built at startup — each step costs at least 1 more than the previous.
 def _build_staff_might_table():
     import math as _math
-    cpp = eval(STAFF_MIGHT_COST_FORMULA, {"__builtins__": {}}, {"cost": WEAPON_STAT_COSTS["Might"]})
+    cpp = _staff_might_cost_per_point(WEAPON_STAT_COSTS["Might"])
     table = [0]  # index 0 = 0 points above base costs nothing
     for i in range(1, WEAPON_STAT_MAX["Might"] + 1):
         step_cost = max(1, _math.ceil(i * cpp) - _math.ceil((i - 1) * cpp))
@@ -901,6 +903,8 @@ class CustomWeaponCreator:
         }
 
         # State tracking
+        # TODO(remove pending feedback): magic_weapon_active is currently write-only
+        # since Magic Weapon was decoupled from costs. Kept until the design is confirmed.
         self.magic_weapon_active = False
         self.silver_weapon_active = False
         self.silver_weapon_adjusted_cost = SILVER_WEAPON_COST_PHYSICAL
@@ -2534,7 +2538,7 @@ class CustomWeaponCreator:
                             range_num = int(range_value.split("-")[1])
                         else:
                             range_num = int(range_value)
-                except:
+                except (ValueError, TypeError):
                     range_num = 1
 
                 base_cost = cost
@@ -2748,15 +2752,13 @@ class CustomWeaponCreator:
             original_cost = WEAPON_STAT_COSTS["Might"]
 
             if use_staff_might:
-                try:
-                    namespace = {"cost": original_cost}
-                    new_cost = eval(STAFF_MIGHT_COST_FORMULA, {"__builtins__": {}}, namespace)
-                    self.weapon_stats["Might"]["cost_per_point"] = new_cost
-                    self.stat_vars["Might"]["note"].set(f"Staff Might: {round(new_cost, 2)} per point")
-                    self.validate_stat("Might")
-                except Exception as e:
-                    self.weapon_stats["Might"]["cost_per_point"] = original_cost
-                    self.stat_vars["Might"]["note"].set(f"Staff Might formula error: {e}")
+                # Keep the fractional per-point for the Uses-cost scaling, but the
+                # actual Might charge comes from STAFF_MIGHT_COST_TABLE, so show its
+                # real per-point cost (the table's first step) in the note.
+                self.weapon_stats["Might"]["cost_per_point"] = _staff_might_cost_per_point(original_cost)
+                per_point = STAFF_MIGHT_COST_TABLE[1] - STAFF_MIGHT_COST_TABLE[0]
+                self.stat_vars["Might"]["note"].set(f"Staff Might: {per_point} per point")
+                self.validate_stat("Might")
             else:
                 self.weapon_stats["Might"]["cost_per_point"] = original_cost
                 current_note = self.stat_vars["Might"]["note"].get()
@@ -3286,7 +3288,7 @@ class CustomWeaponCreator:
                     try:
                         self.fixed_effect_vars["Bronze Weapon"].trace_remove('write', self._bronze_trace_id)
                         delattr(self, '_bronze_trace_id')
-                    except:
+                    except (tk.TclError, ValueError, AttributeError):
                         pass
                 self.fixed_effect_vars["Bronze Weapon"].set(False)
                 self.on_fixed_effect_toggle("Bronze Weapon", self.fixed_effect_vars["Bronze Weapon"])
@@ -3297,7 +3299,7 @@ class CustomWeaponCreator:
                     try:
                         self.fixed_effect_vars["Bold Weapon"].trace_remove('write', self._bold_trace_id)
                         delattr(self, '_bold_trace_id')
-                    except:
+                    except (tk.TclError, ValueError, AttributeError):
                         pass
                 self.fixed_effect_vars["Bold Weapon"].set(False)
                 self.on_fixed_effect_toggle("Bold Weapon", self.fixed_effect_vars["Bold Weapon"])
@@ -3380,14 +3382,14 @@ class CustomWeaponCreator:
                 try:
                     self.fixed_effect_vars["Bronze Weapon"].trace_remove('write', self._bronze_trace_id)
                     delattr(self, '_bronze_trace_id')
-                except:
+                except (tk.TclError, ValueError, AttributeError):
                     pass
         if "Bold Weapon" in self.fixed_effect_vars:
             if hasattr(self, '_bold_trace_id'):
                 try:
                     self.fixed_effect_vars["Bold Weapon"].trace_remove('write', self._bold_trace_id)
                     delattr(self, '_bold_trace_id')
-                except:
+                except (tk.TclError, ValueError, AttributeError):
                     pass
 
         # Reset fixed effects checkboxes
@@ -3488,8 +3490,8 @@ class CustomWeaponCreator:
         self.weapon_data["name"] = ""
 
         self.remaining_weapon_points = WEAPON_TOTAL_POINTS
-        self.points_var.set("100.00")
-        
+        self.points_var.set(str(WEAPON_TOTAL_POINTS))
+
         # Force a full UI update
         self.update_total_cost()
         self.update_value_effect_costs()
@@ -4758,33 +4760,6 @@ class CharacterCreator:
 
         self.update_total_cost()
 
-    def on_secondary_spinbox_change(self, stat):
-        try:
-            new_value = int(self.secondary_stats_vars[stat].get())
-        except ValueError:
-            new_value = self.secondary_stats_vars[stat].get()
-            return
-
-        current_value = self.secondary_stats_vars[stat].get()
-
-        if new_value > current_value:
-            step_count = new_value // 5
-            current_step_count = current_value // 5
-
-            base_cost = SECONDARY_STAT_BASE_COSTS[stat]
-            current_cost = base_cost * (100 + current_step_count) / 100 * current_step_count * 5
-            new_cost = base_cost * (100 + step_count) / 100 * step_count * 5
-            cost_diff = new_cost - current_cost
-
-            if cost_diff > self.remaining_points:
-                messagebox.showwarning("Not Enough Points",
-                                       f"Need {round(cost_diff)} points for {stat}, but only have {round(self.remaining_points)}")
-                self.secondary_stats_vars[stat].set(current_value)
-                return
-
-        self.validate_secondary_stat(stat)
-        self.update_secondary_spinbox_limits()
-
     def update_total_cost(self):
         raw_attr_cost_dict = {
             attr: math.ceil(self.attribute_costs[attr][self.growth_vars[attr].get() // 5])
@@ -4873,9 +4848,7 @@ class CharacterCreator:
         for stat in SECONDARY_STAT_BASE_COSTS.keys():
             current_value = self.secondary_stats_vars[stat].get()
 
-            current_step_count = current_value // 5
-            base_cost = SECONDARY_STAT_BASE_COSTS[stat]
-            current_cost = math.ceil(base_cost * (100 + current_step_count) / 100 * current_step_count * 5)
+            current_cost = self._secondary_stat_cost(stat, current_value)
 
             max_allowed = 100
             is_at_limit = False
@@ -4885,8 +4858,7 @@ class CharacterCreator:
                 is_at_limit = True
                 next_step_cost = 0
             elif current_value < 100:
-                next_step_count = current_step_count + 1
-                next_cost = math.ceil(base_cost * (100 + next_step_count) / 100 * next_step_count * 5)
+                next_cost = self._secondary_stat_cost(stat, current_value + 5)
                 next_step_cost = next_cost - current_cost
 
                 can_afford_next_increase = next_step_cost <= self.remaining_points
@@ -4960,13 +4932,11 @@ class CharacterCreator:
 
             self.limit_labels[level].config(text=f"Selected: {checked_count}/{max_allowed}", foreground=color)
 
-    def update_secondary_cost(self, stat):
-        value = self._safe_get(self.secondary_stats_vars[stat], 0)
-        step_count = value // 5
-        base_cost = SECONDARY_STAT_BASE_COSTS[stat]
-        cost = math.ceil(base_cost * (100 + step_count) / 100 * step_count * 5)
-        self.secondary_cost_vars[stat].set(str(cost))
-        self.update_total_cost()
+    def _secondary_stat_cost(self, stat, value):
+        """Cumulative point cost for a secondary stat at the given value."""
+        steps = value // 5
+        base = SECONDARY_STAT_BASE_COSTS[stat]
+        return math.ceil(base * (100 + steps) / 100 * steps * 5)
 
     def validate_secondary_stat(self, stat):
         value = self._safe_get(self.secondary_stats_vars[stat], 0)
@@ -4975,10 +4945,7 @@ class CharacterCreator:
             self.secondary_stats_vars[stat].set(rounded_value)
 
         value = self._safe_get(self.secondary_stats_vars[stat], 0)
-        step_count = value // 5
-        base_cost = SECONDARY_STAT_BASE_COSTS[stat]
-        cost = math.ceil(base_cost * (100 + step_count) / 100 * step_count * 5)
-        self.secondary_cost_vars[stat].set(str(cost))
+        self.secondary_cost_vars[stat].set(str(self._secondary_stat_cost(stat, value)))
         self.update_total_cost()
 
     def reset_custom_weapon(self):
@@ -5265,6 +5232,20 @@ class CharacterCreator:
         for attr, g in growths.items():
             if not isinstance(g, int) or g < 0 or g > 100 or g % 5 != 0:
                 issues.append(f"Growth {attr} = {g} is not a valid 0-100 value in steps of 5")
+
+        # --- Secondary stats: raw value legality + stored-cost consistency ---
+        for stat, data in (char_data.get("secondary_stats") or {}).items():
+            if stat not in SECONDARY_STAT_BASE_COSTS or not isinstance(data, dict):
+                continue
+            val = data.get("value")
+            if not isinstance(val, int) or val < 0 or val > 100 or val % 5 != 0:
+                issues.append(f"Secondary {stat} = {val} is not a valid 0-100 value in steps of 5")
+                continue
+            claimed_c = data.get("cost")
+            true_c = self._secondary_stat_cost(stat, val)
+            if isinstance(claimed_c, (int, float)) and abs(round(claimed_c) - true_c) >= 1:
+                issues.append(
+                    f"Secondary {stat} cost {round(claimed_c)} does not match the recomputed {true_c}")
 
         # --- Skill count (raw count of skills that exist in this version) ---
         valid_skills = [s for s in char_data.get("skills", []) if s in skill_data]
