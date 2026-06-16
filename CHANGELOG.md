@@ -2,6 +2,20 @@
 
 All notable changes to the Chatquest 2 Character Creator are documented here.
 
+## 0.59.b
+
+### Fixed
+- Weapon Creator: the "Staff Might" note now shows the real per-point cost (1)
+  instead of the underlying 0.73 fraction.
+- Loading or opening a non-staff weapon that has on-hit debuffs now restores
+  those debuffs correctly (they were skipped on open/auto-reload before).
+
+### Internal
+- Import verification now also checks secondary stats (value legality and
+  stored-cost consistency).
+- Assorted code-review cleanups and refactors (consolidated weapon loading,
+  deduplicated helpers, specific exception handling) — no behavior change.
+
 ## 0.59.a
 
 ### Weapon cost rebalance
