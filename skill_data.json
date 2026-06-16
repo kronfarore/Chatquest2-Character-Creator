@@ -763,7 +763,7 @@
         "desc": "When user is a Ballistician, Movement +1 and all traversable terrain costs 1 movement point to cross"
     },
     "Healing Descant": {
-        "cost": 8.36,
+        "cost": 16.37,
         "groups": [
             "Player Phase",
             "Heal%",
@@ -813,7 +813,7 @@
         "desc": "Recover 10% HP at the start of the user’s Turn if there are allies within a 2 tile radius"
     },
     "Amaterasu": {
-        "cost": 16.71,
+        "cost": 32.72,
         "groups": [
             "Player Phase",
             "Heal%",
@@ -1706,7 +1706,7 @@
         "groups": [
             "Dance"
         ],
-        "desc": "Skill, Speed and Luck +3 for one Turn for the unit who receives the user’s song. Note: Gives your character the sing command from the very start"
+        "desc": "Skill, Speed and Luck +3 for one Turn for the unit who receives the user’s song. Note: Gives your character the sing command from the very start. You cannot sing for other characters with the Sing action"
     },
     "Pass": {
         "cost": 0,
