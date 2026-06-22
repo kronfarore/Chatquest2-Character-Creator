@@ -2,6 +2,20 @@
 
 All notable changes to the Chatquest 2 Character Creator are documented here.
 
+## 0.60.c
+
+### Changed
+- The point budget is no longer enforced while editing — growth rates, secondary
+  stats, weapon slots, and skills can all go over budget (remaining shows
+  negative in red). The budget is verified on export and on import instead, so
+  it's easier to make changes mid-build.
+
+### Fixed
+- Picking/removing skills in the Skill Selection window now updates the main
+  window's points live (mirror of the earlier main → window fix). Cancel reverts.
+- Character export now replaces spaces and slashes in the saved filename, matching
+  the weapon export.
+
 ## 0.60.b
 
 ### Added

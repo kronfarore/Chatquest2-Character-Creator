@@ -512,7 +512,8 @@
         "cost": 14.45,
         "groups": [
             "Adjacent",
-            "Avoid"
+            "Avoid",
+			"Aura"
         ],
         "desc": "When fighting adjacent to an enemy, enemy’s Avoid -20",
         "gate": 1
@@ -549,7 +550,8 @@
         "groups": [
             "Adjacent",
             "Avoid",
-            "Dodge"
+            "Dodge",
+			"Aura"
         ],
         "desc": "Adjacent allies receive Avoid +10 and Critical Evade +10",
         "gate": 1
@@ -559,7 +561,8 @@
         "groups": [
             "Adjacent",
             "Damage",
-            "Damage Reduction"
+            "Damage Reduction",
+			"Aura"
         ],
         "desc": "Adjacent allies deal 1 extra damage and received 3 less damage",
         "gate": 1
@@ -569,7 +572,8 @@
         "groups": [
             "Adjacent",
             "Damage",
-            "Damage Reduction"
+            "Damage Reduction",
+			"Aura"
         ],
         "desc": "Adjacent allies deal 3 extra damage and receive 1 less damage",
         "gate": 1
@@ -579,7 +583,8 @@
         "groups": [
             "Adjacent",
             "Luck%",
-            "Reduction%"
+            "Reduction%",
+			"Aura"
         ],
         "desc": "Allies adjacent to the user have a Luck x 0.5% chance of receiving half damage from enemy attacks",
         "gate": 1

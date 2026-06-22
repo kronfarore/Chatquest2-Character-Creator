@@ -9,7 +9,7 @@ import os
 # VERSION
 # ============================================================================
 
-VERSION = "0.60.b"
+VERSION = "0.60.c"
 
 print("Program starting...")
 # ============================================================================
@@ -569,6 +569,7 @@ class SkillSelectionWindow:
         # name or None. `preselected` is the incoming slot list from the caller.
         slots = list(preselected) if preselected else []
         self.slots = (slots + [None] * MAX_SKILLS)[:MAX_SKILLS]
+        self._original_slots = list(self.slots)   # for Cancel-revert
         self._after_id = None          # debounce handle for resize
         self._last_canvas_width = 0
 
@@ -605,7 +606,7 @@ class SkillSelectionWindow:
                   font=("TkDefaultFont", 10)).pack(side="left")
         # System buttons on the right of the info row
         ttk.Button(info_row, text="Cancel",
-                   command=self.window.destroy).pack(side="right", padx=5)
+                   command=self._cancel).pack(side="right", padx=5)
         ttk.Button(info_row, text="Reset",
                    command=self.reset_selection).pack(side="right", padx=5)
         ttk.Button(info_row, text="Confirm",
@@ -906,20 +907,21 @@ class SkillSelectionWindow:
         menu.tk_popup(self.window.winfo_pointerx(), self.window.winfo_pointery())
 
     def _assign(self, skill, slot):
-        if self.initial_points - self._projected_cost(skill, slot) < 0:
-            messagebox.showwarning("Not enough points",
-                f"Cannot afford '{skill}' ({scaled_skill_cost(skill_data[skill]['cost'])} pts).",
-                parent=self.window)
-            return
+        # No affordability block — over-budget is allowed (verified on export).
         cur = self._slot_of(skill)
         if cur is not None:
             self.slots[cur] = None
         self.slots[slot] = skill        # replaces any current occupant
-        self._refresh_all()
+        self._sync()
 
     def _clear_slot(self, idx):
         self.slots[idx] = None
+        self._sync()
+
+    def _sync(self):
+        """Refresh this window and live-apply the slots to the main window."""
         self._refresh_all()
+        self.callback(list(self.slots))
 
     def _refresh_all(self):
         self._render_slot_header()
@@ -965,16 +967,22 @@ class SkillSelectionWindow:
         self.skill_counter_var.set(f"Skills: {len(self._assigned_skills())}/{self.MAX_SKILLS}")
 
     def reset_selection(self):
-        """Clear all slots, reset filters, and refresh."""
+        """Clear all slots, reset filters, and live-apply to the main window."""
         self.slots = [None] * self.MAX_SKILLS
         self.search_var.set("")
         self.group_var.set("All")
         if hasattr(self, "gate_var"):
             self.gate_var.set("All")
-        self._refresh_all()
+        self._sync()
 
     def confirm_selection(self):
+        # Slots are already live-applied; just close.
         self.callback(list(self.slots))
+        self.window.destroy()
+
+    def _cancel(self):
+        """Revert the main window to the slots from when this window opened."""
+        self.callback(list(self._original_slots))
         self.window.destroy()
 
 
@@ -4531,6 +4539,8 @@ class CharacterCreator:
     # ------------------------------------------------------------------------
 
     def on_spinbox_change(self, attribute):
+        # Free editing: no over-budget block here (the budget is verified on
+        # export / import instead). Going negative is allowed.
         try:
             new_value = int(self.spinboxes[attribute].get())
         except ValueError:
@@ -4538,40 +4548,6 @@ class CharacterCreator:
             self.spinboxes[attribute].delete(0, tk.END)
             self.spinboxes[attribute].insert(0, str(new_value))
             return
-
-        current_value = self.growth_vars[attribute].get()
-
-        if new_value > current_value:
-            current_raw_costs = {}
-            for attr in self.attributes:
-                idx = self.growth_vars[attr].get() // 5
-                current_raw_costs[attr] = self.attribute_costs[attr][idx]
-
-            new_idx = new_value // 5
-            current_raw_costs[attribute] = self.attribute_costs[attribute][new_idx]
-
-            str_cost = current_raw_costs.get("Strength", 0)
-            mag_cost = current_raw_costs.get("Magic", 0)
-
-            if str_cost <= mag_cost:
-                discounted_total = math.floor(str_cost * 0.5) + mag_cost
-            else:
-                discounted_total = str_cost + math.floor(mag_cost * 0.5)
-
-            for attr in self.attributes:
-                if attr not in ["Strength", "Magic"]:
-                    discounted_total += current_raw_costs[attr]
-
-            current_discounted_total = initial_points - self.remaining_points
-            cost_increase = discounted_total - current_discounted_total
-
-            if cost_increase > self.remaining_points:
-                messagebox.showwarning("Not Enough Points",
-                                       f"Need {round(cost_increase)} points, but only have {round(self.remaining_points)}")
-                self.spinboxes[attribute].delete(0, tk.END)
-                self.spinboxes[attribute].insert(0, str(current_value))
-                return
-
         self.growth_vars[attribute].set(new_value)
         self.validate_growth(attribute)
 
@@ -4755,13 +4731,7 @@ class CharacterCreator:
         self.update_total_cost()
 
     def toggle_weapon(self, index):
-        if self.extra_weapon_vars[index].get():
-            weapon_cost = EXTRA_WEAPON_COST
-            if self.remaining_points - weapon_cost < 0:
-                messagebox.showwarning("Not Enough Points", f"You need {EXTRA_WEAPON_COST} points to unlock this weapon slot")
-                self.extra_weapon_vars[index].set(False)
-                return
-
+        # No over-budget block — the extra slot can be taken freely (verified on export).
         if self.extra_weapon_vars[index].get():
             self.weapon_entries[index + 1].config(state="normal")
         else:
@@ -4817,83 +4787,25 @@ class CharacterCreator:
             self.skill_window.set_budget(self.remaining_points + skill_cost)
 
     def update_spinbox_limits(self, raw_attr_cost_dict):
-        str_cost = raw_attr_cost_dict.get("Strength", 0)
-        mag_cost = raw_attr_cost_dict.get("Magic", 0)
-
-        if str_cost <= mag_cost:
-            current_discounted_total = math.floor(str_cost * 0.5) + mag_cost
-        else:
-            current_discounted_total = str_cost + math.floor(mag_cost * 0.5)
-
-        for attr, cost in raw_attr_cost_dict.items():
-            if attr not in ["Strength", "Magic"]:
-                current_discounted_total += cost
-
+        # No affordability cap — growth may exceed the budget (verified on export).
         for attr in self.attributes:
-            current_growth = self.growth_vars[attr].get()
-
-            if current_growth < 100:
-                current_idx = current_growth // 5
-                next_idx = current_idx + 1
-
-                test_costs = raw_attr_cost_dict.copy()
-                test_costs[attr] = math.ceil(self.attribute_costs[attr][next_idx])
-
-                str_test = test_costs.get("Strength", 0)
-                mag_test = test_costs.get("Magic", 0)
-
-                if str_test <= mag_test:
-                    new_discounted_total = math.floor(str_test * 0.5) + mag_test
-                else:
-                    new_discounted_total = str_test + math.floor(mag_test * 0.5)
-
-                for a, cost in test_costs.items():
-                    if a not in ["Strength", "Magic"]:
-                        new_discounted_total += cost
-
-                cost_increase = new_discounted_total - current_discounted_total
-
-                if cost_increase > self.remaining_points:
-                    self.spinboxes[attr].configure(to=current_growth)
-                else:
-                    self.spinboxes[attr].configure(to=100)
+            self.spinboxes[attr].configure(to=100)
 
     def update_secondary_spinbox_limits(self):
+        # No affordability cap — only the hard 0-100 range applies (verified on export).
         for stat in SECONDARY_STAT_BASE_COSTS.keys():
             current_value = self.secondary_stats_vars[stat].get()
-
-            current_cost = self._secondary_stat_cost(stat, current_value)
-
-            max_allowed = 100
-            is_at_limit = False
-            next_step_cost = 0
-
-            if current_value == 100:
-                is_at_limit = True
-                next_step_cost = 0
-            elif current_value < 100:
-                next_cost = self._secondary_stat_cost(stat, current_value + 5)
-                next_step_cost = next_cost - current_cost
-
-                can_afford_next_increase = next_step_cost <= self.remaining_points
-
-                if not can_afford_next_increase:
-                    is_at_limit = True
-                    max_allowed = current_value
-
-            self.secondary_spinboxes[stat].configure(to=max_allowed)
-
+            self.secondary_spinboxes[stat].configure(to=100)
             if current_value < 100:
+                next_step_cost = (self._secondary_stat_cost(stat, current_value + 5)
+                                  - self._secondary_stat_cost(stat, current_value))
                 self.secondary_next_cost_vars[stat].set(str(math.ceil(next_step_cost)))
-            else:
-                self.secondary_next_cost_vars[stat].set("MAX")
-
-            if is_at_limit:
-                self.secondary_spinboxes[stat].configure(foreground='red')
-                self.secondary_next_labels[stat].configure(foreground='red')
-            else:
                 self.secondary_spinboxes[stat].configure(foreground='black')
                 self.secondary_next_labels[stat].configure(foreground='black')
+            else:
+                self.secondary_next_cost_vars[stat].set("MAX")
+                self.secondary_spinboxes[stat].configure(foreground='red')
+                self.secondary_next_labels[stat].configure(foreground='red')
 
     def update_discount_display(self, raw_attr_cost_dict):
         if "Strength" in self.attributes and "Magic" in self.attributes:
@@ -5186,7 +5098,8 @@ class CharacterCreator:
             "personal_skill_cost": PERSONAL_SKILLS.get(character_data["personal_skill"], 0)
         }
 
-        filename = f"character_{self.name_entry.get() or 'unnamed'}.json"
+        safe_name = (self.name_entry.get() or "unnamed").replace(" ", "_").replace("/", "_").replace("\\", "_")
+        filename = f"character_{safe_name}.json"
 
         if os.path.exists(filename):
             if not messagebox.askyesno(
