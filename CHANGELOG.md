@@ -2,6 +2,18 @@
 
 All notable changes to the Chatquest 2 Character Creator are documented here.
 
+## 0.60.b
+
+### Added
+- Gate filter in the Skill Selection window.
+
+### Changed
+- Skill slots are now labelled by chapter (6, 9/10, 14, 18, 23) instead of level.
+
+### Fixed
+- The Skill Selection window's remaining-points display now updates live when a
+  main-window change alters the budget while the window is open.
+
 ## 0.60.a
 
 ### Added — skill gate / slot system

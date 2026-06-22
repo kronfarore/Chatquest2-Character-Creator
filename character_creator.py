@@ -9,7 +9,7 @@ import os
 # VERSION
 # ============================================================================
 
-VERSION = "0.60.a"
+VERSION = "0.60.b"
 
 print("Program starting...")
 # ============================================================================
@@ -19,11 +19,11 @@ print("Program starting...")
 initial_points = 200
 MAX_SKILLS = 5  # Maximum number of skills a character may select (Skills section)
 
-# Skill slots: each of the MAX_SKILLS slots has a level (when it unlocks) and a
-# gate tier it grants (tied to chapter progress). A skill with gate G may only
-# be slotted where the slot's gate >= G. SKILL_SLOT_GATES is a PLACEHOLDER — set
-# the real chapter mapping here. Both lists must stay length MAX_SKILLS.
-SKILL_SLOT_LEVELS = [1, 10, 15, 20, 25]
+# Skill slots: each of the MAX_SKILLS slots shows a chapter label (when it
+# unlocks) and grants a gate tier. A skill with gate G may only be slotted where
+# the slot's gate >= G. Both lists must stay length MAX_SKILLS. (The "9/10"
+# chapter is still being decided.)
+SKILL_SLOT_CHAPTERS = ["6", "9/10", "14", "18", "23"]
 SKILL_SLOT_GATES = [0, 1, 2, 3, 4]
 
 skill_data = {}
@@ -628,6 +628,15 @@ class SkillSelectionWindow:
         self.group_btn = ttk.Button(filter_row, textvariable=self.group_var,
                                     width=22, command=self._toggle_group_dropdown)
         self.group_btn.pack(side="left", padx=(4, 0))
+
+        ttk.Label(filter_row, text="Gate:").pack(side="left", padx=(16, 0))
+        self.gate_var = tk.StringVar(value="All")
+        gate_values = ["All"] + [str(g) for g in sorted({info.get("gate", 0) for info in skill_data.values()})]
+        gate_cb = ttk.Combobox(filter_row, textvariable=self.gate_var, values=gate_values,
+                               state="readonly", width=5)
+        gate_cb.pack(side="left", padx=(4, 0))
+        gate_cb.bind("<<ComboboxSelected>>", lambda e: self._refresh_skills())
+
         # Window-level keypress: jumps group filter, guards search entry focus
         self.window.bind("<KeyPress>",
             lambda e: self._group_filter_keypress_all(e), add="+")
@@ -786,11 +795,15 @@ class SkillSelectionWindow:
         """Return ordered list of (skill, info) matching current filters."""
         query = self.search_var.get().strip().lower()
         group  = self.group_var.get()
+        gate = getattr(self, "gate_var", None)
+        gate = gate.get() if gate else "All"
         result = []
         for skill, info in skill_data.items():
             if query and query not in skill.lower():
                 continue
             if group != "All" and group not in info["groups"]:
+                continue
+            if gate != "All" and str(info.get("gate", 0)) != gate:
                 continue
             result.append((skill, info))
         return result
@@ -884,7 +897,7 @@ class SkillSelectionWindow:
             if self.slots[i] == skill:
                 continue
             occ = self.slots[i]
-            txt = (f"Slot {i + 1} · Lv{SKILL_SLOT_LEVELS[i]}"
+            txt = (f"Slot {i + 1} · Chapter {SKILL_SLOT_CHAPTERS[i]}"
                    + ("  (free)" if occ is None else f"  (replace {occ})"))
             menu.add_command(label=txt, command=lambda idx=i: self._assign(skill, idx))
             added += 1
@@ -921,7 +934,7 @@ class SkillSelectionWindow:
             self.slots_frame.grid_columnconfigure(i, weight=1)
             ttk.Label(cell, text=f"Slot {i + 1}",
                       font=("TkDefaultFont", 8, "bold")).pack(anchor="w")
-            ttk.Label(cell, text=f"Lv{SKILL_SLOT_LEVELS[i]} · gate {SKILL_SLOT_GATES[i]}",
+            ttk.Label(cell, text=f"Chapter {SKILL_SLOT_CHAPTERS[i]}",
                       font=("TkDefaultFont", 7), foreground="gray").pack(anchor="w")
             sk = self.slots[i]
             if sk:
@@ -943,6 +956,11 @@ class SkillSelectionWindow:
         self.points_var.set(str(int(self.remaining_points)))
         self.points_label.configure(foreground="red" if self.remaining_points < 0 else "blue")
 
+    def set_budget(self, budget):
+        """Update the skills budget live (main window cost changed while open)."""
+        self.initial_points = budget
+        self.update_points()
+
     def update_skill_counter(self):
         self.skill_counter_var.set(f"Skills: {len(self._assigned_skills())}/{self.MAX_SKILLS}")
 
@@ -951,6 +969,8 @@ class SkillSelectionWindow:
         self.slots = [None] * self.MAX_SKILLS
         self.search_var.set("")
         self.group_var.set("All")
+        if hasattr(self, "gate_var"):
+            self.gate_var.set("All")
         self._refresh_all()
 
     def confirm_selection(self):
@@ -4218,7 +4238,13 @@ class CharacterCreator:
                          font=("TkDefaultFont", 9, "bold"), cursor="hand2")
         _info.pack(side="left", padx=(6, 0))
         Tooltip(_info,
-                "You have 6 skill slots, unlocked at levels 1, 5, 10, 15, 20, 25.\n\n"
+                "You have 5 skill slots, unlocked after chapter: 6, 9 or 10, 14, 18, 23. \n\n"
+                "Author's note: That translates to:\n"
+                "After Branch\n"
+                "Before or after Takumi Harbor\n"
+                "After increasing groans of discomfort\n"
+                "After Ninja Cave\n"
+                "After Takumi Wall\n\n"
                 "Each skill has a gate (0-4) tied to chapter progress; a skill can "
                 "only be placed in a slot whose gate is high enough. In the Skill "
                 "Selection window, click a skill to choose an eligible slot for it.",
@@ -4235,7 +4261,7 @@ class CharacterCreator:
                       foreground="gray").grid(row=0, column=0, sticky="w")
             return
 
-        for col, header in enumerate(("Slot", "Lv", "Gate", "Skill", "Cost")):
+        for col, header in enumerate(("Slot", "Chapter", "Gate", "Skill", "Cost")):
             ttk.Label(self.skills_list_frame, text=header,
                       font=("TkDefaultFont", 9, "bold")).grid(
                 row=0, column=col, sticky="w", padx=(0, 14), pady=(0, 2))
@@ -4244,7 +4270,7 @@ class CharacterCreator:
             r = i + 1
             ttk.Label(self.skills_list_frame, text=str(i + 1)).grid(
                 row=r, column=0, sticky="w", padx=(0, 14))
-            ttk.Label(self.skills_list_frame, text=str(SKILL_SLOT_LEVELS[i]),
+            ttk.Label(self.skills_list_frame, text=SKILL_SLOT_CHAPTERS[i],
                       foreground="gray").grid(row=r, column=1, sticky="w", padx=(0, 14))
             ttk.Label(self.skills_list_frame, text=str(SKILL_SLOT_GATES[i]),
                       foreground="gray").grid(row=r, column=2, sticky="w", padx=(0, 14))
@@ -4785,6 +4811,10 @@ class CharacterCreator:
         self.update_discount_display(raw_attr_cost_dict)
         self.update_next_step_costs()
         self.update_secondary_spinbox_limits()
+
+        # Keep an open Skill Selection window's budget in sync with the main window.
+        if hasattr(self, "skill_window") and self.skill_window.window.winfo_exists():
+            self.skill_window.set_budget(self.remaining_points + skill_cost)
 
     def update_spinbox_limits(self, raw_attr_cost_dict):
         str_cost = raw_attr_cost_dict.get("Strength", 0)
