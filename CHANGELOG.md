@@ -2,6 +2,19 @@
 
 All notable changes to the Chatquest 2 Character Creator are documented here.
 
+## 0.61.a
+
+### Added
+- Each character now has **two weapons**: a full **Promoted Weapon** (100 pts)
+  and a weaker **Base Weapon** (50 pts, where Hit costs half as much). Both are
+  built with the same creator, shown and reset independently, exported/imported
+  with the character, and each is verified against its own budget.
+
+### Changed
+- The weapon creator is now opened per weapon: "Open Promoted Weapon Creator"
+  and "Open Base Weapon Creator". Saved character files gain a `custom_weapon_base`
+  field (older files with only `custom_weapon` still load as the Promoted Weapon).
+
 ## 0.60.c
 
 ### Changed

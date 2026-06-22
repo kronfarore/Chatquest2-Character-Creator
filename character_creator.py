@@ -9,7 +9,7 @@ import os
 # VERSION
 # ============================================================================
 
-VERSION = "0.60.c"
+VERSION = "0.61.a"
 
 print("Program starting...")
 # ============================================================================
@@ -98,6 +98,17 @@ WEAPON_STAT_COSTS = {
     "Effective Speed Defensive": 1.29,
     "Base Staff Exp": 0.25,
     "Uses": 0.0
+}
+
+# Each character has two weapons: a full "Promoted Weapon" (100 pts) and a
+# weaker "Base Weapon" (50 pts, Hit costs half). field = key in the saved file.
+BASE_WEAPON_TOTAL_POINTS = 50
+WEAPON_KINDS = {
+    "promoted": {"label": "Promoted Weapon", "points": WEAPON_TOTAL_POINTS,
+                 "stat_costs": WEAPON_STAT_COSTS, "field": "custom_weapon"},
+    "base": {"label": "Base Weapon", "points": BASE_WEAPON_TOTAL_POINTS,
+             "stat_costs": {**WEAPON_STAT_COSTS, "Hit": WEAPON_STAT_COSTS["Hit"] / 2},
+             "field": "custom_weapon_base"},
 }
 
 WEAPON_STAT_BASE = {
@@ -404,7 +415,7 @@ if skill_data_load_error:
 # IMPORT VERIFICATION HELPERS
 # ============================================================================
 
-def _verify_weapon_raw(weapon_data):
+def _verify_weapon_raw(weapon_data, budget=WEAPON_TOTAL_POINTS):
     """Data-only legality checks for a weapon dict (no UI/engine required).
 
     Inspects the raw file values, so forged out-of-range stats are caught even
@@ -441,8 +452,8 @@ def _verify_weapon_raw(weapon_data):
         issues.append(f"Range {rng!r} is not one of {list(WEAPON_RANGE_COSTS)}")
     # Claimed cost bounds
     tc = weapon_data.get("total_cost")
-    if isinstance(tc, (int, float)) and tc > WEAPON_TOTAL_POINTS + 0.5:
-        issues.append(f"Claimed cost {round(tc)} exceeds the {WEAPON_TOTAL_POINTS}-point budget")
+    if isinstance(tc, (int, float)) and tc > budget + 0.5:
+        issues.append(f"Claimed cost {round(tc)} exceeds the {budget}-point budget")
     return issues
 
 
@@ -991,15 +1002,18 @@ class SkillSelectionWindow:
 # ============================================================================
 
 class CustomWeaponCreator:
-    def __init__(self, parent, callback, initial_weapon_data=None):
+    def __init__(self, parent, callback, initial_weapon_data=None,
+                 total_points=WEAPON_TOTAL_POINTS, stat_costs=None, kind_label="Weapon"):
         print("CustomWeaponCreator  init starting...")
         self.parent = parent
         self.callback = callback
-        self.weapon_points = WEAPON_TOTAL_POINTS
-        self.remaining_weapon_points = WEAPON_TOTAL_POINTS
+        self.weapon_points = total_points
+        self.remaining_weapon_points = total_points
+        self.stat_costs = dict(stat_costs) if stat_costs else dict(WEAPON_STAT_COSTS)
+        self.kind_label = kind_label
 
         self.window = tk.Toplevel(parent)
-        self.window.title(f"Custom Weapon Creator - Fire Emblem Fates Tool v{VERSION}")
+        self.window.title(f"{kind_label} Creator - Fire Emblem Fates Tool v{VERSION}")
         self.window.geometry("750x650")
         self.window.minsize(650, 550)
 
@@ -1086,7 +1100,7 @@ class CustomWeaponCreator:
         self.points_label = ttk.Label(header_frame, textvariable=self.points_var,
                                       font=("TkDefaultFont", 11, "bold"), foreground="blue")
         self.points_label.pack(side="left", padx=(5, 4))
-        ttk.Label(header_frame, text=f"/ {WEAPON_TOTAL_POINTS}",
+        ttk.Label(header_frame, text=f"/ {self.weapon_points}",
                   font=("TkDefaultFont", 11)).pack(side="left", padx=(0, 20))
         # System buttons in header
         self.reset_button = ttk.Button(header_frame, text="Reset", command=self.reset_weapon,
@@ -1204,7 +1218,7 @@ class CustomWeaponCreator:
             self.weapon_stats[stat] = {
                 "min": WEAPON_STAT_MIN[stat],
                 "max": WEAPON_STAT_MAX[stat],
-                "cost_per_point": WEAPON_STAT_COSTS[stat],
+                "cost_per_point": self.stat_costs[stat],
                 "base": WEAPON_STAT_BASE[stat]
             }
 
@@ -2728,7 +2742,7 @@ class CustomWeaponCreator:
         if self.unlimited_uses_active:
             total_cost = total_cost * UNLIMITED_USES_SCALING
 
-        self.remaining_weapon_points = WEAPON_TOTAL_POINTS - total_cost
+        self.remaining_weapon_points = self.weapon_points - total_cost
         if self.remaining_weapon_points != int(self.remaining_weapon_points):
             print(f"WARNING: remaining_weapon_points is not a full integer: {self.remaining_weapon_points}")
         self.points_var.set(str(round(self.remaining_weapon_points)))
@@ -2848,7 +2862,7 @@ class CustomWeaponCreator:
     def update_might_cost_for_staff(self):
         if "Might" in self.stat_vars:
             use_staff_might = (self.type_combobox.get() in ["Staff", "Rod"] and self.recovery_staff_selected)
-            original_cost = WEAPON_STAT_COSTS["Might"]
+            original_cost = self.stat_costs["Might"]
 
             if use_staff_might:
                 # Keep the fractional per-point for the Uses-cost scaling, but the
@@ -3588,8 +3602,8 @@ class CustomWeaponCreator:
         self.weapon_data["custom_type"] = ""
         self.weapon_data["name"] = ""
 
-        self.remaining_weapon_points = WEAPON_TOTAL_POINTS
-        self.points_var.set(str(WEAPON_TOTAL_POINTS))
+        self.remaining_weapon_points = self.weapon_points
+        self.points_var.set(str(self.weapon_points))
 
         # Force a full UI update
         self.update_total_cost()
@@ -3606,7 +3620,7 @@ class CustomWeaponCreator:
         if self.remaining_weapon_points < 0:
             errors.append(
                 f"\u2022 Over budget by {abs(round(self.remaining_weapon_points))} points "
-                f"(limit is {WEAPON_TOTAL_POINTS:.0f})."
+                f"(limit is {self.weapon_points:.0f})."
             )
         active_value_effects = [e for e, var in self.value_effect_vars.items() if var.get()]
         if active_value_effects and _safe_get(self.effect_value_var, 0) == 0:
@@ -3649,7 +3663,7 @@ class CustomWeaponCreator:
         if self.remaining_weapon_points < 0:
             messagebox.showwarning("Too Many Points",
                                    f"Weapon uses {abs(round(self.remaining_weapon_points))} extra points!\n"
-                                   "Reduce stats or effects to fit within 100 points.",
+                                   f"Reduce stats or effects to fit within {self.weapon_points} points.",
                                    parent=self.window)
             return
 
@@ -3704,7 +3718,7 @@ class CustomWeaponCreator:
         self.weapon_data["description"] = self.desc_text.get("1.0", tk.END).strip()
 
         # Cost summary
-        self.weapon_data["total_cost"] = WEAPON_TOTAL_POINTS - self.remaining_weapon_points
+        self.weapon_data["total_cost"] = self.weapon_points - self.remaining_weapon_points
         self.weapon_data["remaining_points"] = self.remaining_weapon_points
 
         # Send to callback (main window)
@@ -3756,7 +3770,7 @@ class CustomWeaponCreator:
             "effect_value": self.effect_value_var.get(),
             "value_effects_cost": float(self.effect_value_total_cost_var.get()),
             "description": self.desc_text.get("1.0", tk.END).strip(),
-            "total_cost": 100 - self.remaining_weapon_points,
+            "total_cost": self.weapon_points - self.remaining_weapon_points,
             "version": VERSION,  # For verification
         }
         
@@ -3901,17 +3915,17 @@ class CustomWeaponCreator:
 
         The UI has already loaded and recalculated, so self.remaining_weapon_points
         is the true cost. Returns a list of discrepancy strings (empty = clean)."""
-        issues = list(_verify_weapon_raw(weapon_data))
-        recomputed = WEAPON_TOTAL_POINTS - self.remaining_weapon_points
+        issues = list(_verify_weapon_raw(weapon_data, self.weapon_points))
+        recomputed = self.weapon_points - self.remaining_weapon_points
         claimed = weapon_data.get("total_cost")
         if isinstance(claimed, (int, float)) and abs(round(claimed) - round(recomputed)) >= 1:
             issues.append(
                 f"Claimed cost {round(claimed)} does not match the recomputed cost "
                 f"{round(recomputed)}")
-        if recomputed > WEAPON_TOTAL_POINTS + 0.5:
+        if recomputed > self.weapon_points + 0.5:
             issues.append(
-                f"Recomputed cost {round(recomputed)} is over the {WEAPON_TOTAL_POINTS}-point "
-                f"budget by {round(recomputed - WEAPON_TOTAL_POINTS)}")
+                f"Recomputed cost {round(recomputed)} is over the {self.weapon_points}-point "
+                f"budget by {round(recomputed - self.weapon_points)}")
         claimed_ve = weapon_data.get("value_effects_cost")
         if isinstance(claimed_ve, (int, float)):
             true_ve = float(self.effect_value_total_cost_var.get())
@@ -4404,30 +4418,39 @@ class CharacterCreator:
             self.weapon_entries.append(ttk.Entry(frame, textvariable=self.weapon_vars[-1], state="disabled"))
             self.weapon_entries[-1].grid(row=2 + i, column=1, sticky="ew", padx=5)
 
-        custom_weapon_row = 4
-        weapon_btn_frame = ttk.Frame(frame)
-        weapon_btn_frame.grid(row=custom_weapon_row, column=0, columnspan=2, pady=(10, 5))
-        ttk.Button(weapon_btn_frame, text="Open Weapon Creator",
-                   command=self.open_custom_weapon_creator).pack(side="left", padx=(0, 8))
-        self.reset_weapon_btn = ttk.Button(weapon_btn_frame, text="Reset Weapon",
-                                           command=self.reset_custom_weapon)
-        self.reset_weapon_btn.pack(side="left")
-        _info_w = tk.Label(weapon_btn_frame, text=" ? ", relief="groove",
-                           background="#4a90d9", foreground="white",
-                           font=("TkDefaultFont", 9, "bold"), cursor="hand2")
-        _info_w.pack(side="left", padx=(6, 0))
-        Tooltip(_info_w,
-                "Treat the weapon you build here like a character's prf Weapon. "
-                "It can be your general tool or a specialized one!",
-                delay_ms=400)
-
-        self.custom_weapon_display = tk.Text(
-            frame, height=8, width=60, state="disabled", wrap="word", relief="groove",
-            font=("TkDefaultFont", 9), foreground="blue",
-            background=ttk.Style().lookup("TFrame", "background"))
-        self.custom_weapon_display.grid(row=custom_weapon_row + 1, column=0,
-            columnspan=2, sticky="ew", pady=(4, 0))
-        self._set_custom_weapon_display("No custom weapon created")
+        # Two weapons per character: a full Promoted Weapon and a weaker Base
+        # Weapon, built with the same creator but different budget / Hit cost.
+        self.custom_weapons = {}      # kind -> weapon_data dict (or None)
+        self.weapon_windows = {}      # kind -> open CustomWeaponCreator
+        self.weapon_displays = {}     # kind -> Text widget
+        self.reset_weapon_btns = {}
+        wrow = 4
+        for kind, cfg in WEAPON_KINDS.items():
+            self.custom_weapons[kind] = None
+            btn_frame = ttk.Frame(frame)
+            btn_frame.grid(row=wrow, column=0, columnspan=2, pady=(10, 2))
+            ttk.Button(btn_frame, text=f"Open {cfg['label']} Creator ({cfg['points']} pts)",
+                       command=lambda k=kind: self.open_custom_weapon_creator(k)).pack(side="left", padx=(0, 8))
+            rb = ttk.Button(btn_frame, text="Reset",
+                            command=lambda k=kind: self.reset_custom_weapon(k))
+            rb.pack(side="left")
+            self.reset_weapon_btns[kind] = rb
+            if kind == "promoted":
+                _info_w = tk.Label(btn_frame, text=" ? ", relief="groove",
+                                   background="#4a90d9", foreground="white",
+                                   font=("TkDefaultFont", 9, "bold"), cursor="hand2")
+                _info_w.pack(side="left", padx=(6, 0))
+                Tooltip(_info_w,
+                        "Two prf weapons: the Promoted Weapon (100 pts) and a weaker "
+                        "Base Weapon (50 pts, where Hit costs half as much).",
+                        delay_ms=400)
+            disp = tk.Text(frame, height=7, width=60, state="disabled", wrap="word",
+                           relief="groove", font=("TkDefaultFont", 9), foreground="blue",
+                           background=ttk.Style().lookup("TFrame", "background"))
+            disp.grid(row=wrow + 1, column=0, columnspan=2, sticky="ew", pady=(2, 6))
+            self.weapon_displays[kind] = disp
+            self._set_custom_weapon_display(kind, f"No {cfg['label']} created")
+            wrow += 2
 
     def setup_stance_frame(self, parent):
         frame = ttk.LabelFrame(parent, text="Attack Stance Bonus", padding=10)
@@ -4874,41 +4897,48 @@ class CharacterCreator:
         self.secondary_cost_vars[stat].set(str(self._secondary_stat_cost(stat, value)))
         self.update_total_cost()
 
-    def reset_custom_weapon(self):
-        """Clear the custom weapon, with confirmation if one exists."""
-        if not getattr(self, "custom_weapon_data", None):
+    def reset_custom_weapon(self, kind="promoted"):
+        """Clear a weapon slot, with confirmation if one exists."""
+        cfg = WEAPON_KINDS[kind]
+        if not self.custom_weapons.get(kind):
             return
         if not messagebox.askyesno(
             "Reset Weapon",
-            "This will remove the current custom weapon. Are you sure?"
+            f"This will remove the current {cfg['label']}. Are you sure?"
         ):
             return
-        self.custom_weapon_data = None
-        self._set_custom_weapon_display("No custom weapon created")
+        self.custom_weapons[kind] = None
+        self._set_custom_weapon_display(kind, f"No {cfg['label']} created")
         self.update_total_cost()
 
-    def open_custom_weapon_creator(self):
-        if hasattr(self, 'weapon_window') and self.weapon_window.window.winfo_exists():
-            self.weapon_window.window.lift()
-        else:
-            existing = getattr(self, "custom_weapon_data", None)
-            self.weapon_window = CustomWeaponCreator(
-                self.root, self.update_custom_weapon, existing)
+    def open_custom_weapon_creator(self, kind="promoted"):
+        win = self.weapon_windows.get(kind)
+        if win is not None and win.window.winfo_exists():
+            win.window.lift()
+            return
+        cfg = WEAPON_KINDS[kind]
+        self.weapon_windows[kind] = CustomWeaponCreator(
+            self.root, lambda data, k=kind: self.update_custom_weapon(data, k),
+            self.custom_weapons.get(kind),
+            total_points=cfg["points"], stat_costs=cfg["stat_costs"],
+            kind_label=cfg["label"])
 
-    def _set_custom_weapon_display(self, text):
-        self.custom_weapon_display.config(state="normal")
-        self.custom_weapon_display.delete("1.0", tk.END)
-        self.custom_weapon_display.insert("1.0", text)
-        self.custom_weapon_display.config(state="disabled")
+    def _set_custom_weapon_display(self, kind, text):
+        disp = self.weapon_displays[kind]
+        disp.config(state="normal")
+        disp.delete("1.0", tk.END)
+        disp.insert("1.0", text)
+        disp.config(state="disabled")
 
-    def update_custom_weapon(self, weapon_data, show_message=True):
-        self.custom_weapon_data = weapon_data
+    def update_custom_weapon(self, weapon_data, kind="promoted", show_message=True):
+        cfg = WEAPON_KINDS[kind]
+        self.custom_weapons[kind] = weapon_data
         w = weapon_data
         weapon_name = w.get("name", "")
         weapon_type = w.get("type", "")
 
         lines = [
-            f"Name: {weapon_name}  |  Type: {weapon_type}  |  Range: {w.get('range', '1')}",
+            f"[{cfg['label']}]  Name: {weapon_name}  |  Type: {weapon_type}  |  Range: {w.get('range', '1')}",
             f"MT:{w.get('might',0)}  HIT:{w.get('hit',0)}  CRT:{w.get('crit',0)}  "
             f"AVO:{w.get('avoid',0)}  DGE:{w.get('dodge',0)}  "
             f"MOV:{w.get('mov',0)}  SPD-O:{w.get('effective_speed_offensive',0)}  "
@@ -4924,7 +4954,7 @@ class CharacterCreator:
             lines.append(f"Buffs: {', '.join(w['buffs'])}")
         if w.get("description"):
             lines.append(f"Desc: {w['description']}")
-        self._set_custom_weapon_display("\n".join(lines))
+        self._set_custom_weapon_display(kind, "\n".join(lines))
 
         if not show_message:
             return
@@ -4958,9 +4988,9 @@ class CharacterCreator:
         if weapon_data.get('description'):
             message += f"\nDescription: {weapon_data['description'][:100]}..."
         
-        message += f"\n\nPoint Cost: {round(weapon_data.get('total_cost', 0))}/100"
-        
-        messagebox.showinfo("Weapon Created", message)
+        message += f"\n\nPoint Cost: {round(weapon_data.get('total_cost', 0))}/{cfg['points']}"
+
+        messagebox.showinfo(f"{cfg['label']} Created", message)
     
     def _validate_character_export(self):
         """Run all pre-export checks for the character. Returns (ok, errors) tuple."""
@@ -5036,7 +5066,7 @@ class CharacterCreator:
             return
 
         # Warn if no custom weapon has been created (after validation passes)
-        if not getattr(self, "custom_weapon_data", None):
+        if not any(self.custom_weapons.values()):
             if not messagebox.askyesno(
                 "No Custom Weapon",
                 "This character has no custom weapon.\n\nExport anyway?"
@@ -5082,9 +5112,10 @@ class CharacterCreator:
             pairup_bonuses[level] = bonuses
         character_data["pairup_bonuses"] = pairup_bonuses
 
-        # Add custom weapon if exists
-        if hasattr(self, 'custom_weapon_data') and self.custom_weapon_data:
-            character_data["custom_weapon"] = self.custom_weapon_data
+        # Add custom weapons (each under its own field) if present
+        for _k, _cfg in WEAPON_KINDS.items():
+            if self.custom_weapons.get(_k):
+                character_data[_cfg["field"]] = self.custom_weapons[_k]
 
         character_data["points_summary"] = {
             "total_points": initial_points,
@@ -5230,11 +5261,12 @@ class CharacterCreator:
                     f"Attack Stance '{level}': {len(bonuses)} bonuses selected, max is "
                     f"{stance_limits[level]}")
 
-        # --- Embedded custom weapon (raw legality only) ---
-        cw = char_data.get("custom_weapon")
-        if isinstance(cw, dict):
-            for wi in _verify_weapon_raw(cw):
-                issues.append("Custom weapon: " + wi)
+        # --- Embedded custom weapons (raw legality, each vs its own budget) ---
+        for _cfg in WEAPON_KINDS.values():
+            cw = char_data.get(_cfg["field"])
+            if isinstance(cw, dict):
+                for wi in _verify_weapon_raw(cw, _cfg["points"]):
+                    issues.append(f"{_cfg['label']}: " + wi)
 
         return issues
 
@@ -5381,19 +5413,21 @@ class CharacterCreator:
                             self.validate_pairup_spinboxes(row, limit)
                             break
             
-            # Load custom weapon if exists
-            if "custom_weapon" in char_data and char_data["custom_weapon"]:
-                self.update_custom_weapon(char_data["custom_weapon"], show_message=False)
-            
-            # If weapon creator window is open, reload it with the new weapon
-            if (hasattr(self, "weapon_window") and
-                    hasattr(self.weapon_window, "window") and
-                    self.weapon_window.window.winfo_exists()):
-                new_weapon = char_data.get("custom_weapon")
+            # Load both custom weapons (each from its own field), and reload any
+            # open creator window for that kind.
+            for kind, cfg in WEAPON_KINDS.items():
+                new_weapon = char_data.get(cfg["field"])
                 if new_weapon:
-                    self.weapon_window._load_weapon_data(new_weapon)
+                    self.update_custom_weapon(new_weapon, kind, show_message=False)
                 else:
-                    self.weapon_window.reset_weapon()
+                    self.custom_weapons[kind] = None
+                    self._set_custom_weapon_display(kind, f"No {cfg['label']} created")
+                win = self.weapon_windows.get(kind)
+                if win is not None and win.window.winfo_exists():
+                    if new_weapon:
+                        win._load_weapon_data(new_weapon)
+                    else:
+                        win.reset_weapon()
 
             # Debug: check imported summary for decimal values
             if "points_summary" in char_data:
