@@ -2,6 +2,27 @@
 
 All notable changes to the Chatquest 2 Character Creator are documented here.
 
+## 0.60.a
+
+### Added — skill gate / slot system
+- Skills now occupy **5 ordered slots** (levels 1, 10, 15, 20, 25), each with a
+  gate tier (0–4) tied to chapter progress. Every skill has a gate and can only
+  be placed in a slot whose gate is high enough.
+- Skill Selection reworked: a slot header shows all slots, and clicking a skill
+  pops a menu of just the slots it's allowed in. Auto-sort by cost is gone.
+- Skills export/import as an ordered slot list. Imports from older or different-
+  length files are re-slotted into eligible positions; anything that no longer
+  exists or can't be slotted is reported.
+- Export **and** import verification now check gate legality and skill count.
+
+### Changed
+- Character build budget raised **180 → 200**.
+- **Aptitude** repriced 29.29 → 49 (per the value analysis).
+- Attribute cost tables extended to **110%** so Aptitude can push growth past 100.
+
+### Fixed
+- Corrected malformed entries in `skill_data.json`.
+
 ## 0.59.b
 
 ### Fixed

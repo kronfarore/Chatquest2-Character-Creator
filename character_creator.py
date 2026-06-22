@@ -9,15 +9,23 @@ import os
 # VERSION
 # ============================================================================
 
-VERSION = "0.59.b"
+VERSION = "0.60.a"
 
 print("Program starting...")
 # ============================================================================
 # CONSTANTS
 # ============================================================================
 
-initial_points = 180
-MAX_SKILLS = 6  # Maximum number of skills a character may select (Skills section)
+initial_points = 200
+MAX_SKILLS = 5  # Maximum number of skills a character may select (Skills section)
+
+# Skill slots: each of the MAX_SKILLS slots has a level (when it unlocks) and a
+# gate tier it grants (tied to chapter progress). A skill with gate G may only
+# be slotted where the slot's gate >= G. SKILL_SLOT_GATES is a PLACEHOLDER — set
+# the real chapter mapping here. Both lists must stay length MAX_SKILLS.
+SKILL_SLOT_LEVELS = [1, 10, 15, 20, 25]
+SKILL_SLOT_GATES = [0, 1, 2, 3, 4]
+
 skill_data = {}
 
 # Stats that use increments of 5
@@ -26,15 +34,19 @@ STAFF_HIT_SCALE = 4 / 5        # Hit cost multiplier for Staff/Rod weapons
 NEGATIVE_CREDIT_SCALE = 0.5    # Scale factor for credits from negative weapon stats/effects
 DODGE_COST_SCALE = 2.0   # Scale factor for Dodge cost in both weapon stats and secondary stats
 
+# Cumulative growth cost per attribute, indexed by growth // 5 (0% .. 110%).
+# Indices 0-20 cover 0-100% (manual range); 21-22 are 105%/110%, reachable only
+# by Aptitude (+10%). The 105/110 entries continue the table's geometric
+# marginal (ratio ~1.116) and were extrapolated from the 0-100% values.
 ATTRIBUTE_COSTS = {
-    "HP": [0, 1.05, 2.21, 3.52, 4.97, 6.6, 8.41, 10.44, 12.7, 15.22, 18.04, 21.18, 24.69, 28.61, 32.98, 37.86, 43.31, 49.39, 56.18, 63.76, 72.23],
-    "Strength": [0, 1.13, 2.4, 3.81, 5.39, 7.15, 9.11, 11.31, 13.76, 16.49, 19.54, 22.95, 26.75, 30.99, 35.73, 41.02, 46.92, 53.51, 60.87, 69.08, 78.24],
-    "Magic": [0, 1.25, 2.65, 4.2, 5.94, 7.88, 10.05, 12.47, 15.17, 18.18, 21.54, 25.3, 29.49, 34.17, 39.39, 45.23, 51.73, 59, 67.11, 76.16, 86.27],
-    "Skill": [0, 1.1, 2.34, 3.71, 5.25, 6.97, 8.88, 11.02, 13.4, 16.07, 19.04, 22.36, 26.06, 30.2, 34.81, 39.97, 45.72, 52.14, 59.31, 67.31, 76.24],
-    "Speed": [0, 1.19, 2.52, 4.01, 5.67, 7.52, 9.58, 11.89, 14.46, 17.34, 20.54, 24.12, 28.12, 32.58, 37.56, 43.12, 49.33, 56.26, 63.99, 72.62, 82.26],
-    "Luck": [0, 1.08, 2.28, 3.62, 5.11, 6.78, 8.65, 10.73, 13.05, 15.64, 18.54, 21.77, 25.38, 29.4, 33.9, 38.91, 44.52, 50.77, 57.75, 65.54, 74.23],
-    "Defense": [0, 1.22, 2.58, 4.11, 5.8, 7.7, 9.82, 12.18, 14.81, 17.76, 21.04, 24.71, 28.81, 33.38, 38.48, 44.17, 50.53, 57.63, 65.55, 74.39, 84.26],
-    "Resistance": [0, 1.16, 2.46, 3.91, 5.53, 7.33, 9.35, 11.6, 14.11, 16.91, 20.04, 23.53, 27.43, 31.79, 36.65, 42.07, 48.12, 54.88, 62.43, 70.85, 80.25]
+    "HP": [0, 1.05, 2.21, 3.52, 4.97, 6.6, 8.41, 10.44, 12.7, 15.22, 18.04, 21.18, 24.69, 28.61, 32.98, 37.86, 43.31, 49.39, 56.18, 63.76, 72.23, 81.68, 92.24],
+    "Strength": [0, 1.13, 2.4, 3.81, 5.39, 7.15, 9.11, 11.31, 13.76, 16.49, 19.54, 22.95, 26.75, 30.99, 35.73, 41.02, 46.92, 53.51, 60.87, 69.08, 78.24, 88.47, 99.88],
+    "Magic": [0, 1.25, 2.65, 4.2, 5.94, 7.88, 10.05, 12.47, 15.17, 18.18, 21.54, 25.3, 29.49, 34.17, 39.39, 45.23, 51.73, 59, 67.11, 76.16, 86.27, 97.56, 110.15],
+    "Skill": [0, 1.1, 2.34, 3.71, 5.25, 6.97, 8.88, 11.02, 13.4, 16.07, 19.04, 22.36, 26.06, 30.2, 34.81, 39.97, 45.72, 52.14, 59.31, 67.31, 76.24, 86.21, 97.34],
+    "Speed": [0, 1.19, 2.52, 4.01, 5.67, 7.52, 9.58, 11.89, 14.46, 17.34, 20.54, 24.12, 28.12, 32.58, 37.56, 43.12, 49.33, 56.26, 63.99, 72.62, 82.26, 93.02, 105.04],
+    "Luck": [0, 1.08, 2.28, 3.62, 5.11, 6.78, 8.65, 10.73, 13.05, 15.64, 18.54, 21.77, 25.38, 29.4, 33.9, 38.91, 44.52, 50.77, 57.75, 65.54, 74.23, 83.93, 94.75],
+    "Defense": [0, 1.22, 2.58, 4.11, 5.8, 7.7, 9.82, 12.18, 14.81, 17.76, 21.04, 24.71, 28.81, 33.38, 38.48, 44.17, 50.53, 57.63, 65.55, 74.39, 84.26, 95.28, 107.58],
+    "Resistance": [0, 1.16, 2.46, 3.91, 5.53, 7.33, 9.35, 11.6, 14.11, 16.91, 20.04, 23.53, 27.43, 31.79, 36.65, 42.07, 48.12, 54.88, 62.43, 70.85, 80.25, 90.74, 102.46]
 }
 
 PERSONAL_SKILLS = {
@@ -73,7 +85,7 @@ NOSFERATU_FORCES_BRONZE_AND_BOLD = True
 # ============================================================================
 
 WEAPON_TOTAL_POINTS = 100
-MAX_SKILL_COST = 10  # Highest point cost any skill can have after scaling
+MAX_SKILL_COST = 24  # Highest point cost any skill can have after scaling
 
 WEAPON_STAT_COSTS = {
     "Might": 2.2,
@@ -371,6 +383,14 @@ def scaled_skill_cost(raw_cost):
         return 0
     return max(1, math.ceil(raw_cost / _max_raw_skill_cost * MAX_SKILL_COST))
 
+def skill_gate(name):
+    """Gate tier (0-4) a skill requires; missing/unknown skills default to 0."""
+    return skill_data.get(name, {}).get("gate", 0)
+
+def eligible_slots(gate):
+    """0-based slot indices that can hold a skill of the given gate tier."""
+    return [i for i, g in enumerate(SKILL_SLOT_GATES) if g >= gate]
+
 if skill_data_load_error:
     root = tk.Tk()
     root.withdraw()
@@ -543,18 +563,18 @@ class SkillSelectionWindow:
         self.initial_points = current_points
         self.remaining_points = current_points
         self.points_var = tk.StringVar(value=str(int(self.remaining_points)))
-        self.skill_vars = {}
-        self.skill_widgets = {}
-        self.confirmed_selection = []
+        self.skill_widgets = {}        # skill name -> its button widget
         self.MAX_SKILLS = MAX_SKILLS
-        self.preselected = preselected or []
-        self._selected_set = set(self.preselected)  # source of truth for selections
+        # slots: the source of truth. Length MAX_SKILLS; each entry is a skill
+        # name or None. `preselected` is the incoming slot list from the caller.
+        slots = list(preselected) if preselected else []
+        self.slots = (slots + [None] * MAX_SKILLS)[:MAX_SKILLS]
         self._after_id = None          # debounce handle for resize
         self._last_canvas_width = 0
 
         self.window = tk.Toplevel(parent)
         self.window.title("Skill Selection")
-        self.window.minsize(600, 450)
+        self.window.minsize(680, 500)
 
         self.setup_ui()
 
@@ -611,6 +631,11 @@ class SkillSelectionWindow:
         # Window-level keypress: jumps group filter, guards search entry focus
         self.window.bind("<KeyPress>",
             lambda e: self._group_filter_keypress_all(e), add="+")
+
+        # ── Slots header (the 6 slots and their current skills) ───────────────
+        self.slots_frame = ttk.Frame(header)
+        self.slots_frame.pack(fill="x", pady=(6, 0))
+        self._render_slot_header()
 
         # ── Scrollable skills area ────────────────────────────────────────────
         scroll_container = ttk.Frame(self.window)
@@ -779,7 +804,7 @@ class SkillSelectionWindow:
         # Checkbutton has indicator (~20px) + padding (~16px) on each side
         CHROME = 52
         widest = max(
-            font.measure(f"{skill}  ({scaled_skill_cost(info['cost'])} pts)")
+            font.measure(f"{skill}  ({scaled_skill_cost(info['cost'])} pts)  [g{info.get('gate', 0)}]  → Slot 6")
             for skill, info in skills
         )
         return widest + CHROME
@@ -794,104 +819,142 @@ class SkillSelectionWindow:
 
 
     def _refresh_skills(self):
-        """Rebuild the checkbox grid to match current filters and canvas width."""
-        # Clear old widgets — _selected_set is the source of truth, not skill_vars
+        """Rebuild the clickable skill grid to match current filters and width."""
         for w in self.scroll_frame.winfo_children():
             w.destroy()
-        self.skill_vars.clear()
         self.skill_widgets.clear()
 
         skills = self._visible_skills()
         canvas_w = self.canvas.winfo_width() or 600
         cols = self._columns_for_width(canvas_w, skills)
-
-        # Configure equal-weight columns
         for c in range(cols):
             self.scroll_frame.grid_columnconfigure(c, weight=1)
 
         for i, (skill, info) in enumerate(skills):
             col = i % cols
             row = i // cols
-            var = tk.BooleanVar(value=(skill in self._selected_set))
-            chk = ttk.Checkbutton(
-                self.scroll_frame,
-                text=f"{skill}  ({scaled_skill_cost(info['cost'])} pts)",
-                variable=var,
-                command=lambda s=skill, v=var: self.on_skill_toggle(s, v)
-            )
-            chk.grid(row=row, column=col, sticky="w", padx=8, pady=2)
+            gate = info.get("gate", 0)
+            cost = scaled_skill_cost(info["cost"])
+            slot = self._slot_of(skill)
+            label = f"{skill}  ({cost} pts)  [g{gate}]"
+            if slot is not None:
+                label += f"  → Slot {slot + 1}"
+            btn = ttk.Button(self.scroll_frame, text=label,
+                             command=lambda s=skill, g=gate: self._open_slot_menu(s, g))
+            btn.grid(row=row, column=col, sticky="ew", padx=8, pady=2)
             tip_parts = []
-            desc = info.get("desc", "")
-            if desc:
-                tip_parts.append(desc)
-            groups = info.get("groups", [])
-            if groups:
-                tip_parts.append("Groups: " + ", ".join(groups))
-            if tip_parts:
-                Tooltip(chk, "\n\n".join(tip_parts))
-            self.skill_vars[skill] = var
-            self.skill_widgets[skill] = chk
+            if info.get("desc"):
+                tip_parts.append(info["desc"])
+            if info.get("groups"):
+                tip_parts.append("Groups: " + ", ".join(info["groups"]))
+            tip_parts.append(f"Gate {gate}")
+            Tooltip(btn, "\n\n".join(tip_parts))
+            self.skill_widgets[skill] = btn
 
-        # Widen the inner frame to fill the canvas
         self.canvas.itemconfigure(self._canvas_win, width=canvas_w)
-
         self.update_points()
         self.update_skill_counter()
+
+    # --------------------------------------------------- Slot assignment ------
+
+    def _assigned_skills(self):
+        return [s for s in self.slots if s]
+
+    def _slot_of(self, skill):
+        return self.slots.index(skill) if skill in self.slots else None
+
+    def _projected_cost(self, skill, slot):
+        sim = list(self.slots)
+        cur = self._slot_of(skill)
+        if cur is not None:
+            sim[cur] = None
+        sim[slot] = skill
+        return sum(scaled_skill_cost(skill_data[s]["cost"]) for s in sim if s)
+
+    def _open_slot_menu(self, skill, gate):
+        """Pop a menu of the gate-eligible slots this skill may go into."""
+        menu = tk.Menu(self.window, tearoff=0)
+        current = self._slot_of(skill)
+        if current is not None:
+            menu.add_command(label=f"Remove from Slot {current + 1}",
+                             command=lambda: self._clear_slot(current))
+            menu.add_separator()
+        added = 0
+        for i in eligible_slots(gate):
+            if self.slots[i] == skill:
+                continue
+            occ = self.slots[i]
+            txt = (f"Slot {i + 1} · Lv{SKILL_SLOT_LEVELS[i]}"
+                   + ("  (free)" if occ is None else f"  (replace {occ})"))
+            menu.add_command(label=txt, command=lambda idx=i: self._assign(skill, idx))
+            added += 1
+        if added == 0 and current is None:
+            menu.add_command(label="No eligible slot for this gate", state="disabled")
+        menu.tk_popup(self.window.winfo_pointerx(), self.window.winfo_pointery())
+
+    def _assign(self, skill, slot):
+        if self.initial_points - self._projected_cost(skill, slot) < 0:
+            messagebox.showwarning("Not enough points",
+                f"Cannot afford '{skill}' ({scaled_skill_cost(skill_data[skill]['cost'])} pts).",
+                parent=self.window)
+            return
+        cur = self._slot_of(skill)
+        if cur is not None:
+            self.slots[cur] = None
+        self.slots[slot] = skill        # replaces any current occupant
+        self._refresh_all()
+
+    def _clear_slot(self, idx):
+        self.slots[idx] = None
+        self._refresh_all()
+
+    def _refresh_all(self):
+        self._render_slot_header()
+        self._refresh_skills()
+
+    def _render_slot_header(self):
+        for w in self.slots_frame.winfo_children():
+            w.destroy()
+        for i in range(self.MAX_SKILLS):
+            cell = ttk.Frame(self.slots_frame, relief="groove", padding=4)
+            cell.grid(row=0, column=i, padx=2, sticky="nsew")
+            self.slots_frame.grid_columnconfigure(i, weight=1)
+            ttk.Label(cell, text=f"Slot {i + 1}",
+                      font=("TkDefaultFont", 8, "bold")).pack(anchor="w")
+            ttk.Label(cell, text=f"Lv{SKILL_SLOT_LEVELS[i]} · gate {SKILL_SLOT_GATES[i]}",
+                      font=("TkDefaultFont", 7), foreground="gray").pack(anchor="w")
+            sk = self.slots[i]
+            if sk:
+                rowf = ttk.Frame(cell)
+                rowf.pack(fill="x")
+                ttk.Label(rowf, text=sk, font=("TkDefaultFont", 8), foreground="blue",
+                          wraplength=90, justify="left").pack(side="left")
+                ttk.Button(rowf, text="✕", width=2,
+                           command=lambda idx=i: self._clear_slot(idx)).pack(side="right")
+            else:
+                ttk.Label(cell, text="— empty —", font=("TkDefaultFont", 8),
+                          foreground="gray").pack(anchor="w")
 
     # -------------------------------------------------- Points / counter ------
 
-    def on_skill_toggle(self, skill, var):
-        if var.get():
-            # Guard: skill limit
-            if len(self._selected_set) >= self.MAX_SKILLS:
-                var.set(False)
-                return
-            # Guard: points
-            if self.remaining_points - scaled_skill_cost(skill_data[skill]["cost"]) < 0:
-                var.set(False)
-                messagebox.showwarning("Not enough points",
-                    f"Cannot afford '{skill}' "
-                    f"({scaled_skill_cost(skill_data[skill]['cost'])} pts).")
-                return
-            self._selected_set.add(skill)
-        else:
-            self._selected_set.discard(skill)
-        self.update_points()
-        self.update_skill_counter()
-
     def update_points(self):
-        # Use _selected_set so hidden (filtered-out) skills still count
-        total = sum(scaled_skill_cost(skill_data[s]["cost"]) for s in self._selected_set)
+        total = sum(scaled_skill_cost(skill_data[s]["cost"]) for s in self._assigned_skills())
         self.remaining_points = self.initial_points - total
         self.points_var.set(str(int(self.remaining_points)))
-        color = "red" if self.remaining_points < 0 else "blue"
-        self.points_label.configure(foreground=color)
+        self.points_label.configure(foreground="red" if self.remaining_points < 0 else "blue")
 
     def update_skill_counter(self):
-        selected = len(self._selected_set)
-        self.skill_counter_var.set(f"Skills: {selected}/{self.MAX_SKILLS}")
-        at_limit = selected >= self.MAX_SKILLS
-        for skill, var in self.skill_vars.items():
-            if at_limit and skill not in self._selected_set:
-                self.skill_widgets[skill].state(["disabled"])
-            else:
-                self.skill_widgets[skill].state(["!disabled"])
+        self.skill_counter_var.set(f"Skills: {len(self._assigned_skills())}/{self.MAX_SKILLS}")
 
     def reset_selection(self):
-        """Clear all selected skills, reset filters, and refresh the grid."""
-        self._selected_set.clear()
+        """Clear all slots, reset filters, and refresh."""
+        self.slots = [None] * self.MAX_SKILLS
         self.search_var.set("")
         self.group_var.set("All")
-        self._refresh_skills()
+        self._refresh_all()
 
     def confirm_selection(self):
-        selected = list(self._selected_set)
-        if len(selected) > self.MAX_SKILLS:
-            messagebox.showwarning("Too Many Skills",
-                f"Maximum {self.MAX_SKILLS} skills allowed!")
-            return
-        total_cost = sum(scaled_skill_cost(skill_data[s]["cost"]) for s in selected)
-        self.callback(selected, total_cost)
+        self.callback(list(self.slots))
         self.window.destroy()
 
 
@@ -3865,6 +3928,7 @@ class CharacterCreator:
         self.root = root
         self.root.title(f"Character Creator - Fire Emblem Fates Tool v{VERSION}")
         self.selected_skills = []
+        self.skill_slots = [None] * MAX_SKILLS   # slot index -> skill name or None
         self.remaining_points = initial_points
         self.points_var = tk.StringVar(value=str(int(self.remaining_points)))
 
@@ -4154,46 +4218,53 @@ class CharacterCreator:
                          font=("TkDefaultFont", 9, "bold"), cursor="hand2")
         _info.pack(side="left", padx=(6, 0))
         Tooltip(_info,
-                "Skills are automatically sorted by their cost, which is also "
-                "the order in which they are acquired.\n\n"
-                "For Chatquest 2 you learn 6 skills total at levels:\n"
-                "1, 5, 10, 15, 20, 25.",
+                "You have 6 skill slots, unlocked at levels 1, 5, 10, 15, 20, 25.\n\n"
+                "Each skill has a gate (0-4) tied to chapter progress; a skill can "
+                "only be placed in a slot whose gate is high enough. In the Skill "
+                "Selection window, click a skill to choose an eligible slot for it.",
                 delay_ms=400)
 
     def _render_skills_list(self):
-        """Rebuild the selected-skills table, sorted by cost (acquisition order)."""
+        """Rebuild the skill-slot table in slot order (no auto-sort)."""
         for w in self.skills_list_frame.winfo_children():
             w.destroy()
 
-        skills = getattr(self, "selected_skills", []) or []
-        if not skills:
+        slots = getattr(self, "skill_slots", None) or [None] * MAX_SKILLS
+        if not any(slots):
             ttk.Label(self.skills_list_frame, text="No skills selected",
                       foreground="gray").grid(row=0, column=0, sticky="w")
             return
 
-        ordered = sorted(skills, key=lambda s: scaled_skill_cost(skill_data[s]["cost"]))
-        for col, header in enumerate(("#", "Skill", "Cost")):
+        for col, header in enumerate(("Slot", "Lv", "Gate", "Skill", "Cost")):
             ttk.Label(self.skills_list_frame, text=header,
                       font=("TkDefaultFont", 9, "bold")).grid(
-                row=0, column=col, sticky="w", padx=(0, 16), pady=(0, 2))
+                row=0, column=col, sticky="w", padx=(0, 14), pady=(0, 2))
 
-        for i, skill in enumerate(ordered, 1):
-            cost = scaled_skill_cost(skill_data[skill]["cost"])
-            ttk.Label(self.skills_list_frame, text=str(i)).grid(
-                row=i, column=0, sticky="w", padx=(0, 16))
-            name_lbl = ttk.Label(self.skills_list_frame, text=skill)
-            name_lbl.grid(row=i, column=1, sticky="w", padx=(0, 16))
-            ttk.Label(self.skills_list_frame, text=str(int(cost))).grid(
-                row=i, column=2, sticky="w")
-
-            info = skill_data.get(skill, {})
-            tip_parts = []
-            if info.get("desc"):
-                tip_parts.append(info["desc"])
-            if info.get("groups"):
-                tip_parts.append("Groups: " + ", ".join(info["groups"]))
-            if tip_parts:
-                Tooltip(name_lbl, "\n\n".join(tip_parts))
+        for i, skill in enumerate(slots):
+            r = i + 1
+            ttk.Label(self.skills_list_frame, text=str(i + 1)).grid(
+                row=r, column=0, sticky="w", padx=(0, 14))
+            ttk.Label(self.skills_list_frame, text=str(SKILL_SLOT_LEVELS[i]),
+                      foreground="gray").grid(row=r, column=1, sticky="w", padx=(0, 14))
+            ttk.Label(self.skills_list_frame, text=str(SKILL_SLOT_GATES[i]),
+                      foreground="gray").grid(row=r, column=2, sticky="w", padx=(0, 14))
+            if skill and skill in skill_data:
+                cost = scaled_skill_cost(skill_data[skill]["cost"])
+                name_lbl = ttk.Label(self.skills_list_frame, text=skill)
+                name_lbl.grid(row=r, column=3, sticky="w", padx=(0, 14))
+                ttk.Label(self.skills_list_frame, text=str(int(cost))).grid(
+                    row=r, column=4, sticky="w")
+                info = skill_data.get(skill, {})
+                tip_parts = []
+                if info.get("desc"):
+                    tip_parts.append(info["desc"])
+                if info.get("groups"):
+                    tip_parts.append("Groups: " + ", ".join(info["groups"]))
+                if tip_parts:
+                    Tooltip(name_lbl, "\n\n".join(tip_parts))
+            else:
+                ttk.Label(self.skills_list_frame, text="— empty —",
+                          foreground="gray").grid(row=r, column=3, sticky="w", padx=(0, 14))
 
     def setup_growth_frame(self, parent):
         frame = ttk.LabelFrame(parent, text="Attribute Growth", padding=10)
@@ -4543,12 +4614,38 @@ class CharacterCreator:
             )
             self.skill_window = SkillSelectionWindow(
                 self.root, self.update_skills_and_points,
-                self.remaining_points + current_skill_cost, self.selected_skills)
+                self.remaining_points + current_skill_cost, self.skill_slots)
 
-    def update_skills_and_points(self, selected_skills, skill_cost):
-        self.selected_skills = selected_skills
+    def update_skills_and_points(self, slots):
+        self.skill_slots = list(slots)
+        self.selected_skills = [s for s in self.skill_slots if s]
         self.update_total_cost()
         self._render_skills_list()
+
+    def _slots_from_imported(self, raw):
+        """Build a length-MAX_SKILLS slot list from imported skill data.
+
+        Accepts the new ordered slot list (may contain null) or an old flat list.
+        Keeps a skill's original slot when it's gate-eligible, otherwise drops it
+        into the earliest eligible free slot; unknown skills and overflow are
+        skipped (verification surfaces any problems)."""
+        slots = [None] * MAX_SKILLS
+        if not isinstance(raw, list):
+            return slots
+        positional = len(raw) == MAX_SKILLS
+        for idx, name in enumerate(raw):
+            if not name or name not in skill_data or name in slots:
+                continue
+            gate = skill_gate(name)
+            if (positional and idx < MAX_SKILLS
+                    and SKILL_SLOT_GATES[idx] >= gate and slots[idx] is None):
+                slots[idx] = name
+                continue
+            for i in eligible_slots(gate):
+                if slots[i] is None:
+                    slots[i] = name
+                    break
+        return slots
 
     def validate_growth(self, attribute):
         value = _safe_get(self.growth_vars[attribute], 0)
@@ -4961,6 +5058,13 @@ class CharacterCreator:
             errors.append(
                 f"\u2022 Too many skills selected ({len(self.selected_skills)}), maximum is {MAX_SKILLS}."
             )
+        # Skill slots: each slotted skill must fit its slot's gate.
+        for idx, name in enumerate(self.skill_slots):
+            if name and name in skill_data and skill_gate(name) > SKILL_SLOT_GATES[idx]:
+                errors.append(
+                    f"\u2022 '{name}' (gate {skill_gate(name)}) is in Slot {idx + 1}, which "
+                    f"only allows gate {SKILL_SLOT_GATES[idx]}."
+                )
         # Personal skill: one must be chosen (None is not allowed) and it must
         # not also be selected as a normal skill.
         personal = self.personal_skill_var.get().split(" (")[0]
@@ -5016,7 +5120,7 @@ class CharacterCreator:
             "movement_type": movement_type,
             "weapons": [w.get() for w in self.weapon_vars if w.get()],
             "personal_skill": self.personal_skill_var.get().split(" (")[0],
-            "skills": self.selected_skills,
+            "skills": list(self.skill_slots),   # ordered 6-slot list (None = empty)
             "growths": {attr: var.get() for attr, var in self.growth_vars.items()},
             "base_stats": {attr: int(self.base_vars[attr].get()) for attr in self.attributes},
             "secondary_stats": secondary_stats_data
@@ -5134,10 +5238,18 @@ class CharacterCreator:
                 issues.append(
                     f"Secondary {stat} cost {round(claimed_c)} does not match the recomputed {true_c}")
 
-        # --- Skill count (raw count of skills that exist in this version) ---
-        valid_skills = [s for s in char_data.get("skills", []) if s in skill_data]
+        # --- Skills: count, plus gate legality of slotted skills ---
+        raw_skills = char_data.get("skills", []) or []
+        valid_skills = [s for s in raw_skills if s in skill_data]
         if len(valid_skills) > MAX_SKILLS:
             issues.append(f"{len(valid_skills)} skills selected; the limit is {MAX_SKILLS}")
+        # Gate legality applies only to the positional 6-slot format
+        if isinstance(raw_skills, list) and len(raw_skills) == MAX_SKILLS:
+            for idx, name in enumerate(raw_skills):
+                if name and name in skill_data and skill_gate(name) > SKILL_SLOT_GATES[idx]:
+                    issues.append(
+                        f"'{name}' (gate {skill_gate(name)}) is in Slot {idx + 1}, which "
+                        f"only allows gate {SKILL_SLOT_GATES[idx]}")
 
         # --- Personal skill: must be chosen and not overlap a normal skill ---
         personal = char_data.get("personal_skill", "")
@@ -5145,7 +5257,7 @@ class CharacterCreator:
             issues.append(f"No valid personal skill selected (personal_skill = {personal!r})")
         else:
             eff = PERSONAL_SKILL_ALIASES.get(personal, personal)
-            file_skills = char_data.get("skills", [])
+            file_skills = [s for s in (char_data.get("skills") or []) if s]
             if eff in file_skills or personal in file_skills:
                 issues.append(f"Personal skill '{personal}' is also selected as a normal skill")
 
@@ -5277,18 +5389,26 @@ class CharacterCreator:
                     self.secondary_stats_vars[stat].set(data.get("value", 0))
                     self.validate_secondary_stat(stat)
             
-            # Load skills — skip any that no longer exist in skill_data.json
-            skills = char_data.get("skills", [])
-            missing_skills = [s for s in skills if s not in skill_data]
-            valid_skills = [s for s in skills if s in skill_data]
+            # Load skills into slots. Accepts the new ordered slot list (may
+            # contain null) and old flat lists of any length, re-slotting into
+            # gate-eligible positions. Surface anything that had to be dropped.
+            raw_skills = char_data.get("skills", []) or []
+            named = list(dict.fromkeys(s for s in raw_skills if s))   # unique, ordered
+            missing_skills = [s for s in named if s not in skill_data]
+            slots = self._slots_from_imported(raw_skills)
+            placed = [s for s in slots if s]
+            dropped = [s for s in named if s in skill_data and s not in placed]
+            notes = []
             if missing_skills:
-                messagebox.showwarning(
-                    "Missing Skills",
-                    "The following skills could not be imported because they no "
-                    "longer exist in the current version of the tool and have been removed:\n\n"
-                    + "\n".join(f"  • {s}" for s in missing_skills)
-                )
-            self.update_skills_and_points(valid_skills, 0)  # Cost will be recalculated
+                notes.append("No longer exist in this version (removed):\n"
+                             + "\n".join(f"  • {s}" for s in missing_skills))
+            if dropped:
+                notes.append(f"Could not be slotted into the {MAX_SKILLS} slots "
+                             "(no free slot at their gate — dropped):\n"
+                             + "\n".join(f"  • {s}" for s in dropped))
+            if notes:
+                messagebox.showwarning("Skills adjusted on import", "\n\n".join(notes))
+            self.update_skills_and_points(slots)
             
             # Load stance bonuses
             stance_bonuses = char_data.get("stance_bonuses", {})
@@ -5375,6 +5495,7 @@ class CharacterCreator:
         self.personal_skill_var.set("None (0 pts)")
 
         self.selected_skills = []
+        self.skill_slots = [None] * MAX_SKILLS
         self._render_skills_list()
 
         for attr in self.attributes:
