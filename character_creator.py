@@ -9,7 +9,7 @@ import os
 # VERSION
 # ============================================================================
 
-VERSION = "0.61.b"
+VERSION = "0.61.c"
 
 print("Program starting...")
 # ============================================================================
@@ -3916,6 +3916,10 @@ class CustomWeaponCreator:
 
         # Recompute-and-verify the loaded weapon. Silent on clean unless announce.
         issues = self._verify_imported_weapon(weapon_data)
+        dropped = [e for e in (weapon_data.get("fixed_effects") or []) if e in self.disabled_effects]
+        if dropped:
+            issues.insert(0, f"Removed effect(s) not available for the {self.kind_label}: "
+                             + ", ".join(dropped))
         _show_import_verification(self.window, "weapon",
                                   weapon_data.get("name", ""),
                                   weapon_data.get("version"), issues,
@@ -3963,17 +3967,16 @@ class CustomWeaponCreator:
                 if field not in weapon_data:
                     raise ValueError(f"Missing required field: {field}")
 
-            # Importing a weapon of the other kind is allowed, but flag it.
-            file_kind = weapon_data.get("weapon_kind")
-            if file_kind and file_kind != self.weapon_kind:
+            # A file with no weapon_kind (made in an earlier version) is treated
+            # as a Promoted Weapon. Importing the other kind is allowed but flagged.
+            file_kind = weapon_data.get("weapon_kind") or "promoted"
+            if file_kind != self.weapon_kind:
                 file_label = WEAPON_KINDS.get(file_kind, {}).get("label", file_kind)
                 messagebox.showinfo(
                     "Different Weapon Type",
                     f"This file is a {file_label}, but you are importing it into the "
                     f"{self.kind_label} creator. It will be loaded and re-checked against "
-                    f"the {self.kind_label}'s {self.weapon_points}-point budget"
-                    + (f"; effects unavailable here ({', '.join(sorted(self.disabled_effects))}) "
-                       "are dropped." if self.disabled_effects else "."),
+                    f"the {self.kind_label}'s {self.weapon_points}-point budget.",
                     parent=self.window)
 
             # Shared loader handles all field loading + recompute-and-verify.

@@ -2,6 +2,14 @@
 
 All notable changes to the Chatquest 2 Character Creator are documented here.
 
+## 0.61.c
+
+### Added
+- A weapon file with no kind tag (made in an earlier version) is treated as a
+  Promoted Weapon on import.
+- Loading a weapon now warns which effects were removed because they are not
+  available for that weapon kind.
+
 ## 0.61.b
 
 ### Added
