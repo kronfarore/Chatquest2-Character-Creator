@@ -2,6 +2,13 @@
 
 All notable changes to the Chatquest 2 Character Creator are documented here.
 
+## 0.61.d
+
+### Changed
+- The weapon creator's info note is now specific to the weapon kind: the Base
+  Weapon notes it's available from when the character joins; the Promoted Weapon
+  notes it's available after chapter 17.
+
 ## 0.61.c
 
 ### Added

@@ -9,7 +9,7 @@ import os
 # VERSION
 # ============================================================================
 
-VERSION = "0.61.c"
+VERSION = "0.61.d"
 
 print("Program starting...")
 # ============================================================================
@@ -106,11 +106,15 @@ BASE_WEAPON_TOTAL_POINTS = 50
 WEAPON_KINDS = {
     "promoted": {"label": "Promoted Weapon", "points": WEAPON_TOTAL_POINTS,
                  "stat_costs": WEAPON_STAT_COSTS, "field": "custom_weapon",
-                 "disabled_effects": frozenset()},
+                 "disabled_effects": frozenset(),
+                 "note": "ℹ This weapon will be available to you after chapter 17.\n"
+                         "Staff usage scaling tbd."},
     "base": {"label": "Base Weapon", "points": BASE_WEAPON_TOTAL_POINTS,
              "stat_costs": {**WEAPON_STAT_COSTS, "Hit": WEAPON_STAT_COSTS["Hit"] / 2},
              "field": "custom_weapon_base",
-             "disabled_effects": frozenset({"Silver Weapon", "S Rank Debuff"})},
+             "disabled_effects": frozenset({"Silver Weapon", "S Rank Debuff"}),
+             "note": "ℹ This weapon will be available to you from the moment your "
+                     "character joins.\nStaff usage scaling tbd."},
 }
 
 WEAPON_STAT_BASE = {
@@ -1188,13 +1192,8 @@ class CustomWeaponCreator:
         info_note_frame = ttk.Frame(frame)
         info_note_frame.grid(row=4, column=0, columnspan=2, sticky="ew", pady=(5, 5))
         
-        info_note = (
-            "ℹ Note: The weapon you are building here is the S rank version of it.\n"
-            "  You will receive a scaled down version ingame starting with E rank.\n"
-            "  Once you achieve a higher proficiency rank, you receive the next upgrade in My Castle.\n"
-            "  Weapons (not Staves/Rods) get replaced. Old versions of Staves and Rods are kept, unless you have Unlimited Uses."
-        )
-        info_label = ttk.Label(info_note_frame, text=info_note, foreground="blue", 
+        info_note = WEAPON_KINDS.get(self.weapon_kind, WEAPON_KINDS["promoted"])["note"]
+        info_label = ttk.Label(info_note_frame, text=info_note, foreground="blue",
                                font=('TkDefaultFont', 8), justify="left")
         info_label.pack(anchor="w")
 
