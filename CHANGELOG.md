@@ -2,6 +2,16 @@
 
 All notable changes to the Chatquest 2 Character Creator are documented here.
 
+## 0.62.a
+
+### Changed
+- Rebalanced **attribute growth costs**: flattened (the last +5% step now costs
+  ~3x the first instead of ~8x) and brought down (reaching 100% in a stat now
+  averages ~50, was ~80), with the per-stat spread preserved. HP Regeneration,
+  which derives from the HP table, is cheaper as a result.
+- Reduced **secondary stat** (Hit/Crit/Avoid/Dodge) base costs by ~25%, keeping
+  the mild curve.
+
 ## 0.61.d
 
 ### Changed

@@ -9,7 +9,7 @@ import os
 # VERSION
 # ============================================================================
 
-VERSION = "0.61.d"
+VERSION = "0.62.a"
 
 print("Program starting...")
 # ============================================================================
@@ -36,17 +36,18 @@ DODGE_COST_SCALE = 2.0   # Scale factor for Dodge cost in both weapon stats and 
 
 # Cumulative growth cost per attribute, indexed by growth // 5 (0% .. 110%).
 # Indices 0-20 cover 0-100% (manual range); 21-22 are 105%/110%, reachable only
-# by Aptitude (+10%). The 105/110 entries continue the table's geometric
-# marginal (ratio ~1.116) and were extrapolated from the 0-100% values.
+# by Aptitude (+10%). Geometric marginal at ratio ~1.06 (the last +5% step costs
+# ~3x the first), scaled so reaching 100% averages ~50 points; per-stat spread
+# preserved (HP cheapest, Magic priciest).
 ATTRIBUTE_COSTS = {
-    "HP": [0, 1.05, 2.21, 3.52, 4.97, 6.6, 8.41, 10.44, 12.7, 15.22, 18.04, 21.18, 24.69, 28.61, 32.98, 37.86, 43.31, 49.39, 56.18, 63.76, 72.23, 81.68, 92.24],
-    "Strength": [0, 1.13, 2.4, 3.81, 5.39, 7.15, 9.11, 11.31, 13.76, 16.49, 19.54, 22.95, 26.75, 30.99, 35.73, 41.02, 46.92, 53.51, 60.87, 69.08, 78.24, 88.47, 99.88],
-    "Magic": [0, 1.25, 2.65, 4.2, 5.94, 7.88, 10.05, 12.47, 15.17, 18.18, 21.54, 25.3, 29.49, 34.17, 39.39, 45.23, 51.73, 59, 67.11, 76.16, 86.27, 97.56, 110.15],
-    "Skill": [0, 1.1, 2.34, 3.71, 5.25, 6.97, 8.88, 11.02, 13.4, 16.07, 19.04, 22.36, 26.06, 30.2, 34.81, 39.97, 45.72, 52.14, 59.31, 67.31, 76.24, 86.21, 97.34],
-    "Speed": [0, 1.19, 2.52, 4.01, 5.67, 7.52, 9.58, 11.89, 14.46, 17.34, 20.54, 24.12, 28.12, 32.58, 37.56, 43.12, 49.33, 56.26, 63.99, 72.62, 82.26, 93.02, 105.04],
-    "Luck": [0, 1.08, 2.28, 3.62, 5.11, 6.78, 8.65, 10.73, 13.05, 15.64, 18.54, 21.77, 25.38, 29.4, 33.9, 38.91, 44.52, 50.77, 57.75, 65.54, 74.23, 83.93, 94.75],
-    "Defense": [0, 1.22, 2.58, 4.11, 5.8, 7.7, 9.82, 12.18, 14.81, 17.76, 21.04, 24.71, 28.81, 33.38, 38.48, 44.17, 50.53, 57.63, 65.55, 74.39, 84.26, 95.28, 107.58],
-    "Resistance": [0, 1.16, 2.46, 3.91, 5.53, 7.33, 9.35, 11.6, 14.11, 16.91, 20.04, 23.53, 27.43, 31.79, 36.65, 42.07, 48.12, 54.88, 62.43, 70.85, 80.25, 90.74, 102.46]
+    "HP": [0, 1.24, 2.55, 3.94, 5.42, 6.98, 8.64, 10.4, 12.26, 14.23, 16.32, 18.54, 20.89, 23.38, 26.02, 28.82, 31.79, 34.94, 38.28, 41.82, 45.57, 49.54, 53.75],
+    "Strength": [0, 1.34, 2.76, 4.27, 5.87, 7.56, 9.36, 11.26, 13.28, 15.42, 17.69, 20.09, 22.64, 25.34, 28.2, 31.23, 34.45, 37.86, 41.47, 45.3, 49.36, 53.66, 58.22],
+    "Magic": [0, 1.48, 3.05, 4.71, 6.47, 8.34, 10.32, 12.42, 14.64, 17.0, 19.5, 22.15, 24.96, 27.94, 31.1, 34.45, 38.0, 41.76, 45.74, 49.96, 54.44, 59.19, 64.22],
+    "Skill": [0, 1.31, 2.7, 4.17, 5.73, 7.38, 9.13, 10.98, 12.95, 15.03, 17.24, 19.58, 22.06, 24.69, 27.48, 30.44, 33.57, 36.89, 40.41, 44.14, 48.1, 52.29, 56.74],
+    "Speed": [0, 1.41, 2.91, 4.5, 6.18, 7.96, 9.85, 11.85, 13.97, 16.22, 18.6, 21.13, 23.81, 26.65, 29.66, 32.85, 36.23, 39.81, 43.61, 47.64, 51.91, 56.43, 61.23],
+    "Luck": [0, 1.27, 2.62, 4.05, 5.57, 7.18, 8.88, 10.69, 12.6, 14.63, 16.78, 19.06, 21.48, 24.04, 26.76, 29.64, 32.69, 35.92, 39.35, 42.98, 46.83, 50.91, 55.24],
+    "Defense": [0, 1.45, 2.98, 4.6, 6.32, 8.14, 10.07, 12.12, 14.29, 16.59, 19.03, 21.62, 24.36, 27.27, 30.35, 33.62, 37.08, 40.75, 44.64, 48.77, 53.14, 57.77, 62.68],
+    "Resistance": [0, 1.38, 2.84, 4.39, 6.03, 7.77, 9.61, 11.56, 13.63, 15.82, 18.15, 20.61, 23.22, 25.99, 28.93, 32.04, 35.34, 38.84, 42.55, 46.48, 50.64, 55.05, 59.73]
 }
 
 PERSONAL_SKILLS = {
@@ -71,10 +72,10 @@ MOVEMENT_COSTS = {
 }
 
 SECONDARY_STAT_BASE_COSTS = {
-    "Hit": 0.86,
-    "Crit": 0.49,
-    "Avoid": 0.92,
-    "Dodge": 0.24 * DODGE_COST_SCALE
+    "Hit": 0.645,
+    "Crit": 0.3675,
+    "Avoid": 0.69,
+    "Dodge": 0.18 * DODGE_COST_SCALE
 }
 
 EXTRA_WEAPON_COST = 2
@@ -5061,7 +5062,7 @@ class CharacterCreator:
         for idx, name in enumerate(self.skill_slots):
             if name and name in skill_data and skill_gate(name) > SKILL_SLOT_GATES[idx]:
                 errors.append(
-                    f"\u2022 '{name}' (gate {skill_gate(name)}) is in Slot {idx + 1}, which "
+                    f"\u2022 '{name}' (gate {skill_gate(name)}) was in Slot {idx + 1}, which "
                     f"only allows gate {SKILL_SLOT_GATES[idx]}."
                 )
         # Personal skill: one must be chosen (None is not allowed) and it must
@@ -5249,7 +5250,7 @@ class CharacterCreator:
             for idx, name in enumerate(raw_skills):
                 if name and name in skill_data and skill_gate(name) > SKILL_SLOT_GATES[idx]:
                     issues.append(
-                        f"'{name}' (gate {skill_gate(name)}) is in Slot {idx + 1}, which "
+                        f"'{name}' (gate {skill_gate(name)}) was in Slot {idx + 1}, which "
                         f"only allows gate {SKILL_SLOT_GATES[idx]}")
 
         # --- Personal skill: must be chosen and not overlap a normal skill ---
