@@ -9,7 +9,7 @@ import os
 # VERSION
 # ============================================================================
 
-VERSION = "0.61.a"
+VERSION = "0.61.b"
 
 print("Program starting...")
 # ============================================================================
@@ -105,10 +105,12 @@ WEAPON_STAT_COSTS = {
 BASE_WEAPON_TOTAL_POINTS = 50
 WEAPON_KINDS = {
     "promoted": {"label": "Promoted Weapon", "points": WEAPON_TOTAL_POINTS,
-                 "stat_costs": WEAPON_STAT_COSTS, "field": "custom_weapon"},
+                 "stat_costs": WEAPON_STAT_COSTS, "field": "custom_weapon",
+                 "disabled_effects": frozenset()},
     "base": {"label": "Base Weapon", "points": BASE_WEAPON_TOTAL_POINTS,
              "stat_costs": {**WEAPON_STAT_COSTS, "Hit": WEAPON_STAT_COSTS["Hit"] / 2},
-             "field": "custom_weapon_base"},
+             "field": "custom_weapon_base",
+             "disabled_effects": frozenset({"Silver Weapon", "S Rank Debuff"})},
 }
 
 WEAPON_STAT_BASE = {
@@ -1003,7 +1005,8 @@ class SkillSelectionWindow:
 
 class CustomWeaponCreator:
     def __init__(self, parent, callback, initial_weapon_data=None,
-                 total_points=WEAPON_TOTAL_POINTS, stat_costs=None, kind_label="Weapon"):
+                 total_points=WEAPON_TOTAL_POINTS, stat_costs=None, kind_label="Weapon",
+                 weapon_kind="promoted", disabled_effects=frozenset()):
         print("CustomWeaponCreator  init starting...")
         self.parent = parent
         self.callback = callback
@@ -1011,6 +1014,8 @@ class CustomWeaponCreator:
         self.remaining_weapon_points = total_points
         self.stat_costs = dict(stat_costs) if stat_costs else dict(WEAPON_STAT_COSTS)
         self.kind_label = kind_label
+        self.weapon_kind = weapon_kind            # "promoted" / "base" (for the file tag)
+        self.disabled_effects = set(disabled_effects)   # fixed effects unavailable here
 
         self.window = tk.Toplevel(parent)
         self.window.title(f"{kind_label} Creator - Fire Emblem Fates Tool v{VERSION}")
@@ -1328,6 +1333,11 @@ class CustomWeaponCreator:
             self.fixed_effect_cost_labels[effect] = cost_label
             self.fixed_effect_note_labels[effect] = note_var
             self.fixed_effect_checkbuttons[effect] = chk
+
+            # Effects unavailable for this weapon kind (e.g. Base Weapon)
+            if effect in self.disabled_effects:
+                chk.state(["disabled"])
+                note_var.set(f"Not available for {self.kind_label}")
 
         self.update_fixed_effects_visibility()
         self._update_ineffective_state()
@@ -3751,6 +3761,7 @@ class CustomWeaponCreator:
         
         # Prepare export data with all current values
         export_data = {
+            "weapon_kind": self.weapon_kind,        # "promoted" / "base" tag
             "name": self.weapon_data["name"],
             "type": self.weapon_data["type"],
             "custom_type": self.weapon_data["custom_type"],
@@ -3852,7 +3863,7 @@ class CustomWeaponCreator:
             self.on_range_change()
         if "fixed_effects" in weapon_data:
             for effect, var in self.fixed_effect_vars.items():
-                if effect in weapon_data["fixed_effects"]:
+                if effect in weapon_data["fixed_effects"] and effect not in self.disabled_effects:
                     var.set(True)
                     self.on_fixed_effect_toggle(effect, var)
         if "value_effects" in weapon_data:
@@ -3951,6 +3962,19 @@ class CustomWeaponCreator:
             for field in required_fields:
                 if field not in weapon_data:
                     raise ValueError(f"Missing required field: {field}")
+
+            # Importing a weapon of the other kind is allowed, but flag it.
+            file_kind = weapon_data.get("weapon_kind")
+            if file_kind and file_kind != self.weapon_kind:
+                file_label = WEAPON_KINDS.get(file_kind, {}).get("label", file_kind)
+                messagebox.showinfo(
+                    "Different Weapon Type",
+                    f"This file is a {file_label}, but you are importing it into the "
+                    f"{self.kind_label} creator. It will be loaded and re-checked against "
+                    f"the {self.kind_label}'s {self.weapon_points}-point budget"
+                    + (f"; effects unavailable here ({', '.join(sorted(self.disabled_effects))}) "
+                       "are dropped." if self.disabled_effects else "."),
+                    parent=self.window)
 
             # Shared loader handles all field loading + recompute-and-verify.
             self._load_weapon_data(weapon_data, announce=True)
@@ -4921,7 +4945,8 @@ class CharacterCreator:
             self.root, lambda data, k=kind: self.update_custom_weapon(data, k),
             self.custom_weapons.get(kind),
             total_points=cfg["points"], stat_costs=cfg["stat_costs"],
-            kind_label=cfg["label"])
+            kind_label=cfg["label"], weapon_kind=kind,
+            disabled_effects=cfg["disabled_effects"])
 
     def _set_custom_weapon_display(self, kind, text):
         disp = self.weapon_displays[kind]

@@ -2,6 +2,17 @@
 
 All notable changes to the Chatquest 2 Character Creator are documented here.
 
+## 0.61.b
+
+### Added
+- Exported weapon files now carry a `weapon_kind` tag (Promoted / Base).
+- Importing a weapon of the other kind into a creator is allowed but shows a
+  notice; effects unavailable for that kind are dropped on load.
+
+### Changed
+- **Silver Weapon** and **S Rank Debuff** fixed effects are unavailable in the
+  Base Weapon creator.
+
 ## 0.61.a
 
 ### Added
