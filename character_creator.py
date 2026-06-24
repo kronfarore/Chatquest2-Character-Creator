@@ -9,14 +9,14 @@ import os
 # VERSION
 # ============================================================================
 
-VERSION = "0.62.a"
+VERSION = "0.62.b"
 
 print("Program starting...")
 # ============================================================================
 # CONSTANTS
 # ============================================================================
 
-initial_points = 200
+initial_points = 180
 MAX_SKILLS = 5  # Maximum number of skills a character may select (Skills section)
 
 # Skill slots: each of the MAX_SKILLS slots shows a chapter label (when it
@@ -86,7 +86,7 @@ NOSFERATU_FORCES_BRONZE_AND_BOLD = True
 # ============================================================================
 
 WEAPON_TOTAL_POINTS = 100
-MAX_SKILL_COST = 24  # Highest point cost any skill can have after scaling
+MAX_SKILL_COST = 20  # Highest point cost any skill can have after scaling
 
 WEAPON_STAT_COSTS = {
     "Might": 2.2,
@@ -954,7 +954,7 @@ class SkillSelectionWindow:
             self.slots_frame.grid_columnconfigure(i, weight=1)
             ttk.Label(cell, text=f"Slot {i + 1}",
                       font=("TkDefaultFont", 8, "bold")).pack(anchor="w")
-            ttk.Label(cell, text=f"Chapter {SKILL_SLOT_CHAPTERS[i]}",
+            ttk.Label(cell, text=f"Chapter {SKILL_SLOT_CHAPTERS[i]} · gate {SKILL_SLOT_GATES[i]}",
                       font=("TkDefaultFont", 7), foreground="gray").pack(anchor="w")
             sk = self.slots[i]
             if sk:

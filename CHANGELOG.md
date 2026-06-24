@@ -2,6 +2,15 @@
 
 All notable changes to the Chatquest 2 Character Creator are documented here.
 
+## 0.62.b
+
+### Changed
+- Build budget lowered 200 → 180.
+- Lowered the skill cost scale cap (24 → 20) and repriced several skills,
+  notably Aptitude (cheaper, ~its recalculated value), Rally Movement, and
+  Rally Spectrum.
+- Skill Selection slot headers now show the gate next to the chapter number.
+
 ## 0.62.a
 
 ### Changed

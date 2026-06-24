@@ -80,7 +80,7 @@
         "gate": 1
     },
     "Aptitude": {
-        "cost": 49.0,
+        "cost": 36.0,
         "groups": [
             "Stat"
         ],
@@ -828,7 +828,7 @@
         "gate": 2
     },
     "Rally Movement": {
-        "cost": 31.17,
+        "cost": 20.77,
         "groups": [
             "Rally"
         ],
@@ -836,7 +836,7 @@
         "gate": 3
     },
     "Rally Spectrum": {
-        "cost": 48.36,
+        "cost": 24.17,
         "groups": [
             "Rally"
         ],
@@ -1976,14 +1976,6 @@
         "desc": "User’s Armour-type weakness is nullified",
         "gate": 1
     },
-    "Inevitable End": {
-        "cost": 14.4,
-        "groups": [
-            "Enfeeble"
-        ],
-        "desc": "Stat reduction effects on the enemy will stack",
-        "gate": 0
-    },
     "Immune Status": {
         "cost": 17.72,
         "groups": [
@@ -2002,7 +1994,7 @@
         "gate": 3
     },
     "Dragonskin": {
-        "cost": 37.54,
+        "cost": 38.54,
         "groups": [
             "Reduction%",
             "Resist"
