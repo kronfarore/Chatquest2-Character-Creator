@@ -9,7 +9,7 @@ import os
 # VERSION
 # ============================================================================
 
-VERSION = "0.62.b"
+VERSION = "0.63.a"
 
 print("Program starting...")
 # ============================================================================
@@ -24,7 +24,7 @@ MAX_SKILLS = 5  # Maximum number of skills a character may select (Skills sectio
 # the slot's gate >= G. Both lists must stay length MAX_SKILLS. (The "9/10"
 # chapter is still being decided.)
 SKILL_SLOT_CHAPTERS = ["6", "9/10", "14", "18", "23"]
-SKILL_SLOT_GATES = [0, 1, 2, 3, 4]
+SKILL_SLOT_GATES = [1, 2, 3, 4, 5]
 
 skill_data = {}
 
@@ -36,18 +36,18 @@ DODGE_COST_SCALE = 2.0   # Scale factor for Dodge cost in both weapon stats and 
 
 # Cumulative growth cost per attribute, indexed by growth // 5 (0% .. 110%).
 # Indices 0-20 cover 0-100% (manual range); 21-22 are 105%/110%, reachable only
-# by Aptitude (+10%). Geometric marginal at ratio ~1.06 (the last +5% step costs
-# ~3x the first), scaled so reaching 100% averages ~50 points; per-stat spread
-# preserved (HP cheapest, Magic priciest).
+# by Aptitude (+10%). Geometric marginal at ratio ~1.10 (the last +5% step costs
+# ~6x the first, so cost ramps up past ~60%), scaled so reaching 100% averages
+# ~70 points; per-stat spread preserved (HP cheapest, Magic priciest).
 ATTRIBUTE_COSTS = {
-    "HP": [0, 1.24, 2.55, 3.94, 5.42, 6.98, 8.64, 10.4, 12.26, 14.23, 16.32, 18.54, 20.89, 23.38, 26.02, 28.82, 31.79, 34.94, 38.28, 41.82, 45.57, 49.54, 53.75],
-    "Strength": [0, 1.34, 2.76, 4.27, 5.87, 7.56, 9.36, 11.26, 13.28, 15.42, 17.69, 20.09, 22.64, 25.34, 28.2, 31.23, 34.45, 37.86, 41.47, 45.3, 49.36, 53.66, 58.22],
-    "Magic": [0, 1.48, 3.05, 4.71, 6.47, 8.34, 10.32, 12.42, 14.64, 17.0, 19.5, 22.15, 24.96, 27.94, 31.1, 34.45, 38.0, 41.76, 45.74, 49.96, 54.44, 59.19, 64.22],
-    "Skill": [0, 1.31, 2.7, 4.17, 5.73, 7.38, 9.13, 10.98, 12.95, 15.03, 17.24, 19.58, 22.06, 24.69, 27.48, 30.44, 33.57, 36.89, 40.41, 44.14, 48.1, 52.29, 56.74],
-    "Speed": [0, 1.41, 2.91, 4.5, 6.18, 7.96, 9.85, 11.85, 13.97, 16.22, 18.6, 21.13, 23.81, 26.65, 29.66, 32.85, 36.23, 39.81, 43.61, 47.64, 51.91, 56.43, 61.23],
-    "Luck": [0, 1.27, 2.62, 4.05, 5.57, 7.18, 8.88, 10.69, 12.6, 14.63, 16.78, 19.06, 21.48, 24.04, 26.76, 29.64, 32.69, 35.92, 39.35, 42.98, 46.83, 50.91, 55.24],
-    "Defense": [0, 1.45, 2.98, 4.6, 6.32, 8.14, 10.07, 12.12, 14.29, 16.59, 19.03, 21.62, 24.36, 27.27, 30.35, 33.62, 37.08, 40.75, 44.64, 48.77, 53.14, 57.77, 62.68],
-    "Resistance": [0, 1.38, 2.84, 4.39, 6.03, 7.77, 9.61, 11.56, 13.63, 15.82, 18.15, 20.61, 23.22, 25.99, 28.93, 32.04, 35.34, 38.84, 42.55, 46.48, 50.64, 55.05, 59.73]
+    "HP": [0, 1.11, 2.34, 3.69, 5.17, 6.8, 8.59, 10.56, 12.73, 15.12, 17.75, 20.64, 23.82, 27.32, 31.17, 35.4, 40.05, 45.17, 50.8, 56.99, 63.8, 71.29, 79.53],
+    "Strength": [0, 1.21, 2.54, 4.0, 5.61, 7.38, 9.32, 11.46, 13.81, 16.4, 19.25, 22.38, 25.82, 29.61, 33.78, 38.36, 43.4, 48.94, 55.04, 61.75, 69.13, 77.25, 86.18],
+    "Magic": [0, 1.33, 2.79, 4.4, 6.17, 8.12, 10.26, 12.62, 15.21, 18.06, 21.2, 24.65, 28.45, 32.63, 37.22, 42.27, 47.83, 53.94, 60.67, 68.07, 76.21, 85.16, 95.01],
+    "Skill": [0, 1.18, 2.47, 3.89, 5.45, 7.17, 9.06, 11.14, 13.43, 15.95, 18.72, 21.77, 25.12, 28.81, 32.87, 37.33, 42.24, 47.64, 53.58, 60.12, 67.31, 75.22, 83.92],
+    "Speed": [0, 1.27, 2.67, 4.21, 5.9, 7.76, 9.8, 12.05, 14.52, 17.24, 20.23, 23.52, 27.14, 31.12, 35.5, 40.32, 45.62, 51.45, 57.86, 64.91, 72.67, 81.21, 90.6],
+    "Luck": [0, 1.14, 2.4, 3.79, 5.31, 6.99, 8.83, 10.86, 13.09, 15.54, 18.24, 21.21, 24.48, 28.07, 32.02, 36.37, 41.15, 46.41, 52.2, 58.56, 65.56, 73.26, 81.73],
+    "Defense": [0, 1.3, 2.73, 4.3, 6.03, 7.93, 10.02, 12.32, 14.85, 17.63, 20.69, 24.06, 27.77, 31.85, 36.33, 41.26, 46.69, 52.66, 59.23, 66.45, 74.39, 83.13, 92.74],
+    "Resistance": [0, 1.24, 2.6, 4.1, 5.75, 7.56, 9.55, 11.74, 14.15, 16.8, 19.72, 22.93, 26.46, 30.34, 34.61, 39.31, 44.48, 50.17, 56.43, 63.31, 70.88, 79.21, 88.37]
 }
 
 PERSONAL_SKILLS = {
@@ -402,8 +402,8 @@ def scaled_skill_cost(raw_cost):
     return max(1, math.ceil(raw_cost / _max_raw_skill_cost * MAX_SKILL_COST))
 
 def skill_gate(name):
-    """Gate tier (0-4) a skill requires; missing/unknown skills default to 0."""
-    return skill_data.get(name, {}).get("gate", 0)
+    """Gate tier (1-5) a skill requires; missing/unknown skills default to 1."""
+    return skill_data.get(name, {}).get("gate", 1)
 
 def eligible_slots(gate):
     """0-based slot indices that can hold a skill of the given gate tier."""
@@ -822,7 +822,7 @@ class SkillSelectionWindow:
                 continue
             if group != "All" and group not in info["groups"]:
                 continue
-            if gate != "All" and str(info.get("gate", 0)) != gate:
+            if gate != "All" and str(info.get("gate", 1)) != gate:
                 continue
             result.append((skill, info))
         return result
@@ -836,7 +836,7 @@ class SkillSelectionWindow:
         # Checkbutton has indicator (~20px) + padding (~16px) on each side
         CHROME = 52
         widest = max(
-            font.measure(f"{skill}  ({scaled_skill_cost(info['cost'])} pts)  [g{info.get('gate', 0)}]  → Slot 6")
+            font.measure(f"{skill}  ({scaled_skill_cost(info['cost'])} pts)  [g{info.get('gate', 1)}]  → Slot 6")
             for skill, info in skills
         )
         return widest + CHROME
@@ -855,33 +855,51 @@ class SkillSelectionWindow:
         for w in self.scroll_frame.winfo_children():
             w.destroy()
         self.skill_widgets.clear()
+        ttk.Style().configure("Slotted.TButton", foreground="#0a7a00")  # green = already slotted
 
-        skills = self._visible_skills()
+        visible = self._visible_skills()
         canvas_w = self.canvas.winfo_width() or 600
-        cols = self._columns_for_width(canvas_w, skills)
+        cols = self._columns_for_width(canvas_w, visible)
         for c in range(cols):
             self.scroll_frame.grid_columnconfigure(c, weight=1)
 
-        for i, (skill, info) in enumerate(skills):
-            col = i % cols
-            row = i // cols
-            gate = info.get("gate", 0)
-            cost = scaled_skill_cost(info["cost"])
-            slot = self._slot_of(skill)
-            label = f"{skill}  ({cost} pts)  [g{gate}]"
-            if slot is not None:
-                label += f"  → Slot {slot + 1}"
-            btn = ttk.Button(self.scroll_frame, text=label,
-                             command=lambda s=skill, g=gate: self._open_slot_menu(s, g))
-            btn.grid(row=row, column=col, sticky="ew", padx=8, pady=2)
-            tip_parts = []
-            if info.get("desc"):
-                tip_parts.append(info["desc"])
-            if info.get("groups"):
-                tip_parts.append("Groups: " + ", ".join(info["groups"]))
-            tip_parts.append(f"Gate {gate}")
-            Tooltip(btn, "\n\n".join(tip_parts))
-            self.skill_widgets[skill] = btn
+        # Group visible skills by gate; sort each group cheapest-first.
+        from collections import defaultdict
+        by_gate = defaultdict(list)
+        for skill, info in visible:
+            by_gate[info.get("gate", 1)].append((skill, info))
+        gate_chapter = {SKILL_SLOT_GATES[i]: SKILL_SLOT_CHAPTERS[i] for i in range(self.MAX_SKILLS)}
+
+        grid_row = 0
+        for gate in sorted(by_gate):
+            chap = gate_chapter.get(gate)
+            title = f"Gate {gate}" + (f" · Chapter {chap}" if chap else "")
+            ttk.Label(self.scroll_frame, text=title, font=("TkDefaultFont", 9, "bold")).grid(
+                row=grid_row, column=0, columnspan=cols, sticky="w", pady=(8, 2))
+            grid_row += 1
+            items = sorted(by_gate[gate], key=lambda x: scaled_skill_cost(x[1]["cost"]))
+            for i, (skill, info) in enumerate(items):
+                col = i % cols
+                if i > 0 and col == 0:
+                    grid_row += 1
+                cost = scaled_skill_cost(info["cost"])
+                slot = self._slot_of(skill)
+                label = f"{skill}  ({cost} pts)  [g{gate}]"
+                if slot is not None:
+                    label += f"  → Slot {slot + 1}"
+                btn = ttk.Button(self.scroll_frame, text=label,
+                                 style=("Slotted.TButton" if slot is not None else "TButton"),
+                                 command=lambda s=skill, g=gate: self._open_slot_menu(s, g))
+                btn.grid(row=grid_row, column=col, sticky="ew", padx=8, pady=2)
+                tip_parts = []
+                if info.get("desc"):
+                    tip_parts.append(info["desc"])
+                if info.get("groups"):
+                    tip_parts.append("Groups: " + ", ".join(info["groups"]))
+                tip_parts.append(f"Gate {gate}")
+                Tooltip(btn, "\n\n".join(tip_parts))
+                self.skill_widgets[skill] = btn
+            grid_row += 1
 
         self.canvas.itemconfigure(self._canvas_win, width=canvas_w)
         self.update_points()
@@ -960,10 +978,16 @@ class SkillSelectionWindow:
             if sk:
                 rowf = ttk.Frame(cell)
                 rowf.pack(fill="x")
-                ttk.Label(rowf, text=sk, font=("TkDefaultFont", 8), foreground="blue",
-                          wraplength=90, justify="left").pack(side="left")
+                name_lbl = ttk.Label(rowf, text=sk, font=("TkDefaultFont", 8), foreground="blue",
+                                     wraplength=90, justify="left", cursor="hand2")
+                name_lbl.pack(side="left")
+                # Click the slotted skill to move it to another eligible slot.
+                name_lbl.bind("<Button-1>", lambda e, s=sk: self._open_slot_menu(s, skill_gate(s)))
                 ttk.Button(rowf, text="✕", width=2,
                            command=lambda idx=i: self._clear_slot(idx)).pack(side="right")
+                if sk in skill_data:
+                    ttk.Label(cell, text=f"{scaled_skill_cost(skill_data[sk]['cost'])} pts",
+                              font=("TkDefaultFont", 7), foreground="gray").pack(anchor="w")
             else:
                 ttk.Label(cell, text="— empty —", font=("TkDefaultFont", 8),
                           foreground="gray").pack(anchor="w")
@@ -4047,6 +4071,8 @@ class CharacterCreator:
         self.reset_button = ttk.Button(header_frame, text="Reset Character", command=self.reset_character,
                                        width=28)
         self.reset_button.pack(side="right", padx=5)
+        ttk.Button(header_frame, text="Reset Everything",
+                   command=self.reset_everything).pack(side="right", padx=5)
         ttk.Button(header_frame, text="Import Character", command=self.import_character).pack(side="right", padx=5)
         ttk.Button(header_frame, text="Export Character", command=self.export_character).pack(side="right", padx=5)
 
@@ -5477,6 +5503,23 @@ class CharacterCreator:
             import traceback
             traceback.print_exc()
             
+    def reset_everything(self):
+        """Reset the whole character AND both custom weapons (single confirm)."""
+        if not messagebox.askyesno(
+            "Reset Everything",
+            "Reset the entire character and both weapons? This cannot be undone."
+        ):
+            return
+        for kind, cfg in WEAPON_KINDS.items():
+            self.custom_weapons[kind] = None
+            self._set_custom_weapon_display(kind, f"No {cfg['label']} created")
+            win = self.weapon_windows.get(kind)
+            if win is not None and win.window.winfo_exists():
+                win.reset_weapon()
+        # Trigger the full character reset directly (skip the two-click arming).
+        self.reset_confirmation_needed = True
+        self.reset_character()
+
     def reset_character(self):
         # First click: arm the confirmation and wait for second click
         if not self.reset_confirmation_needed:

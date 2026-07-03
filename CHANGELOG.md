@@ -2,6 +2,24 @@
 
 All notable changes to the Chatquest 2 Character Creator are documented here.
 
+## 0.63.a
+
+### Added
+- **Reset Everything** button — resets the character and both weapons at once.
+- Click a slotted skill (in the slot header or the list) to move it to another
+  eligible slot.
+
+### Changed
+- Skill Selection window: skills are now **grouped into gate sections**, sorted
+  cheapest-first within each; slotted skills are highlighted, and each slot shows
+  its skill's cost.
+- **Gate numbering now starts at 1** (was 0) — gates are 1–5.
+- Attribute growth costs **raised back up** — steeper curve (~70 to reach 100%,
+  ramping up past 60%), from the flatter 0.62.a values.
+
+### Removed
+- Skills: Kidnap, Capture, Paragon, Dragonskin, Divine Shield, Immobilize.
+
 ## 0.62.b
 
 ### Changed

@@ -5,7 +5,7 @@
             "Stat"
         ],
         "desc": "Maximum HP +5",
-        "gate": 0
+        "gate": 1
     },
     "Strength +2": {
         "cost": 4.06,
@@ -13,7 +13,7 @@
             "Stat"
         ],
         "desc": "Strength +2",
-        "gate": 0
+        "gate": 1
     },
     "Magic +2": {
         "cost": 4.47,
@@ -21,7 +21,7 @@
             "Stat"
         ],
         "desc": "Magic +2",
-        "gate": 0
+        "gate": 1
     },
     "Skill +2": {
         "cost": 3.95,
@@ -29,7 +29,7 @@
             "Stat"
         ],
         "desc": "Skill +2",
-        "gate": 0
+        "gate": 1
     },
     "Speed +2": {
         "cost": 4.27,
@@ -37,7 +37,7 @@
             "Stat"
         ],
         "desc": "Speed +2",
-        "gate": 0
+        "gate": 1
     },
     "Luck +4": {
         "cost": 3.85,
@@ -45,15 +45,15 @@
             "Stat"
         ],
         "desc": "Luck +4",
-        "gate": 0
+        "gate": 1
     },
     "Defense +2": {
         "cost": 4.37,
         "groups": [
             "Stat"
         ],
-        "desc": "Defence +2",
-        "gate": 0
+        "desc": "Defense +2",
+        "gate": 1
     },
     "Resistance +2": {
         "cost": 4.16,
@@ -61,7 +61,7 @@
             "Stat"
         ],
         "desc": "Resistance +2",
-        "gate": 0
+        "gate": 1
     },
     "Dancing Blade": {
         "cost": 4.22,
@@ -69,7 +69,7 @@
             "Stat"
         ],
         "desc": "Speed +3, Defence -1",
-        "gate": 1
+        "gate": 2
     },
     "Heavy Blade": {
         "cost": 3.96,
@@ -77,7 +77,7 @@
             "Stat"
         ],
         "desc": "Strength +3, Speed -1",
-        "gate": 1
+        "gate": 2
     },
     "Aptitude": {
         "cost": 36.0,
@@ -85,10 +85,10 @@
             "Stat"
         ],
         "desc": "Adds 10% to all growth rates during Level Ups.",
-        "gate": 0
+        "gate": 1
     },
     "Supportive": {
-        "cost": 6.90,
+        "cost": 6.9,
         "groups": [
             "Support Unit",
             "Hit",
@@ -96,7 +96,7 @@
             "Damage Reduction"
         ],
         "desc": "When user is the support unit, if the lead unit has a C Support or higher, the lead unit’s Hit Rate +10, damage +2 and damage received -2",
-        "gate": 1
+        "gate": 2
     },
     "Miraculous Save": {
         "cost": 0.15,
@@ -106,7 +106,7 @@
             "Miracle"
         ],
         "desc": "When user is the support unit, the lead unit has a Luck% chance of surviving a fatal attack with 1 HP",
-        "gate": 0
+        "gate": 1
     },
     "Fierce Rival": {
         "cost": 4.89,
@@ -115,7 +115,7 @@
             "Crit"
         ],
         "desc": "When user is the support unit, if the lead unit triggers a critical hit, the user is guaranteed a critical hit (if their attack connects)",
-        "gate": 0
+        "gate": 1
     },
     "Gallant": {
         "cost": 4.92,
@@ -125,7 +125,7 @@
             "Damage"
         ],
         "desc": "When user is the support unit, if the lead unit is female, the lead unit’s damage +2",
-        "gate": 0
+        "gate": 1
     },
     "Dual Striker": {
         "cost": 6.03,
@@ -134,7 +134,7 @@
             "Damage"
         ],
         "desc": "When user is the support unit during Tag Team, Dual Strike damage +3",
-        "gate": 1
+        "gate": 2
     },
     "Dual Guarder": {
         "cost": 14.74,
@@ -143,7 +143,7 @@
             "Pairup"
         ],
         "desc": "When user is the support unit while paired up, shield gauge gain +1",
-        "gate": 2
+        "gate": 3
     },
     "Tactical Advice": {
         "cost": 7.15,
@@ -152,7 +152,7 @@
             "Pairup"
         ],
         "desc": "When user is the support unit while paired up, lead unit’s Hit rate +10",
-        "gate": 0
+        "gate": 1
     },
     "Competitive": {
         "cost": 8.2,
@@ -165,7 +165,7 @@
             "Lower Level"
         ],
         "desc": "When user is the lead unit and their Level is lower than their support unit’s Level, Critical rate +10, damage +3 and damage received -1",
-        "gate": 0
+        "gate": 1
     },
     "Bushido": {
         "cost": 17.97,
@@ -178,7 +178,7 @@
             "Higher Level"
         ],
         "desc": "When user is the lead unit, if their Level is higher than their support unit’s Level, Critical rate +10, damage +2 and damage received -2",
-        "gate": 1
+        "gate": 2
     },
     "Noble Cause": {
         "cost": 4.97,
@@ -191,7 +191,7 @@
             "Damage Reduction"
         ],
         "desc": "When user is the lead unit, if their support unit doesn’t have full HP, damage +3 and damage received +1",
-        "gate": 0
+        "gate": 1
     },
     "Guarded Bravery": {
         "cost": 4.72,
@@ -201,7 +201,7 @@
             "Damage Reduction"
         ],
         "desc": "When user is the lead unit, damage received -2. If no support unit available, damage received +2",
-        "gate": 1
+        "gate": 2
     },
     "Sisterhood": {
         "cost": 9.72,
@@ -213,7 +213,7 @@
             "Damage Reduction"
         ],
         "desc": "When user is the lead unit, if their support unit is female, damage +2 and damage received -2",
-        "gate": 0
+        "gate": 1
     },
     "Bold Stance": {
         "cost": 15.49,
@@ -223,7 +223,7 @@
             "Attack Stance"
         ],
         "desc": "When user is the lead unit, even when paired up, the support unit can trigger Dual Strikes, but enemy Dual Strikes are not passively negated",
-        "gate": 2
+        "gate": 3
     },
     "Defender": {
         "cost": 10.12,
@@ -233,7 +233,7 @@
             "Stat"
         ],
         "desc": "When user is the lead unit while paired up, all stats +1",
-        "gate": 1
+        "gate": 2
     },
     "Nohrian Trust": {
         "cost": 7.87,
@@ -244,7 +244,7 @@
             "Luck%"
         ],
         "desc": "User shares their support unit’s battle skills",
-        "gate": 1
+        "gate": 2
     },
     "Devoted Partner": {
         "cost": 4.42,
@@ -256,7 +256,7 @@
             "Damage Reduction"
         ],
         "desc": "If the Avatar is the lead unit, Avatar’s damage +2, damage received -2",
-        "gate": 1
+        "gate": 2
     },
     "Evasive Partner": {
         "cost": 6.88,
@@ -268,10 +268,10 @@
             "Damage Reduction"
         ],
         "desc": "If the Avatar is the lead unit, Avatar’s Avoid +15, damage received -3",
-        "gate": 0
+        "gate": 1
     },
     "Forceful Partner": {
-        "cost": 4.10,
+        "cost": 4.1,
         "groups": [
             "Lead",
             "Pairup",
@@ -280,7 +280,7 @@
             "Damage"
         ],
         "desc": "If the Avatar is the lead unit, Avatar’s Hit rate +15, damage +3",
-        "gate": 0
+        "gate": 1
     },
     "Perfectionist": {
         "cost": 15.26,
@@ -290,7 +290,7 @@
             "Avoid"
         ],
         "desc": "When user’s HP is at maximum, Hit rate and Avoid +15",
-        "gate": 1
+        "gate": 2
     },
     "Perspicacious": {
         "cost": 12.19,
@@ -298,7 +298,7 @@
             "Hit"
         ],
         "desc": "Hit rate +5 for all allies",
-        "gate": 3
+        "gate": 4
     },
     "Born Steward": {
         "cost": 0,
@@ -306,7 +306,7 @@
             "Useless"
         ],
         "desc": "When fighting in My Castle, Hit rate and Avoid +20, damage +2 and damage received -2",
-        "gate": 0
+        "gate": 1
     },
     "Wind Disciple": {
         "cost": 10.17,
@@ -316,7 +316,7 @@
             "Avoid"
         ],
         "desc": "When user’s HP is not full, Hit rate and Avoid +10",
-        "gate": 1
+        "gate": 2
     },
     "Lancebreaker": {
         "cost": 9.42,
@@ -326,7 +326,7 @@
             "Weapon Restricted"
         ],
         "desc": "Hit rate and Avoid +50 when the enemy is equipped with a Lance",
-        "gate": 1
+        "gate": 2
     },
     "Shurikenbreaker": {
         "cost": 10.36,
@@ -336,7 +336,7 @@
             "Weapon Restricted"
         ],
         "desc": "Hit rate and Avoid +50 when the enemy is equipped with a Dagger",
-        "gate": 2
+        "gate": 3
     },
     "Axebreaker": {
         "cost": 9.42,
@@ -346,7 +346,7 @@
             "Weapon Restricted"
         ],
         "desc": "Hit rate and Avoid +50 when the enemy is equipped with an Axe",
-        "gate": 1
+        "gate": 2
     },
     "Tomebreaker": {
         "cost": 9.42,
@@ -356,7 +356,7 @@
             "Weapon Restricted"
         ],
         "desc": "Hit rate and Avoid +50 when the enemy is equipped with a Tome",
-        "gate": 1
+        "gate": 2
     },
     "Bowbreaker": {
         "cost": 9.42,
@@ -366,7 +366,7 @@
             "Weapon Restricted"
         ],
         "desc": "Hit rate and Avoid +50 when the enemy is equipped with a Bow",
-        "gate": 1
+        "gate": 2
     },
     "Swordbreaker": {
         "cost": 9.42,
@@ -376,7 +376,7 @@
             "Weapon Restricted"
         ],
         "desc": "Hit rate and Avoid +50 when the enemy is equipped with a Sword",
-        "gate": 1
+        "gate": 2
     },
     "Quixotic": {
         "cost": 22.16,
@@ -386,7 +386,7 @@
             "Luck%"
         ],
         "desc": "User and enemy’s Hit rate +30 and skill activation rate +15% during battle",
-        "gate": 3
+        "gate": 4
     },
     "Lucky Charm": {
         "cost": 0.32,
@@ -394,7 +394,7 @@
             "Luck%"
         ],
         "desc": "Skills with an activation rate dependent on the Luck stat have their rate increased by 20%",
-        "gate": 0
+        "gate": 1
     },
     "Hoshidan Unity": {
         "cost": 7.37,
@@ -403,7 +403,7 @@
             "Luck%"
         ],
         "desc": "Adds 10% to skill activation rates",
-        "gate": 1
+        "gate": 2
     },
     "Air Superiority": {
         "cost": 8.48,
@@ -412,7 +412,7 @@
             "Avoid"
         ],
         "desc": "Hit rate and Avoid +30 when facing Flying enemies",
-        "gate": 1
+        "gate": 2
     },
     "Certain Blow": {
         "cost": 14.3,
@@ -421,7 +421,7 @@
             "Player Phase"
         ],
         "desc": "When user triggers the battle, Hit rate +40",
-        "gate": 2
+        "gate": 3
     },
     "Highwayman": {
         "cost": 5.62,
@@ -430,7 +430,7 @@
             "Enfeeble"
         ],
         "desc": "When user triggers the battle, if the enemy cannot counter-attack, enemy’s Strength and Speed -3 after the battle (stats recover by 1 each Turn)",
-        "gate": 1
+        "gate": 2
     },
     "Seal Strength": {
         "cost": 10.96,
@@ -438,7 +438,7 @@
             "Enfeeble"
         ],
         "desc": "After battle, enemy’s Strength -6",
-        "gate": 1
+        "gate": 2
     },
     "Seal Resistance": {
         "cost": 11.23,
@@ -446,7 +446,7 @@
             "Enfeeble"
         ],
         "desc": "After battle, enemy’s Resistance -6",
-        "gate": 1
+        "gate": 2
     },
     "Seal Defence": {
         "cost": 11.8,
@@ -454,7 +454,7 @@
             "Enfeeble"
         ],
         "desc": "After battle, enemy’s Defence -6",
-        "gate": 1
+        "gate": 2
     },
     "Seal Speed": {
         "cost": 11.53,
@@ -462,7 +462,7 @@
             "Enfeeble"
         ],
         "desc": "After battle, enemy’s Speed -6",
-        "gate": 1
+        "gate": 2
     },
     "Seal Magic": {
         "cost": 12.07,
@@ -470,7 +470,7 @@
             "Enfeeble"
         ],
         "desc": "After battle, enemy’s Magic -6",
-        "gate": 1
+        "gate": 2
     },
     "Draconic Hex": {
         "cost": 28.8,
@@ -478,7 +478,7 @@
             "Enfeeble"
         ],
         "desc": "After battle, enemy’s stats -4",
-        "gate": 2
+        "gate": 3
     },
     "Grisly Wound": {
         "cost": 13.79,
@@ -486,7 +486,7 @@
             "%Damage"
         ],
         "desc": "The enemy’s HP is reduced by 20% after the battle",
-        "gate": 2
+        "gate": 3
     },
     "Fearsome Blow": {
         "cost": 7.05,
@@ -496,7 +496,7 @@
             "Defeat Enemy"
         ],
         "desc": "When user triggers the battle and defeats an enemy, enemies adjacent to the user have their HP reduced by 20%",
-        "gate": 1
+        "gate": 2
     },
     "Playthings": {
         "cost": 0.08,
@@ -506,17 +506,17 @@
             "Adjacent"
         ],
         "desc": "After the start of the user’s Turn, all enemies that are adjacent to the user have their HP reduced by 5",
-        "gate": 0
+        "gate": 1
     },
     "Heartseeker": {
         "cost": 14.45,
         "groups": [
             "Adjacent",
             "Avoid",
-			"Aura"
+            "Aura"
         ],
         "desc": "When fighting adjacent to an enemy, enemy’s Avoid -20",
-        "gate": 1
+        "gate": 2
     },
     "Fierce Mien": {
         "cost": 11.92,
@@ -526,7 +526,7 @@
             "Hit"
         ],
         "desc": "Enemies within a 2 tile radius have their Avoid reduced by 10",
-        "gate": 1
+        "gate": 2
     },
     "Misfortunate": {
         "cost": 12.05,
@@ -535,7 +535,7 @@
             "Dodge"
         ],
         "desc": "Enemies within a 2 tile radius have their Critical Evade reduced by 15, while the user’s Critical Evade is reduced by 5",
-        "gate": 1
+        "gate": 2
     },
     "Veteran Intuition": {
         "cost": 9.63,
@@ -543,7 +543,7 @@
             "Dodge"
         ],
         "desc": "Critical Evade +15 during battles",
-        "gate": 1
+        "gate": 2
     },
     "Solidarity": {
         "cost": 12.62,
@@ -551,10 +551,10 @@
             "Adjacent",
             "Avoid",
             "Dodge",
-			"Aura"
+            "Aura"
         ],
         "desc": "Adjacent allies receive Avoid +10 and Critical Evade +10",
-        "gate": 1
+        "gate": 2
     },
     "Lilys Poise": {
         "cost": 10.99,
@@ -562,10 +562,10 @@
             "Adjacent",
             "Damage",
             "Damage Reduction",
-			"Aura"
+            "Aura"
         ],
         "desc": "Adjacent allies deal 1 extra damage and received 3 less damage",
-        "gate": 1
+        "gate": 2
     },
     "Roses Thorn": {
         "cost": 11.11,
@@ -573,10 +573,10 @@
             "Adjacent",
             "Damage",
             "Damage Reduction",
-			"Aura"
+            "Aura"
         ],
         "desc": "Adjacent allies deal 3 extra damage and receive 1 less damage",
-        "gate": 1
+        "gate": 2
     },
     "Dragon Ward": {
         "cost": 1.62,
@@ -584,10 +584,10 @@
             "Adjacent",
             "Luck%",
             "Reduction%",
-			"Aura"
+            "Aura"
         ],
         "desc": "Allies adjacent to the user have a Luck x 0.5% chance of receiving half damage from enemy attacks",
-        "gate": 1
+        "gate": 2
     },
     "Divine Retribution": {
         "cost": 4.39,
@@ -596,7 +596,7 @@
             "Counter"
         ],
         "desc": "When user doesn’t have a weapon equipped and they sustain damage from an adjacent enemy, the enemy receives half the same damage.",
-        "gate": 0
+        "gate": 1
     },
     "Counter": {
         "cost": 12.53,
@@ -605,7 +605,7 @@
             "Counter"
         ],
         "desc": "When an adjacent enemy triggers the battle and inflicts damage, the enemy receives the same damage",
-        "gate": 1
+        "gate": 2
     },
     "Countercurse": {
         "cost": 6.27,
@@ -613,7 +613,7 @@
             "Counter"
         ],
         "desc": "When enemy triggers the battle and inflicts magical damage, the enemy receives half the same damage",
-        "gate": 1
+        "gate": 2
     },
     "Countermagic": {
         "cost": 12.53,
@@ -621,7 +621,7 @@
             "Counter"
         ],
         "desc": "When the enemy triggers the battle and inflicts magical damage, the enemy receives the same damage",
-        "gate": 1
+        "gate": 2
     },
     "Icy Blood": {
         "cost": 12.39,
@@ -631,7 +631,7 @@
             "Enfeeble"
         ],
         "desc": "When user’s HP is not full and they sustain damage, the enemy receives the same damage and the enemy’s Skill and Speed is reduced by 3",
-        "gate": 1
+        "gate": 2
     },
     "Triple Threat": {
         "cost": 0.94,
@@ -641,7 +641,7 @@
             "Counter"
         ],
         "desc": "When user is under half HP, half the damage received by Swords, Lances or Axes is also dealt to the enemy",
-        "gate": 0
+        "gate": 1
     },
     "Shuriken Mastery": {
         "cost": 1.15,
@@ -651,7 +651,7 @@
             "Enfeeble"
         ],
         "desc": "When user receives damage from a Dagger attack, the enemy receives half the same damage and the Dagger’s stat reduction effect",
-        "gate": 1
+        "gate": 2
     },
     "Foreign Princess": {
         "cost": 0,
@@ -659,7 +659,7 @@
             "Useless"
         ],
         "desc": "“Foreign Army” enemies within a 2 tile radius deal 2 less damage and receive 2 extra damage",
-        "gate": 0
+        "gate": 1
     },
     "Malefic Aura": {
         "cost": 7.45,
@@ -668,7 +668,7 @@
             "Damage"
         ],
         "desc": "Enemies within a 2 tile radius receive 2 extra damage from magical attacks",
-        "gate": 1
+        "gate": 2
     },
     "Voice of Peace": {
         "cost": 7.28,
@@ -677,7 +677,7 @@
             "Damage Reduction"
         ],
         "desc": "Enemies within a 2 tile radius deal 2 less physical damage",
-        "gate": 1
+        "gate": 2
     },
     "Peacebringer": {
         "cost": 0,
@@ -686,7 +686,7 @@
             "Damage Reduction"
         ],
         "desc": "Allies and enemies within a 2 tile radius deal 2 less damage",
-        "gate": 0
+        "gate": 1
     },
     "Quiet Strength": {
         "cost": 6.41,
@@ -695,7 +695,7 @@
             "Damage Reduction"
         ],
         "desc": "Allies within a 2 tile radius receive 2 less damage",
-        "gate": 1
+        "gate": 2
     },
     "Gentilhomme": {
         "cost": 2.91,
@@ -705,7 +705,7 @@
             "Female"
         ],
         "desc": "Female allies within a 2 tile radius receive 2 less damage during battles",
-        "gate": 1
+        "gate": 2
     },
     "Demoiselle": {
         "cost": 2.91,
@@ -715,7 +715,7 @@
             "Male"
         ],
         "desc": "Male allies within a 2 tile radius receive 2 less damage during battles",
-        "gate": 1
+        "gate": 2
     },
     "Rallying Cry": {
         "cost": 6.56,
@@ -724,7 +724,7 @@
             "Damage"
         ],
         "desc": "Allies within a 2 tile radius deal 2 extra damage",
-        "gate": 1
+        "gate": 2
     },
     "Charm": {
         "cost": 6.56,
@@ -733,7 +733,7 @@
             "Damage"
         ],
         "desc": "Allies within a 2 tile radius deal 2 extra damage during battles",
-        "gate": 1
+        "gate": 2
     },
     "Inspiration": {
         "cost": 12.97,
@@ -743,7 +743,7 @@
             "Damage Reduction"
         ],
         "desc": "Allies within a 2 tile radius deal 2 extra damage and receive 2 less damage during battles",
-        "gate": 2
+        "gate": 3
     },
     "Fortunate Son": {
         "cost": 14.44,
@@ -752,7 +752,7 @@
             "Damage"
         ],
         "desc": "Allies within a 2 tile radius have their Critical Evade increased by 15, while the user’s Critical Evade is increased by 5",
-        "gate": 1
+        "gate": 2
     },
     "Perfect Pitch": {
         "cost": 15.04,
@@ -761,7 +761,7 @@
             "Heal%"
         ],
         "desc": "Allies within a 2 tile radius who have lower HP than the user recover 10% HP when the “Rally” command is used",
-        "gate": 1
+        "gate": 2
     },
     "Fancy Footwork": {
         "cost": 5,
@@ -769,7 +769,7 @@
             "Rally"
         ],
         "desc": "Strength and Speed +1 to all allies within a 2 tile radius for one Turn when the “Rally” command is used",
-        "gate": 0
+        "gate": 1
     },
     "Rally Magic": {
         "cost": 11.92,
@@ -777,7 +777,7 @@
             "Rally"
         ],
         "desc": "Magic +4 to all allies within a 2 tile radius for one Turn when the “Rally” command is used",
-        "gate": 2
+        "gate": 3
     },
     "Rally Luck": {
         "cost": 10.27,
@@ -785,7 +785,7 @@
             "Rally"
         ],
         "desc": "Luck +8 to all allies within a 2 tile radius for one Turn when the “Rally” command is used",
-        "gate": 1
+        "gate": 2
     },
     "Rally Speed": {
         "cost": 11.39,
@@ -793,7 +793,7 @@
             "Rally"
         ],
         "desc": "Speed +4 to all allies within a 2 tile radius for one Turn when the “Rally” command is used",
-        "gate": 3
+        "gate": 4
     },
     "Rally Strength": {
         "cost": 10.83,
@@ -801,7 +801,7 @@
             "Rally"
         ],
         "desc": "Strength +4 to all allies within a 2 tile radius for one Turn when the “Rally” command is used",
-        "gate": 2
+        "gate": 3
     },
     "Rally Skill": {
         "cost": 10.53,
@@ -809,7 +809,7 @@
             "Rally"
         ],
         "desc": "Skill +4 to all allies within a 2 tile radius for one Turn when the “Rally” command is used",
-        "gate": 1
+        "gate": 2
     },
     "Rally Defence": {
         "cost": 11.65,
@@ -817,7 +817,7 @@
             "Rally"
         ],
         "desc": "Defence +4 to all allies within a 2 tile radius for one Turn when the “Rally” command is used",
-        "gate": 2
+        "gate": 3
     },
     "Rally Resistance": {
         "cost": 11.25,
@@ -825,7 +825,7 @@
             "Rally"
         ],
         "desc": "Resistance +4 to all allies within a 2 tile radius for one Turn when the “Rally” command is used",
-        "gate": 2
+        "gate": 3
     },
     "Rally Movement": {
         "cost": 20.77,
@@ -833,7 +833,7 @@
             "Rally"
         ],
         "desc": "Movement +1 to all allies within a 2 tile radius for one Turn when the “Rally” command is used",
-        "gate": 3
+        "gate": 4
     },
     "Rally Spectrum": {
         "cost": 24.17,
@@ -841,7 +841,7 @@
             "Rally"
         ],
         "desc": "All Stats +2 to all allies within a 4 tile radius for one Turn when the Rally command is used",
-        "gate": 4
+        "gate": 5
     },
     "Movement +1": {
         "cost": 5.26,
@@ -849,7 +849,7 @@
             "Movement"
         ],
         "desc": "Movement +1",
-        "gate": 1
+        "gate": 2
     },
     "Surefooted": {
         "cost": 6.43,
@@ -858,7 +858,7 @@
             "Ballistician"
         ],
         "desc": "When user is a Ballistician, Movement +1 and all traversable terrain costs 1 movement point to cross",
-        "gate": 2
+        "gate": 3
     },
     "Healing Descant": {
         "cost": 16.37,
@@ -868,7 +868,7 @@
             "Aura"
         ],
         "desc": "Allies within a 2 tile radius recover 10% HP at the start of the user’s Turn",
-        "gate": 2
+        "gate": 3
     },
     "Forager": {
         "cost": 5.01,
@@ -877,7 +877,7 @@
             "Heal%"
         ],
         "desc": "When standing on Mountain, Woods, Waste or Field terrain, the user recovers 20% HP at the start of the Turn",
-        "gate": 0
+        "gate": 1
     },
     "Draconic Heir": {
         "cost": 9.4,
@@ -886,7 +886,7 @@
             "Heal%"
         ],
         "desc": "When user is equipped with a Dragonstone, they recover 15% HP at the start of their Turn",
-        "gate": 1
+        "gate": 2
     },
     "Haiku": {
         "cost": 1.6,
@@ -896,7 +896,7 @@
             "Aura"
         ],
         "desc": "At the start of the Turn, when two allies are directly above and below Mitama, Mitama recovers 7 HP, while the the two allies recover 5 HP",
-        "gate": 0
+        "gate": 1
     },
     "Renewal": {
         "cost": 18.8,
@@ -905,7 +905,7 @@
             "Heal%"
         ],
         "desc": "Recover 30% HP at the start of the user’s Turn",
-        "gate": 2
+        "gate": 3
     },
     "Camaraderie": {
         "cost": 5.64,
@@ -914,7 +914,7 @@
             "Heal%"
         ],
         "desc": "Recover 10% HP at the start of the user’s Turn if there are allies within a 2 tile radius",
-        "gate": 0
+        "gate": 1
     },
     "Amaterasu": {
         "cost": 32.72,
@@ -924,7 +924,7 @@
             "Aura"
         ],
         "desc": "Allies within a 2 tile radius recover 20% HP at the start of the user’s Turn",
-        "gate": 3
+        "gate": 4
     },
     "Even Better": {
         "cost": 12.53,
@@ -933,7 +933,7 @@
             "Heal%"
         ],
         "desc": "Recover 40% HP at the start of even-numbered Turns",
-        "gate": 2
+        "gate": 3
     },
     "Better Odds": {
         "cost": 12.53,
@@ -942,7 +942,7 @@
             "Heal%"
         ],
         "desc": "Recover 40% HP at the start of odd-numbered Turns",
-        "gate": 2
+        "gate": 3
     },
     "Relief": {
         "cost": 9.4,
@@ -951,7 +951,7 @@
             "Heal%"
         ],
         "desc": "Recover 20% HP at the start of the user’s Turn if no units are within a 2 tile radius",
-        "gate": 1
+        "gate": 2
     },
     "Opportunity Shot": {
         "cost": 16.8,
@@ -961,7 +961,7 @@
             "Ballistician"
         ],
         "desc": "When user is a Ballistician, Skill% chance of attacking an enemy within range at the start of the users Turn",
-        "gate": 1
+        "gate": 2
     },
     "Self-Destruct": {
         "cost": 0,
@@ -969,23 +969,7 @@
             "Useless"
         ],
         "desc": "At the start of the user’s Turn, if user’s HP is under half, inflicts damage to all enemies and walls within a 2 tile radius; afterwards, the user disappears",
-        "gate": 0
-    },
-    "Capture": {
-        "cost": 38.07,
-        "groups": [
-            "Imprison"
-        ],
-        "desc": "When there is a Prison in My Castle, the user can select the “Capture” command. If a generic enemy is defeated, they will be sent to the Prison. Note: There is no unit limit in Chatquest 2.0. You can learn this skill early",
-        "gate": 0
-    },
-    "Kidnap": {
-        "cost": 38.07,
-        "groups": [
-            "Imprison"
-        ],
-        "desc": "When there is a Prison in My Castle, the user can select the “Capture” command. If a generic enemy is defeated, they will be sent to the Prison. Note: There is no unit limit in Chatquest 2.0. You can learn this skill early",
-        "gate": 0
+        "gate": 1
     },
     "Shove": {
         "cost": 0,
@@ -993,7 +977,7 @@
             "Movement"
         ],
         "desc": "Select the “Shove” command to push an adjacent ally 1 tile",
-        "gate": 0
+        "gate": 1
     },
     "Swap": {
         "cost": 0,
@@ -1001,7 +985,7 @@
             "Movement"
         ],
         "desc": "Select the “Swap” command to swap places with an adjacent ally on the map",
-        "gate": 0
+        "gate": 1
     },
     "Shelter": {
         "cost": 0,
@@ -1009,7 +993,7 @@
             "Movement"
         ],
         "desc": "Select the “Shelter” command to make an adjacent ally the user’s support unit",
-        "gate": 0
+        "gate": 1
     },
     "Replicate": {
         "cost": 38.14,
@@ -1017,7 +1001,7 @@
             "Unique"
         ],
         "desc": "Select the “Replicate” command once per map to create a replica with the same appearance, stats, inventory and HP as the user (Anything that happens to the replica happens to the user and vice versa–even death)",
-        "gate": 4
+        "gate": 5
     },
     "Lunge": {
         "cost": 0,
@@ -1025,7 +1009,7 @@
             "Movement"
         ],
         "desc": "Select the “Lunge” command to swap places with an enemy after an attack",
-        "gate": 0
+        "gate": 1
     },
     "Survey": {
         "cost": 5.85,
@@ -1034,7 +1018,7 @@
             "Hit"
         ],
         "desc": "When using the “Cannon” command, Hit rate +10",
-        "gate": 0
+        "gate": 1
     },
     "Rifled Barrel": {
         "cost": 2.5,
@@ -1042,7 +1026,7 @@
             "Ballisitcian"
         ],
         "desc": "When using the “Cannon” command, range +1 and inner/outer range -1",
-        "gate": 0
+        "gate": 1
     },
     "Warp": {
         "cost": 23.38,
@@ -1050,7 +1034,7 @@
             "Movement"
         ],
         "desc": "Select the “Warp” command to instantly move adjacent to an ally and perform another action",
-        "gate": 3
+        "gate": 4
     },
     "Strengthtaker": {
         "cost": 20.3,
@@ -1059,7 +1043,7 @@
             "Stat"
         ],
         "desc": "When user defeats the enemy, Strength +2 (up to 10) (does not overlap with other Taker skills and expires after the chapter)",
-        "gate": 1
+        "gate": 2
     },
     "Magictaker": {
         "cost": 22.35,
@@ -1068,7 +1052,7 @@
             "Stat"
         ],
         "desc": "When user defeats the enemy, Magic +2 (up to 10) (does not overlap with other Taker skills and expires after the chapter)",
-        "gate": 1
+        "gate": 2
     },
     "Skilltaker": {
         "cost": 19.75,
@@ -1077,7 +1061,7 @@
             "Stat"
         ],
         "desc": "When user defeats the enemy, Skill +2 (up to 10) (does not overlap with other Taker skills and expires after the chapter)",
-        "gate": 1
+        "gate": 2
     },
     "Speedtaker": {
         "cost": 21.35,
@@ -1086,7 +1070,7 @@
             "Stat"
         ],
         "desc": "When user defeats the enemy, Speed +2 (up to 10) (does not overlap with other Taker skills and expires after the chapter)",
-        "gate": 1
+        "gate": 2
     },
     "Lucktaker": {
         "cost": 9.63,
@@ -1095,7 +1079,7 @@
             "Stat"
         ],
         "desc": "When user defeats the enemy, Luck +2 (up to 10) (does not overlap with other Taker skills and expires after the chapter)",
-        "gate": 1
+        "gate": 2
     },
     "Defensetaker": {
         "cost": 21.85,
@@ -1104,7 +1088,7 @@
             "Stat"
         ],
         "desc": "When user defeats the enemy, Defence +2 (up to 10) (does not overlap with other Taker skills and expires after the chapter)",
-        "gate": 1
+        "gate": 2
     },
     "Resistancetaker": {
         "cost": 20.8,
@@ -1113,7 +1097,7 @@
             "Stat"
         ],
         "desc": "When user defeats the enemy, Resistance +2 (up to 10) (does not overlap with other Taker skills and expires after the chapter)",
-        "gate": 1
+        "gate": 2
     },
     "Pyrotechnics": {
         "cost": 6.27,
@@ -1123,7 +1107,7 @@
             "Damage%"
         ],
         "desc": "When user triggers the battle at under half HP, the user and enemies within a 2 tile radius have their HP reduced by 20%",
-        "gate": 1
+        "gate": 2
     },
     "Vantage": {
         "cost": 0.66,
@@ -1131,7 +1115,7 @@
             "Below Half HP"
         ],
         "desc": "At the start of battle, when the user has under half HP, they attack first",
-        "gate": 0
+        "gate": 1
     },
     "Morbid Celebration": {
         "cost": 5.63,
@@ -1141,7 +1125,7 @@
             "Defeat Enemy"
         ],
         "desc": "When user triggers the battle, recover 20% HP after defeating the enemy",
-        "gate": 1
+        "gate": 2
     },
     "Mischievous": {
         "cost": 3.28,
@@ -1150,7 +1134,7 @@
             "Enfeeble"
         ],
         "desc": "When user triggers the battle and their attack connects with the enemy, enemy’s Defence -3 and enemy is stripped",
-        "gate": 0
+        "gate": 1
     },
     "Bloodthirst": {
         "cost": 6.7,
@@ -1160,7 +1144,7 @@
             "Defeat Enemy"
         ],
         "desc": "When user triggers the battle and defeats the enemy, Strength, Magic, Skill and Speed +4 for one turn",
-        "gate": 0
+        "gate": 1
     },
     "Duelists Blow": {
         "cost": 6.48,
@@ -1169,7 +1153,7 @@
             "Avoid"
         ],
         "desc": "When user triggers the battle, Avoid +30",
-        "gate": 0
+        "gate": 1
     },
     "Darting Blow": {
         "cost": 5.87,
@@ -1177,7 +1161,7 @@
             "Player Phase"
         ],
         "desc": "When user triggers the battle, follow up attack speed +5",
-        "gate": 1
+        "gate": 2
     },
     "Wary Fighter": {
         "cost": 21.34,
@@ -1185,7 +1169,7 @@
             "Unique"
         ],
         "desc": "During battles, neither the user or enemy can perform follow up attacks",
-        "gate": 2
+        "gate": 3
     },
     "Poison Strike": {
         "cost": 6.27,
@@ -1194,7 +1178,7 @@
             "Damage%"
         ],
         "desc": "When user triggers the battle, the enemy’s HP is reduced by 20% after the battle",
-        "gate": 1
+        "gate": 2
     },
     "Savage Blow": {
         "cost": 10.44,
@@ -1203,7 +1187,7 @@
             "Damage%"
         ],
         "desc": "When user triggers the battle, enemies within a 2 tile radius have their HP reduced by 20% after the battle",
-        "gate": 2
+        "gate": 3
     },
     "Lifetaker": {
         "cost": 18,
@@ -1213,7 +1197,7 @@
             "Defeat Enemy"
         ],
         "desc": "When user triggers the battle, recover 50% HP after defeating the enemy",
-        "gate": 1
+        "gate": 2
     },
     "Galeforce": {
         "cost": 26.82,
@@ -1222,7 +1206,7 @@
             "Defeat Enemy"
         ],
         "desc": "When user triggers the battle, allows a full action if the user defeats the enemy (once per Turn and no help from a support unit)",
-        "gate": 3
+        "gate": 4
     },
     "Toxic Brew": {
         "cost": 6.45,
@@ -1232,7 +1216,7 @@
             "Freeze"
         ],
         "desc": "When user triggers the battle, Skill x 1.5% chance of reducing the enemy’s Movement to 0 and Avoid by 20 after the battle (until the next Turn)",
-        "gate": 1
+        "gate": 2
     },
     "Astra": {
         "cost": 7.87,
@@ -1240,7 +1224,7 @@
             "Skill%"
         ],
         "desc": "Skill x 0.5% chance of triggering 5 consecutive hits with half damage",
-        "gate": 1
+        "gate": 2
     },
     "Rend Heaven": {
         "cost": 9.66,
@@ -1248,7 +1232,7 @@
             "Skill%"
         ],
         "desc": "Skill x 1.5% chance of adding half the enemy’s Strength (if user has a physical weapon) or Magic (if user has a magical weapon) as damage",
-        "gate": 1
+        "gate": 2
     },
     "Lethality": {
         "cost": 6.44,
@@ -1256,7 +1240,7 @@
             "Skill%"
         ],
         "desc": "Skill x 0.25% chance of instantly defeating the enemy when dealing 1 or more damage",
-        "gate": 0
+        "gate": 1
     },
     "Dragon Fang": {
         "cost": 5.36,
@@ -1264,7 +1248,7 @@
             "Skill%"
         ],
         "desc": "Skill x.0.75% chance of adding 50% of the user’s Attack Power as damage",
-        "gate": 1
+        "gate": 2
     },
     "Luna": {
         "cost": 4.02,
@@ -1272,7 +1256,7 @@
             "Skill%"
         ],
         "desc": "Skill% chance of ignoring half the enemy’s Defence (if user has a physical weapon) or Resistance (if user has a magical weapon)",
-        "gate": 1
+        "gate": 2
     },
     "Sol": {
         "cost": 7.15,
@@ -1280,7 +1264,7 @@
             "Skill%"
         ],
         "desc": "Skill% chance of restoring half the damage dealt to the enemy",
-        "gate": 2
+        "gate": 3
     },
     "Vengeance": {
         "cost": 3.76,
@@ -1288,7 +1272,7 @@
             "Skill%"
         ],
         "desc": "Skill x 1.5% chance of adding half the user’s (Max HP – Current HP) as damage",
-        "gate": 1
+        "gate": 2
     },
     "Aether": {
         "cost": 5.59,
@@ -1296,7 +1280,7 @@
             "Skill%"
         ],
         "desc": "Skill x 0.5% chance of triggering a Sol hit followed by a Luna hit",
-        "gate": 1
+        "gate": 2
     },
     "Ignis": {
         "cost": 7.87,
@@ -1304,7 +1288,7 @@
             "Skill%"
         ],
         "desc": "Skill% chance of adding half the user’s Strength (if user has a physical weapon) or Magic (if user has a magical weapon) as damage",
-        "gate": 2
+        "gate": 3
     },
     "Underdog": {
         "cost": 8.48,
@@ -1314,7 +1298,7 @@
             "Lower Level"
         ],
         "desc": "Hit rate and Avoid +15 when user’s Level is lower than the enemy (promoted units count as Level +20)",
-        "gate": 1
+        "gate": 2
     },
     "Lucky Seven": {
         "cost": 7.91,
@@ -1323,7 +1307,7 @@
             "Avoid"
         ],
         "desc": "Hit rate and Avoid +20 for the first seven Turns",
-        "gate": 0
+        "gate": 1
     },
     "Awakening": {
         "cost": 22.69,
@@ -1335,7 +1319,7 @@
             "Dodge"
         ],
         "desc": "When HP is under half, Hit rate, Avoid, Critical rate and Critical Evade +30",
-        "gate": 3
+        "gate": 4
     },
     "Hit/Avo +10": {
         "cost": 11.3,
@@ -1344,7 +1328,7 @@
             "Avoid"
         ],
         "desc": "Hit rate and Avoid +10",
-        "gate": 1
+        "gate": 2
     },
     "Hit/Avo +20": {
         "cost": 22.6,
@@ -1353,7 +1337,7 @@
             "Avoid"
         ],
         "desc": "Hit rate and Avoid +20",
-        "gate": 2
+        "gate": 3
     },
     "Vow of Friendship": {
         "cost": 3.64,
@@ -1364,7 +1348,7 @@
             "Damage Reduction"
         ],
         "desc": "If the Avatar is an ally, when the Avatar is under half HP, user’s damage +3 and damage received -3. Note: It's unlikely that Avatar is pairing up",
-        "gate": 0
+        "gate": 1
     },
     "Fiery Blood": {
         "cost": 8.05,
@@ -1373,7 +1357,7 @@
             "Damage"
         ],
         "desc": "When user’s HP is not full, damage +4",
-        "gate": 1
+        "gate": 2
     },
     "Pride": {
         "cost": 3.35,
@@ -1382,7 +1366,7 @@
             "Damage"
         ],
         "desc": "When user’s Level is lower than the enemy’s (promoted units count as Level +20), damage +3",
-        "gate": 1
+        "gate": 2
     },
     "Nohr Enmity": {
         "cost": 2.24,
@@ -1390,7 +1374,7 @@
             "Damage"
         ],
         "desc": "When engaging a Nohr-related enemy, damage +3",
-        "gate": 0
+        "gate": 1
     },
     "Prodigy": {
         "cost": 5.96,
@@ -1398,7 +1382,7 @@
             "Damage"
         ],
         "desc": "At the start of the battle, if the enemy’s Strength or Magic (whichever is highest) is higher than Caeldori’s corresponding stat, damage +4",
-        "gate": 0
+        "gate": 1
     },
     "Vendetta": {
         "cost": 0.45,
@@ -1407,7 +1391,7 @@
             "Damage"
         ],
         "desc": "When user triggers the battle, if they’ve already fought the enemy in the same map, damage +4",
-        "gate": 0
+        "gate": 1
     },
     "Puissance": {
         "cost": 5.94,
@@ -1415,7 +1399,7 @@
             "Damage"
         ],
         "desc": "When user’s Strength is 5 or more points higher than the enemy’s Strength, damage +3 during battle",
-        "gate": 1
+        "gate": 2
     },
     "Opportunist": {
         "cost": 4.47,
@@ -1424,7 +1408,7 @@
             "Damage"
         ],
         "desc": "When user triggers the battle, if the enemy cannot counter-attack, damage +4",
-        "gate": 1
+        "gate": 2
     },
     "Unmask": {
         "cost": 3.74,
@@ -1432,7 +1416,7 @@
             "Damage"
         ],
         "desc": "When engaging a female enemy, Damage +4 and Critical rate +20",
-        "gate": 0
+        "gate": 1
     },
     "Pragmatic": {
         "cost": 6.03,
@@ -1440,7 +1424,7 @@
             "Damage"
         ],
         "desc": "When enemy’s HP is not full, damage +3 and damage received -1 during the battle",
-        "gate": 1
+        "gate": 2
     },
     "Chivalry": {
         "cost": 4.92,
@@ -1448,7 +1432,7 @@
             "Damage"
         ],
         "desc": "When enemy’s HP is at maximum, damage +2 and damage received -2 during the battle",
-        "gate": 1
+        "gate": 2
     },
     "Fierce Counter": {
         "cost": 4.15,
@@ -1457,7 +1441,7 @@
             "Damage"
         ],
         "desc": "When a male enemy triggers the battle, damage +2",
-        "gate": 0
+        "gate": 1
     },
     "Daydream": {
         "cost": 4.02,
@@ -1467,7 +1451,7 @@
             "Damage Reduction"
         ],
         "desc": "When user is adjacent to two male units paired up, damage +2 and damage received -2",
-        "gate": 0
+        "gate": 1
     },
     "Swordfaire": {
         "cost": 12.29,
@@ -1476,7 +1460,7 @@
             "Damage"
         ],
         "desc": "When user is equipped with a Sword, damage +5 during battle",
-        "gate": 2
+        "gate": 3
     },
     "Lancefaire": {
         "cost": 12.29,
@@ -1485,7 +1469,7 @@
             "Damage"
         ],
         "desc": "When user is equipped with a Lance, damage +5 during battle",
-        "gate": 2
+        "gate": 3
     },
     "Tomefaire": {
         "cost": 12.29,
@@ -1494,7 +1478,7 @@
             "Damage"
         ],
         "desc": "When user is equipped with a Tome, damage +5 during battle",
-        "gate": 2
+        "gate": 3
     },
     "Bowfaire": {
         "cost": 12.29,
@@ -1503,7 +1487,7 @@
             "Damage"
         ],
         "desc": "When user is equipped with a Bow, damage +5 during battle",
-        "gate": 2
+        "gate": 3
     },
     "Shurikenfaire": {
         "cost": 13.52,
@@ -1512,7 +1496,7 @@
             "Damage"
         ],
         "desc": "When user is equipped with a Dagger, damage +5 during battle",
-        "gate": 2
+        "gate": 3
     },
     "Axefaire": {
         "cost": 12.29,
@@ -1521,7 +1505,7 @@
             "Damage"
         ],
         "desc": "When user is equipped with an Axe, damage +5 during battle",
-        "gate": 2
+        "gate": 3
     },
     "Life and Death": {
         "cost": 20.12,
@@ -1529,7 +1513,7 @@
             "Damage"
         ],
         "desc": "During battles, damage +10, damage received +10",
-        "gate": 3
+        "gate": 4
     },
     "Quick Draw": {
         "cost": 8.05,
@@ -1538,7 +1522,7 @@
             "Damage"
         ],
         "desc": "When user triggers the battle, damage +4",
-        "gate": 1
+        "gate": 2
     },
     "Spendthrift": {
         "cost": 6.71,
@@ -1548,7 +1532,7 @@
             "Damage Reduction"
         ],
         "desc": "During battles, user spends a Gold Bar for damage +10 and damage received -10",
-        "gate": 1
+        "gate": 2
     },
     "Evenhanded": {
         "cost": 4.47,
@@ -1557,7 +1541,7 @@
             "Damage"
         ],
         "desc": "During even-numbered Turns, damage +4",
-        "gate": 1
+        "gate": 2
     },
     "Odd Shaped": {
         "cost": 4.47,
@@ -1566,7 +1550,7 @@
             "Damage"
         ],
         "desc": "During odd-numbered Turns, damage +4",
-        "gate": 1
+        "gate": 2
     },
     "Elbow Room": {
         "cost": 7.38,
@@ -1574,7 +1558,7 @@
             "Damage"
         ],
         "desc": "When user fights in terrain with no terrain effects, damage +3 during battles",
-        "gate": 1
+        "gate": 2
     },
     "Strong Riposte": {
         "cost": 7.38,
@@ -1583,7 +1567,7 @@
             "Damage"
         ],
         "desc": "When enemy triggers the battle, damage +3",
-        "gate": 1
+        "gate": 2
     },
     "Trample": {
         "cost": 7.71,
@@ -1591,7 +1575,7 @@
             "Damage"
         ],
         "desc": "Unless enemy is on a mount, damage +5",
-        "gate": 2
+        "gate": 3
     },
     "Aggressor": {
         "cost": 14.08,
@@ -1600,7 +1584,7 @@
             "Damage"
         ],
         "desc": "When user triggers the battle, Damage +7",
-        "gate": 3
+        "gate": 4
     },
     "Warding Blow": {
         "cost": 14.56,
@@ -1609,7 +1593,7 @@
             "Damage Reduction"
         ],
         "desc": "When user triggers the battle, magical damage received -20",
-        "gate": 1
+        "gate": 2
     },
     "Armored Blow": {
         "cost": 10.93,
@@ -1618,7 +1602,7 @@
             "Damage Reduction"
         ],
         "desc": "When user triggers the battle, physical damage received -10",
-        "gate": 1
+        "gate": 2
     },
     "Natural Cover": {
         "cost": 4.59,
@@ -1626,7 +1610,7 @@
             "Damage Reduction"
         ],
         "desc": "When user fights in terrain with terrain effects, damage received -3 during battles",
-        "gate": 0
+        "gate": 1
     },
     "Even Keel": {
         "cost": 4.16,
@@ -1635,7 +1619,7 @@
             "Damage Reduction"
         ],
         "desc": "During even-numbered Turns, magical damage received -4",
-        "gate": 1
+        "gate": 2
     },
     "Iron Will": {
         "cost": 7.49,
@@ -1644,7 +1628,7 @@
             "Damage Reduction"
         ],
         "desc": "When enemy triggers the battle, magical damage received -4",
-        "gate": 1
+        "gate": 2
     },
     "Collector": {
         "cost": 0,
@@ -1653,7 +1637,7 @@
             "Useless"
         ],
         "desc": "Luck% chance of obtaining 3 Minerals or Foodstuffs after moving up to the 7th Turn",
-        "gate": 0
+        "gate": 1
     },
     "Goody Basket": {
         "cost": 2.51,
@@ -1662,7 +1646,7 @@
             "Heal%"
         ],
         "desc": "At the start of the Turn, Luck% chance of recovering 10% HP",
-        "gate": 0
+        "gate": 1
     },
     "Make a Killing": {
         "cost": 1.4,
@@ -1671,7 +1655,7 @@
             "Player Phase"
         ],
         "desc": "Luck% chance of obtaining Gold after defeating an enemy",
-        "gate": 0
+        "gate": 1
     },
     "Salvage Blow": {
         "cost": 5,
@@ -1681,7 +1665,7 @@
             "Defeat Enemy"
         ],
         "desc": "When user triggers the battle, Luck% chance of receiving a Katana, Naginata, Club, Yumi or Shuriken if the user defeats the enemy",
-        "gate": 1
+        "gate": 2
     },
     "Future Sight": {
         "cost": 0.1,
@@ -1692,7 +1676,7 @@
             "Defeat Enemy"
         ],
         "desc": "When user triggers the battle, Luck% chance of gaining double experience when user defeats the enemy",
-        "gate": 0
+        "gate": 1
     },
     "Nobility": {
         "cost": 2.84,
@@ -1700,15 +1684,7 @@
             "Experience"
         ],
         "desc": "Experience gained x 1.2. Note: Also gives Dragon Blood",
-        "gate": 0
-    },
-    "Paragon": {
-        "cost": 14.21,
-        "groups": [
-            "Experience"
-        ],
-        "desc": "Experience gained is doubled. Don't pick this. Just here for completion.",
-        "gate": 0
+        "gate": 1
     },
     "Void Curse": {
         "cost": 0,
@@ -1716,7 +1692,7 @@
             "Useless"
         ],
         "desc": "No experience is gained from fighting this enemy",
-        "gate": 0
+        "gate": 1
     },
     "Miracle": {
         "cost": 0.15,
@@ -1725,7 +1701,7 @@
             "Miracle"
         ],
         "desc": "Luck% chance of leaving the user with 1 HP when they have 2 or more HP",
-        "gate": 0
+        "gate": 1
     },
     "Profiteer": {
         "cost": 2.1,
@@ -1733,7 +1709,7 @@
             "Luck%"
         ],
         "desc": "Luck% chance of obtaining a Gold Bar after moving during the first seven Turns",
-        "gate": 0
+        "gate": 1
     },
     "Good Fortune": {
         "cost": 5.01,
@@ -1742,7 +1718,7 @@
             "Heal%"
         ],
         "desc": "Luck% chance of recovering 20% HP at the start of the user’s Turn",
-        "gate": 0
+        "gate": 1
     },
     "Witchs Brew": {
         "cost": 1.05,
@@ -1750,7 +1726,7 @@
             "Luck%"
         ],
         "desc": "Luck% chance of obtaining a potion item (eg. Vulnerary) after moving during the first seven Turns",
-        "gate": 1
+        "gate": 2
     },
     "In Extremis": {
         "cost": 4.5,
@@ -1758,7 +1734,7 @@
             "Crit"
         ],
         "desc": "When user’s HP is under a quarter, Critical rate +30",
-        "gate": 0
+        "gate": 1
     },
     "Aching Blood": {
         "cost": 7.5,
@@ -1766,7 +1742,7 @@
             "Crit"
         ],
         "desc": "When equipped with a forged weapon whose name is at least 12 characters, Critical rate +10",
-        "gate": 1
+        "gate": 2
     },
     "Bibliophile": {
         "cost": 7.5,
@@ -1774,7 +1750,7 @@
             "Crit"
         ],
         "desc": "When user is carrying 3 or more Tomes, Critical rate +10",
-        "gate": 0
+        "gate": 1
     },
     "Death Blow": {
         "cost": 7.5,
@@ -1783,7 +1759,7 @@
             "Crit"
         ],
         "desc": "When user triggers the battle, Critical rate +20",
-        "gate": 1
+        "gate": 2
     },
     "Gamble": {
         "cost": 1,
@@ -1791,7 +1767,7 @@
             "Crit"
         ],
         "desc": "Hit rate -10, Critical rate +10",
-        "gate": 0
+        "gate": 1
     },
     "Pavise": {
         "cost": 2.16,
@@ -1801,7 +1777,7 @@
             "Reduction%"
         ],
         "desc": "Skill% chance of halving damage from Sword, Lance, Axe, Beaststone, Claw or Puppet attacks",
-        "gate": 1
+        "gate": 2
     },
     "Aegis": {
         "cost": 2.16,
@@ -1811,7 +1787,7 @@
             "Reduction%"
         ],
         "desc": "Skill% chance of halving damage from Bow, Magic, Dagger, Dragonstone, Breath or Stone attacks",
-        "gate": 1
+        "gate": 2
     },
     "Shadowgift": {
         "cost": 0,
@@ -1819,7 +1795,7 @@
             "Weapon Access"
         ],
         "desc": "User can equip Dark Mage exclusive Tomes (only Nosferatu so far)",
-        "gate": 0
+        "gate": 1
     },
     "Point Blank": {
         "cost": 3.2,
@@ -1827,7 +1803,7 @@
             "Weapon Access"
         ],
         "desc": "User can attack enemies at 1 Range with a Bow",
-        "gate": 0
+        "gate": 1
     },
     "Optimist": {
         "cost": 0.2,
@@ -1835,7 +1811,7 @@
             "Staff"
         ],
         "desc": "When user is healed by a staff, they recover 1.5 times the normal HP",
-        "gate": 0
+        "gate": 1
     },
     "Reciprocity": {
         "cost": 12.53,
@@ -1843,7 +1819,7 @@
             "Staff"
         ],
         "desc": "When a unit uses a healing staff on the user, that unit has their HP recovered by half the same amount",
-        "gate": 0
+        "gate": 1
     },
     "Live to Serve": {
         "cost": 25.06,
@@ -1851,7 +1827,7 @@
             "Staff"
         ],
         "desc": "When healing an ally, the user recovers the same amount of HP",
-        "gate": 0
+        "gate": 1
     },
     "Optimistic": {
         "cost": 8.12,
@@ -1860,7 +1836,7 @@
             "Stat"
         ],
         "desc": "After choosing to Wait, Speed +4 and Luck +8 for one Turn",
-        "gate": 1
+        "gate": 2
     },
     "Sweet Tooth": {
         "cost": 1.5,
@@ -1869,7 +1845,7 @@
             "Heal"
         ],
         "desc": "After choosing to Wait, user recovers 4 HP by eating hidden treats",
-        "gate": 0
+        "gate": 1
     },
     "Calm": {
         "cost": 8.11,
@@ -1878,7 +1854,7 @@
             "Stat"
         ],
         "desc": "After choosing to Wait, Skill and Resistance +4 for one Turn",
-        "gate": 1
+        "gate": 2
     },
     "Locktouch": {
         "cost": 0,
@@ -1886,7 +1862,7 @@
             "Unique"
         ],
         "desc": "User can open doors and chests without requiring keys",
-        "gate": 0
+        "gate": 1
     },
     "Golembane": {
         "cost": 0.08,
@@ -1894,7 +1870,7 @@
             "Effective Damage"
         ],
         "desc": "Attacks are effective against Mechanists, Automatons and Stoneborn",
-        "gate": 0
+        "gate": 1
     },
     "Beastbane": {
         "cost": 14.87,
@@ -1902,7 +1878,7 @@
             "Effective Damage"
         ],
         "desc": "When user is a Wolfskin or Kitsune, their attacks are effective against Beast units. Note: Your character becomes a furry",
-        "gate": 2
+        "gate": 3
     },
     "Potent Potion": {
         "cost": 4.42,
@@ -1910,7 +1886,7 @@
             "Potion"
         ],
         "desc": "The effect of HP recovery and stat-boosting potions is increased by 50%",
-        "gate": 0
+        "gate": 1
     },
     "Quick Salve": {
         "cost": 1.35,
@@ -1918,7 +1894,7 @@
             "Potion"
         ],
         "desc": "After consuming a HP recovery or stat-boosting potion, the user can perform another action",
-        "gate": 1
+        "gate": 2
     },
     "Inspiring Song": {
         "cost": 30.25,
@@ -1926,7 +1902,7 @@
             "Dance"
         ],
         "desc": "Skill, Speed and Luck +3 for one Turn for the unit who receives the user’s song. Note: Gives your character the sing command from the very start. You cannot sing for other characters with the Sing action",
-        "gate": 2
+        "gate": 3
     },
     "Pass": {
         "cost": 0,
@@ -1934,7 +1910,7 @@
             "Movement"
         ],
         "desc": "User can pass through tiles occupied by enemy units",
-        "gate": 0
+        "gate": 1
     },
     "Clarity": {
         "cost": 3.2,
@@ -1942,7 +1918,7 @@
             "Resist"
         ],
         "desc": "User recovers from status reduction effects twice as fast",
-        "gate": 1
+        "gate": 2
     },
     "Resist Status": {
         "cost": 8.86,
@@ -1950,7 +1926,7 @@
             "Resist"
         ],
         "desc": "Halves status reduction effects, Poison damage and status staff Hit rate",
-        "gate": 2
+        "gate": 3
     },
     "Winged Shield": {
         "cost": 12.86,
@@ -1958,7 +1934,7 @@
             "Unique"
         ],
         "desc": "When user is a Flying unit, their Flying weakness is nullified and they will receive terrain effects",
-        "gate": 2
+        "gate": 3
     },
     "Beast Shield": {
         "cost": 11.69,
@@ -1966,7 +1942,7 @@
             "Unique"
         ],
         "desc": "User’s Beast-type weakness is nullified",
-        "gate": 1
+        "gate": 2
     },
     "Armor Shield": {
         "cost": 10.52,
@@ -1974,7 +1950,7 @@
             "Unique"
         ],
         "desc": "User’s Armour-type weakness is nullified",
-        "gate": 1
+        "gate": 2
     },
     "Immune Status": {
         "cost": 17.72,
@@ -1982,40 +1958,14 @@
             "Resist"
         ],
         "desc": "Negates status reduction effects, Poison damage and status staff Hit rate",
-        "gate": 3
-    },
-    "Divine Shield": {
-        "cost": 25.92,
-        "groups": [
-            "Reduction%",
-            "Resist"
-        ],
-        "desc": "Halves damage and negates Lethality, Poison and Counter-type skills.",
-        "gate": 3
-    },
-    "Dragonskin": {
-        "cost": 38.54,
-        "groups": [
-            "Reduction%",
-            "Resist"
-        ],
-        "desc": "Halves damage, weakens critical hits and special skills (eg. Astra, Luna, Sol) and negates Lethality, Poison and Counter-type skills.",
         "gate": 4
     },
-	"Immobilize": {
-        "cost": 21.11,
-        "groups": [
-            "Freeze"
-        ],
-        "desc": "If user’s attack connects with the enemy, the enemy’s Movement is reduced to 0 and Avoid reduced by 20 until the next Turn",
-        "gate": 4
-    },
-	"Inevitable End": {
+    "Inevitable End": {
         "cost": 14.4,
         "groups": [
             "Enfeeble"
         ],
         "desc": "Stat reduction effects on the enemy will stack",
-        "gate": 2
+        "gate": 3
     }
 }
