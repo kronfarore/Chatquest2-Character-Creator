@@ -2,6 +2,28 @@
 
 All notable changes to the Chatquest 2 Character Creator are documented here.
 
+## 0.63.b
+
+### Changed
+- **Hybrid Discount raised to 60%** (was 50%) and now applies to **two** stat
+  pairs — Strength/Magic *and* Defense/Resistance. Within each pair the cheaper
+  of the two costs is discounted; the readout lists both.
+- New **Use Same Cost** option (on by default): the cheaper stat of each pair
+  uses its pricier partner's cost curve, so Strength/Magic and Defense/Resistance
+  cost the same at equal growth% and only differ when set to different growths.
+- Repriced a number of skills; corrected the **Seal Defence → Seal Defense**
+  spelling (name and description).
+
+### Fixed
+- **Reset Everything** now also clears the Total Growth% readout.
+- Attribute growth steps are now guaranteed to never get cheaper than the
+  previous step (rounding no longer produces an occasional dip).
+- Clicking an input field then clicking empty space now deselects the field.
+
+### Skill Selection window
+- Slotted skills are highlighted with a blue **button colour** (was a font-colour
+  change).
+
 ## 0.63.a
 
 ### Added

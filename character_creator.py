@@ -9,7 +9,7 @@ import os
 # VERSION
 # ============================================================================
 
-VERSION = "0.63.a"
+VERSION = "0.63.b"
 
 print("Program starting...")
 # ============================================================================
@@ -49,6 +49,44 @@ ATTRIBUTE_COSTS = {
     "Defense": [0, 1.3, 2.73, 4.3, 6.03, 7.93, 10.02, 12.32, 14.85, 17.63, 20.69, 24.06, 27.77, 31.85, 36.33, 41.26, 46.69, 52.66, 59.23, 66.45, 74.39, 83.13, 92.74],
     "Resistance": [0, 1.24, 2.6, 4.1, 5.75, 7.56, 9.55, 11.74, 14.15, 16.8, 19.72, 22.93, 26.46, 30.34, 34.61, 39.31, 44.48, 50.17, 56.43, 63.31, 70.88, 79.21, 88.37]
 }
+
+# Displayed integer cost per attribute: round each raw +5% marginal and enforce
+# that every step costs at least as much as the previous one (never cheaper than
+# the last step). Used instead of ceil(raw) so per-step cost is non-decreasing.
+def _monotone_int_table(raw):
+    table = [0]
+    prev_m = 0
+    for i in range(1, len(raw)):
+        m = max(prev_m, round(raw[i] - raw[i - 1]))
+        table.append(table[-1] + m)
+        prev_m = m
+    return table
+
+ATTRIBUTE_COSTS_INT = {a: _monotone_int_table(t) for a, t in ATTRIBUTE_COSTS.items()}
+
+# ---- Stat-pair pricing --------------------------------------------------------
+# Two stat pairs share a "Hybrid Discount": Strength/Magic and Defense/Resistance.
+# HYBRID_DISCOUNT: the cheaper of a pair's two current costs is discounted by this
+# fraction (you pay 1 - HYBRID_DISCOUNT of it). e.g. 0.60 => cheaper costs 40%.
+HYBRID_DISCOUNT = 0.60
+# USE_SAME_COST: when True, the cheaper stat of each pair borrows its pricier
+# partner's cost curve, so both cost the same at equal growth% (they only differ
+# when set to different growths). Code-level config, on by default.
+USE_SAME_COST = True
+
+ATTR_PAIRS = [("Strength", "Magic"), ("Defense", "Resistance")]
+
+def _pair_cost_source():
+    """Map the cheaper stat of each pair (by 100% cost) to its pricier partner,
+    whose cost table it borrows when USE_SAME_COST is on."""
+    mapping = {}
+    for a, b in ATTR_PAIRS:
+        ca, cb = ATTRIBUTE_COSTS_INT[a][-1], ATTRIBUTE_COSTS_INT[b][-1]
+        cheaper, pricier = (a, b) if ca <= cb else (b, a)
+        mapping[cheaper] = pricier
+    return mapping
+
+PAIR_COST_SOURCE = _pair_cost_source()
 
 PERSONAL_SKILLS = {
     "Shove": 0,
@@ -313,7 +351,7 @@ FIXED_EFFECTS_CONFIG = {
     "Brave Weapon": {"cost": 17.69, "desc": "Strike twice when attacking"},
     "Bold Weapon": {"cost": 0, "desc": "Cannot double"},
     "Bronze Weapon": {"cost": 0, "desc": "Cannot crit or activate skills"},
-    "Crit Weapon": {"cost": 24.5, "desc": "Changes crit mod to x4"},
+    "Crit Weapon": {"cost": 16.4, "desc": "Changes crit mod to x4"},
     "One Tap": {"cost": 0, "desc": "Doubles Might when initiating"},
     "Venge": {"cost": 0, "desc": "Doubles Might when attacked"},
     "Skillful": {"cost": 0, "desc": "Doubles Might when Skill is higher than targets"},
@@ -855,7 +893,6 @@ class SkillSelectionWindow:
         for w in self.scroll_frame.winfo_children():
             w.destroy()
         self.skill_widgets.clear()
-        ttk.Style().configure("Slotted.TButton", foreground="#0a7a00")  # green = already slotted
 
         visible = self._visible_skills()
         canvas_w = self.canvas.winfo_width() or 600
@@ -887,9 +924,14 @@ class SkillSelectionWindow:
                 label = f"{skill}  ({cost} pts)  [g{gate}]"
                 if slot is not None:
                     label += f"  → Slot {slot + 1}"
-                btn = ttk.Button(self.scroll_frame, text=label,
-                                 style=("Slotted.TButton" if slot is not None else "TButton"),
-                                 command=lambda s=skill, g=gate: self._open_slot_menu(s, g))
+                if slot is not None:
+                    btn = tk.Button(self.scroll_frame, text=label, anchor="w",
+                                    bg="#4a90d9", fg="white", activebackground="#3f7ec2",
+                                    activeforeground="white",
+                                    command=lambda s=skill, g=gate: self._open_slot_menu(s, g))
+                else:
+                    btn = tk.Button(self.scroll_frame, text=label, anchor="w",
+                                    command=lambda s=skill, g=gate: self._open_slot_menu(s, g))
                 btn.grid(row=grid_row, column=col, sticky="ew", padx=8, pady=2)
                 tip_parts = []
                 if info.get("desc"):
@@ -4026,6 +4068,7 @@ class CharacterCreator:
         self.points_var = tk.StringVar(value=str(int(self.remaining_points)))
 
         self.attribute_costs = ATTRIBUTE_COSTS
+        self.attribute_costs_int = ATTRIBUTE_COSTS_INT   # monotonic per-step integer costs
 
         self.attributes = list(self.attribute_costs.keys())
         self.growth_vars = {}
@@ -4111,6 +4154,19 @@ class CharacterCreator:
         self.setup_stance_frame(scrollable_frame)
         self.setup_pairup_frame(scrollable_frame)
         self.setup_secondary_frame(scrollable_frame)
+
+        # Clicking empty space (any non-input widget) drops focus from the active
+        # entry/spinbox so it visibly deselects. App-wide, covers all windows.
+        self.root.bind_all("<Button-1>", self._defocus_on_bg_click, add="+")
+
+    def _defocus_on_bg_click(self, event):
+        text_inputs = (tk.Entry, ttk.Entry, tk.Spinbox, ttk.Spinbox,
+                       tk.Text, scrolledtext.ScrolledText, ttk.Combobox)
+        if not isinstance(event.widget, text_inputs):
+            try:
+                event.widget.focus_set()
+            except tk.TclError:
+                pass
 
     def _int_vcmd(self):
         return _make_int_vcmd(self.root)
@@ -4320,7 +4376,7 @@ class CharacterCreator:
                 "After increasing groans of discomfort\n"
                 "After Ninja Cave\n"
                 "After Takumi Wall\n\n"
-                "Each skill has a gate (0-4) tied to chapter progress; a skill can "
+                "Each skill has a gate (1-5) tied to chapter progress; a skill can "
                 "only be placed in a slot whose gate is high enough. In the Skill "
                 "Selection window, click a skill to choose an eligible slot for it.",
                 delay_ms=400)
@@ -4377,8 +4433,9 @@ class CharacterCreator:
                      sticky="w", padx=(10, 0))
         Tooltip(_info_g,
                 "Growth rates directly decide your starting stats. "
-                "Strength and Magic share a Hybrid Discount: "
-                "the cheaper of the two costs 50% less.",
+                "Strength/Magic and Defense/Resistance each share a Hybrid "
+                f"Discount: the cheaper of the pair costs "
+                f"{int(round(HYBRID_DISCOUNT * 100))}% less.",
                 delay_ms=400)
 
         ttk.Label(frame, text="Attribute", font='bold').grid(row=0, column=0, padx=5, pady=2)
@@ -4628,45 +4685,19 @@ class CharacterCreator:
         self.validate_growth(attribute)
 
     def update_next_step_costs(self):
-        raw_attr_cost_dict = {
-            attr: math.ceil(self.attribute_costs[attr][self.growth_vars[attr].get() // 5])
-            for attr in self.attributes
-        }
-
-        str_cost = raw_attr_cost_dict.get("Strength", 0)
-        mag_cost = raw_attr_cost_dict.get("Magic", 0)
-
-        if str_cost <= mag_cost:
-            current_discounted_total = math.floor(str_cost * 0.5) + mag_cost
-        else:
-            current_discounted_total = str_cost + math.floor(mag_cost * 0.5)
-
-        for attr, cost in raw_attr_cost_dict.items():
-            if attr not in ["Strength", "Magic"]:
-                current_discounted_total += cost
+        raw_attr_cost_dict = self._attr_cost_dict()
+        current_discounted_total = self._pair_discount_total(raw_attr_cost_dict)
 
         for attr in self.attributes:
             current_growth = self.growth_vars[attr].get()
 
             if current_growth < 100:
-                current_idx = current_growth // 5
-                next_idx = current_idx + 1
+                next_idx = current_growth // 5 + 1
 
                 test_costs = raw_attr_cost_dict.copy()
-                test_costs[attr] = math.ceil(self.attribute_costs[attr][next_idx])
+                test_costs[attr] = self._attr_cost_index(attr, next_idx)
 
-                str_test = test_costs.get("Strength", 0)
-                mag_test = test_costs.get("Magic", 0)
-
-                if str_test <= mag_test:
-                    new_discounted_total = math.floor(str_test * 0.5) + mag_test
-                else:
-                    new_discounted_total = str_test + math.floor(mag_test * 0.5)
-
-                for a, cost in test_costs.items():
-                    if a not in ["Strength", "Magic"]:
-                        new_discounted_total += cost
-
+                new_discounted_total = self._pair_discount_total(test_costs)
                 next_step_cost = new_discounted_total - current_discounted_total
 
                 self.next_step_cost_vars[attr].set(str(math.ceil(next_step_cost)))
@@ -4796,8 +4827,7 @@ class CharacterCreator:
 
     def update_growth_cost(self, attribute):
         growth_rate = self.growth_vars[attribute].get()
-        index = growth_rate // 5
-        self.cost_vars[attribute].set(str(math.ceil(self.attribute_costs[attribute][index])))
+        self.cost_vars[attribute].set(str(self._attr_cost(attribute, growth_rate)))
 
         base_stats = self.calculate_base_stats()
         for attr, value in base_stats.items():
@@ -4816,33 +4846,49 @@ class CharacterCreator:
 
         self.update_total_cost()
 
+    def _attr_cost_index(self, attr, idx):
+        """Integer growth cost for `attr` at table index `idx`, honoring
+        USE_SAME_COST (the cheaper stat of a pair borrows its pricier partner's
+        cost curve)."""
+        src = PAIR_COST_SOURCE.get(attr, attr) if USE_SAME_COST else attr
+        return self.attribute_costs_int[src][idx]
+
+    def _attr_cost(self, attr, growth):
+        return self._attr_cost_index(attr, growth // 5)
+
+    def _attr_cost_dict(self):
+        return {attr: self._attr_cost(attr, self.growth_vars[attr].get())
+                for attr in self.attributes}
+
+    def _pair_discount_total(self, cost_dict):
+        """Total of all attribute costs after the hybrid discount: within each
+        pair the cheaper of the two current costs pays (1 - HYBRID_DISCOUNT)."""
+        total = 0
+        paired = set()
+        for a, b in ATTR_PAIRS:
+            if a in cost_dict and b in cost_dict:
+                hi, lo = max(cost_dict[a], cost_dict[b]), min(cost_dict[a], cost_dict[b])
+                total += hi + math.floor((1 - HYBRID_DISCOUNT) * lo)
+                paired.update((a, b))
+        for attr, c in cost_dict.items():
+            if attr not in paired:
+                total += c
+        return total
+
     def update_total_cost(self):
-        raw_attr_cost_dict = {
-            attr: math.ceil(self.attribute_costs[attr][self.growth_vars[attr].get() // 5])
-            for attr in self.attributes
-        }
+        raw_attr_cost_dict = self._attr_cost_dict()
 
         selected_movement = self.movement_var.get().split(" (")[0]
         movement_cost = MOVEMENT_COSTS.get(selected_movement, 0)
 
         weapon_cost = sum(EXTRA_WEAPON_COST for i, var in enumerate(self.extra_weapon_vars) if var.get())
 
-        attr_cost_dict = raw_attr_cost_dict.copy()
-        if "Strength" in self.attributes and "Magic" in self.attributes:
-            strength_cost = raw_attr_cost_dict["Strength"]
-            magic_cost = raw_attr_cost_dict["Magic"]
-
-            if strength_cost <= magic_cost:
-                attr_cost_dict["Strength"] = math.floor(strength_cost * 0.5)
-            else:
-                attr_cost_dict["Magic"] = math.floor(magic_cost * 0.5)
-
         selected_personal = self.personal_skill_var.get().split(" (")[0]
         personal_skill_cost = PERSONAL_SKILLS.get(selected_personal, 0)
 
         secondary_cost = sum(int(self.secondary_cost_vars[stat].get()) for stat in SECONDARY_STAT_BASE_COSTS.keys())
 
-        attr_cost = sum(attr_cost_dict.values())
+        attr_cost = self._pair_discount_total(raw_attr_cost_dict)
         skill_cost = sum(scaled_skill_cost(skill_data[skill]["cost"]) for skill in self.selected_skills)
 
         self.remaining_points = initial_points - (attr_cost + skill_cost + movement_cost + weapon_cost + personal_skill_cost + secondary_cost)
@@ -4884,20 +4930,21 @@ class CharacterCreator:
                 self.secondary_next_labels[stat].configure(foreground='red')
 
     def update_discount_display(self, raw_attr_cost_dict):
-        if "Strength" in self.attributes and "Magic" in self.attributes:
-            strength_cost = raw_attr_cost_dict["Strength"]
-            magic_cost = raw_attr_cost_dict["Magic"]
+        pct = int(round(HYBRID_DISCOUNT * 100))
+        total_discount = 0
+        cheaper_names = []
+        for a, b in ATTR_PAIRS:
+            if a in raw_attr_cost_dict and b in raw_attr_cost_dict:
+                ca, cb = raw_attr_cost_dict[a], raw_attr_cost_dict[b]
+                lo = min(ca, cb)
+                total_discount += lo - math.floor((1 - HYBRID_DISCOUNT) * lo)
+                cheaper_names.append(a if ca <= cb else b)
 
-            if strength_cost <= magic_cost:
-                discount = math.floor(strength_cost * 0.5)
-                self.discount_label.config(
-                    text=f"Hybrid Discount: -{discount} pts (50% off Strength)",
-                    foreground="green")
-            else:
-                discount = math.floor(magic_cost * 0.5)
-                self.discount_label.config(
-                    text=f"Hybrid Discount: -{discount} pts (50% off Magic)",
-                    foreground="green")
+        if cheaper_names:
+            self.discount_label.config(
+                text=f"Hybrid Discount: -{total_discount} pts "
+                     f"({pct}% off {' & '.join(cheaper_names)})",
+                foreground="green")
 
     def validate_stance_checkboxes(self, row, col):
         support_levels = ["C Support", "B Support", "A Support", "S Support"]
@@ -5553,6 +5600,7 @@ class CharacterCreator:
             self.cost_vars[attr].set("0")
             self.next_step_cost_vars[attr].set("0")
             self.next_step_labels[attr].configure(foreground='black')
+        self.update_total_growth()   # reset the Total Growth% readout too
 
         base_stats = self.calculate_base_stats()
         for attr, value in base_stats.items():

@@ -168,7 +168,7 @@
         "gate": 1
     },
     "Bushido": {
-        "cost": 17.97,
+        "cost": 10.90,
         "groups": [
             "Lead",
             "Pairup",
@@ -204,7 +204,7 @@
         "gate": 2
     },
     "Sisterhood": {
-        "cost": 9.72,
+        "cost": 5.71,
         "groups": [
             "Lead",
             "Pairup",
@@ -298,7 +298,7 @@
             "Hit"
         ],
         "desc": "Hit rate +5 for all allies",
-        "gate": 4
+        "gate": 2
     },
     "Born Steward": {
         "cost": 0,
@@ -309,7 +309,7 @@
         "gate": 1
     },
     "Wind Disciple": {
-        "cost": 10.17,
+        "cost": 9.16,
         "groups": [
             "Below Full HP",
             "Hit",
@@ -433,7 +433,7 @@
         "gate": 2
     },
     "Seal Strength": {
-        "cost": 10.96,
+        "cost": 9.95,
         "groups": [
             "Enfeeble"
         ],
@@ -441,23 +441,23 @@
         "gate": 2
     },
     "Seal Resistance": {
-        "cost": 11.23,
+        "cost": 10.22,
         "groups": [
             "Enfeeble"
         ],
         "desc": "After battle, enemy’s Resistance -6",
         "gate": 2
     },
-    "Seal Defence": {
-        "cost": 11.8,
+    "Seal Defense": {
+        "cost": 10.70,
         "groups": [
             "Enfeeble"
         ],
-        "desc": "After battle, enemy’s Defence -6",
+        "desc": "After battle, enemy’s Defense -6",
         "gate": 2
     },
     "Seal Speed": {
-        "cost": 11.53,
+        "cost": 10.52,
         "groups": [
             "Enfeeble"
         ],
@@ -465,7 +465,7 @@
         "gate": 2
     },
     "Seal Magic": {
-        "cost": 12.07,
+        "cost": 10.68,
         "groups": [
             "Enfeeble"
         ],
@@ -473,7 +473,7 @@
         "gate": 2
     },
     "Draconic Hex": {
-        "cost": 28.8,
+        "cost": 27.7,
         "groups": [
             "Enfeeble"
         ],
@@ -557,7 +557,7 @@
         "gate": 2
     },
     "Lilys Poise": {
-        "cost": 10.99,
+        "cost": 11.11,
         "groups": [
             "Adjacent",
             "Damage",
@@ -599,7 +599,7 @@
         "gate": 1
     },
     "Counter": {
-        "cost": 12.53,
+        "cost": 11.52,
         "groups": [
             "Adjacent",
             "Counter"
@@ -616,7 +616,7 @@
         "gate": 2
     },
     "Countermagic": {
-        "cost": 12.53,
+        "cost": 11.52,
         "groups": [
             "Counter"
         ],
@@ -624,7 +624,7 @@
         "gate": 2
     },
     "Icy Blood": {
-        "cost": 12.39,
+        "cost": 11.38,
         "groups": [
             "Below Full HP",
             "Counter",
@@ -662,13 +662,13 @@
         "gate": 1
     },
     "Malefic Aura": {
-        "cost": 7.45,
+        "cost": 6.44,
         "groups": [
             "Aura",
             "Damage"
         ],
         "desc": "Enemies within a 2 tile radius receive 2 extra damage from magical attacks",
-        "gate": 2
+        "gate": 1
     },
     "Voice of Peace": {
         "cost": 7.28,
@@ -689,7 +689,7 @@
         "gate": 1
     },
     "Quiet Strength": {
-        "cost": 6.41,
+        "cost": 11.11,
         "groups": [
             "Aura",
             "Damage Reduction"
@@ -705,7 +705,7 @@
             "Female"
         ],
         "desc": "Female allies within a 2 tile radius receive 2 less damage during battles",
-        "gate": 2
+        "gate": 1
     },
     "Demoiselle": {
         "cost": 2.91,
@@ -715,10 +715,10 @@
             "Male"
         ],
         "desc": "Male allies within a 2 tile radius receive 2 less damage during battles",
-        "gate": 2
+        "gate": 1
     },
     "Rallying Cry": {
-        "cost": 6.56,
+        "cost": 11.11,
         "groups": [
             "Aura",
             "Damage"
@@ -755,13 +755,13 @@
         "gate": 2
     },
     "Perfect Pitch": {
-        "cost": 15.04,
+        "cost": 7.02,
         "groups": [
             "Rally",
             "Heal%"
         ],
         "desc": "Allies within a 2 tile radius who have lower HP than the user recover 10% HP when the “Rally” command is used",
-        "gate": 2
+        "gate": 1
     },
     "Fancy Footwork": {
         "cost": 5,
@@ -793,7 +793,7 @@
             "Rally"
         ],
         "desc": "Speed +4 to all allies within a 2 tile radius for one Turn when the “Rally” command is used",
-        "gate": 4
+        "gate": 3
     },
     "Rally Strength": {
         "cost": 10.83,
@@ -828,12 +828,12 @@
         "gate": 3
     },
     "Rally Movement": {
-        "cost": 20.77,
+        "cost": 10.73,
         "groups": [
             "Rally"
         ],
         "desc": "Movement +1 to all allies within a 2 tile radius for one Turn when the “Rally” command is used",
-        "gate": 4
+        "gate": 1
     },
     "Rally Spectrum": {
         "cost": 24.17,
@@ -841,7 +841,7 @@
             "Rally"
         ],
         "desc": "All Stats +2 to all allies within a 4 tile radius for one Turn when the Rally command is used",
-        "gate": 5
+        "gate": 4
     },
     "Movement +1": {
         "cost": 5.26,
@@ -861,14 +861,14 @@
         "gate": 3
     },
     "Healing Descant": {
-        "cost": 16.37,
+        "cost": 14.35,
         "groups": [
             "Player Phase",
             "Heal%",
             "Aura"
         ],
         "desc": "Allies within a 2 tile radius recover 10% HP at the start of the user’s Turn",
-        "gate": 3
+        "gate": 2
     },
     "Forager": {
         "cost": 5.01,
@@ -917,14 +917,14 @@
         "gate": 1
     },
     "Amaterasu": {
-        "cost": 32.72,
+        "cost": 24.31,
         "groups": [
             "Player Phase",
             "Heal%",
             "Aura"
         ],
         "desc": "Allies within a 2 tile radius recover 20% HP at the start of the user’s Turn",
-        "gate": 4
+        "gate": 3
     },
     "Even Better": {
         "cost": 12.53,
@@ -1125,7 +1125,7 @@
             "Defeat Enemy"
         ],
         "desc": "When user triggers the battle, recover 20% HP after defeating the enemy",
-        "gate": 2
+        "gate": 1
     },
     "Mischievous": {
         "cost": 3.28,
@@ -1164,7 +1164,7 @@
         "gate": 2
     },
     "Wary Fighter": {
-        "cost": 21.34,
+        "cost": 23.36,
         "groups": [
             "Unique"
         ],
@@ -1190,7 +1190,7 @@
         "gate": 3
     },
     "Lifetaker": {
-        "cost": 18,
+        "cost": 13.9,
         "groups": [
             "Player Phase",
             "Heal%",
@@ -1331,7 +1331,7 @@
         "gate": 2
     },
     "Hit/Avo +20": {
-        "cost": 22.6,
+        "cost": 23.7,
         "groups": [
             "Hit",
             "Avoid"
@@ -1490,7 +1490,7 @@
         "gate": 3
     },
     "Shurikenfaire": {
-        "cost": 13.52,
+        "cost": 12.29,
         "groups": [
             "Weapon Restricted",
             "Damage"
@@ -1814,7 +1814,7 @@
         "gate": 1
     },
     "Reciprocity": {
-        "cost": 12.53,
+        "cost": 10.52,
         "groups": [
             "Staff"
         ],
@@ -1822,7 +1822,7 @@
         "gate": 1
     },
     "Live to Serve": {
-        "cost": 25.06,
+        "cost": 9.08,
         "groups": [
             "Staff"
         ],
@@ -1929,28 +1929,28 @@
         "gate": 3
     },
     "Winged Shield": {
-        "cost": 12.86,
+        "cost": 7.85,
         "groups": [
             "Unique"
         ],
         "desc": "When user is a Flying unit, their Flying weakness is nullified and they will receive terrain effects",
-        "gate": 3
+        "gate": 2
     },
     "Beast Shield": {
-        "cost": 11.69,
+        "cost": 5.70,
         "groups": [
             "Unique"
         ],
         "desc": "User’s Beast-type weakness is nullified",
-        "gate": 2
+        "gate": 1
     },
     "Armor Shield": {
-        "cost": 10.52,
+        "cost": 5.51,
         "groups": [
             "Unique"
         ],
         "desc": "User’s Armour-type weakness is nullified",
-        "gate": 2
+        "gate": 1
     },
     "Immune Status": {
         "cost": 17.72,

@@ -15,8 +15,9 @@ itch.io; this repository holds the source.
   movement type, and personal skill.
 - **Skills** — pick up to 4 from a searchable, group-filterable list. Costs are
   scaled automatically and skills are sorted by the order they're learned.
-- **Attribute growths** — 0–100% in steps of 5, with a Strength/Magic "hybrid
-  discount" and a live total-growth readout that drives your base stats.
+- **Attribute growths** — 0–100% in steps of 5, with a "hybrid discount" on the
+  Strength/Magic and Defense/Resistance pairs, and a live total-growth readout
+  that drives your base stats.
 - **Secondary stats** — Hit, Crit, Avoid, and Dodge with scaled costs.
 - **Attack Stance & Pair-Up bonuses** — per support level, with enforced limits.
 - **Custom Weapon Creator** — build a prf weapon within its own point budget:
