@@ -9,7 +9,7 @@ import os
 # VERSION
 # ============================================================================
 
-VERSION = "0.63.b"
+VERSION = "0.64.a"
 
 print("Program starting...")
 # ============================================================================
@@ -65,22 +65,23 @@ def _monotone_int_table(raw):
 ATTRIBUTE_COSTS_INT = {a: _monotone_int_table(t) for a, t in ATTRIBUTE_COSTS.items()}
 
 # ---- Stat-pair pricing --------------------------------------------------------
-# Two stat pairs share a "Hybrid Discount": Strength/Magic and Defense/Resistance.
-# HYBRID_DISCOUNT: the cheaper of a pair's two current costs is discounted by this
-# fraction (you pay 1 - HYBRID_DISCOUNT of it). e.g. 0.60 => cheaper costs 40%.
+# HYBRID_DISCOUNT: within a hybrid pair, the cheaper of the two current costs is
+# discounted by this fraction (you pay 1 - HYBRID_DISCOUNT of it). 0.60 => 40%.
 HYBRID_DISCOUNT = 0.60
-# USE_SAME_COST: when True, the cheaper stat of each pair borrows its pricier
-# partner's cost curve, so both cost the same at equal growth% (they only differ
-# when set to different growths). Code-level config, on by default.
+# The hybrid discount applies ONLY to Strength/Magic.
+HYBRID_DISCOUNT_PAIRS = [("Strength", "Magic")]
+# USE_SAME_COST: when True, the cheaper stat of each SAME_COST pair borrows its
+# pricier partner's cost curve, so both cost the same at equal growth% (they only
+# differ when set to different growths). Code-level config, on by default.
+# Applies to both pairs — Defense/Resistance get this but NOT the hybrid discount.
 USE_SAME_COST = True
-
-ATTR_PAIRS = [("Strength", "Magic"), ("Defense", "Resistance")]
+SAME_COST_PAIRS = [("Strength", "Magic"), ("Defense", "Resistance")]
 
 def _pair_cost_source():
-    """Map the cheaper stat of each pair (by 100% cost) to its pricier partner,
-    whose cost table it borrows when USE_SAME_COST is on."""
+    """Map the cheaper stat of each same-cost pair (by 100% cost) to its pricier
+    partner, whose cost table it borrows when USE_SAME_COST is on."""
     mapping = {}
-    for a, b in ATTR_PAIRS:
+    for a, b in SAME_COST_PAIRS:
         ca, cb = ATTRIBUTE_COSTS_INT[a][-1], ATTRIBUTE_COSTS_INT[b][-1]
         cheaper, pricier = (a, b) if ca <= cb else (b, a)
         mapping[cheaper] = pricier
@@ -427,6 +428,26 @@ except json.JSONDecodeError:
     skill_data_load_error = True
     print("Error: Failed to parse 'skill_data.json'.")
 
+# Dev-only: allow reloading skill_data.json from disk at runtime via the Skill
+# Selection window. Set to False for stable / public releases.
+ALLOW_SKILL_RELOAD = True
+
+def reload_skill_data():
+    """Reload skill_data.json from disk into the module-global dict in place.
+
+    Mutates the existing dict (clear + update) so all references stay valid.
+    Returns (ok, message)."""
+    try:
+        with open(resource_path("skill_data.json"), "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        return False, "skill_data.json not found."
+    except json.JSONDecodeError as exc:
+        return False, f"skill_data.json is invalid JSON:\n{exc}"
+    skill_data.clear()
+    skill_data.update(data)
+    return True, f"Reloaded {len(skill_data)} skills from disk."
+
 # Pre-compute the scaling divisor from the raw costs in skill_data
 _max_raw_skill_cost = max((v["cost"] for v in skill_data.values()), default=1)
 _max_skill_name = max(skill_data, key=lambda k: skill_data[k]["cost"]) if skill_data else "N/A"
@@ -694,7 +715,20 @@ class SkillSelectionWindow:
         gate_cb.pack(side="left", padx=(4, 0))
         gate_cb.bind("<<ComboboxSelected>>", lambda e: self._refresh_skills())
 
-        # Window-level keypress: jumps group filter, guards search entry focus
+        ttk.Label(filter_row, text="Sort:").pack(side="left", padx=(16, 0))
+        self.sort_var = tk.StringVar(value="Cost")
+        sort_cb = ttk.Combobox(filter_row, textvariable=self.sort_var,
+                               values=["Cost", "Alphabetical"],
+                               state="readonly", width=12)
+        sort_cb.pack(side="left", padx=(4, 0))
+        sort_cb.bind("<<ComboboxSelected>>", lambda e: self._refresh_skills())
+
+        # Dev-only: reload skill_data.json from disk (hidden for stable releases).
+        if ALLOW_SKILL_RELOAD:
+            ttk.Button(filter_row, text="Reload skill_data.json",
+                       command=self._reload_skill_data).pack(side="left", padx=(16, 0))
+
+        # Window-level keypress: jumps group filter only when it's focused
         self.window.bind("<KeyPress>",
             lambda e: self._group_filter_keypress_all(e), add="+")
 
@@ -825,9 +859,10 @@ class SkillSelectionWindow:
                 return
 
     def _group_filter_keypress_all(self, event):
-        """Window-level keypress: jump group filter when dropdown is closed."""
-        # Ignore if search entry has focus
-        if hasattr(self, "search_entry") and self.window.focus_get() == self.search_entry:
+        """Window-level keypress: jump group filter only while its button is
+        focused (typing elsewhere must not change the group)."""
+        # Only act when the group button itself has keyboard focus.
+        if self.window.focus_get() != self.group_btn:
             return
         # Ignore if our custom dropdown is open (it handles its own keys)
         if self._group_dropdown_open:
@@ -847,6 +882,23 @@ class SkillSelectionWindow:
                 self.group_var.set(candidate)
                 self._refresh_skills()
                 return
+
+    def _reload_skill_data(self):
+        """Dev-only: reload skill_data.json from disk and rebuild the view."""
+        ok, msg = reload_skill_data()
+        if not ok:
+            messagebox.showerror("Reload skill_data.json", msg, parent=self.window)
+            return
+        # Group values may have changed; keep the selection valid.
+        self._group_values = ["All"] + sorted(
+            {g for info in skill_data.values() for g in info["groups"]})
+        if self.group_var.get() not in self._group_values:
+            self.group_var.set("All")
+        # Drop any slotted skills that no longer exist.
+        self.slots = [s if s in skill_data else None for s in self.slots]
+        self._render_slot_header()
+        self._refresh_skills()
+        messagebox.showinfo("Reload skill_data.json", msg, parent=self.window)
 
     def _visible_skills(self):
         """Return ordered list of (skill, info) matching current filters."""
@@ -914,7 +966,10 @@ class SkillSelectionWindow:
             ttk.Label(self.scroll_frame, text=title, font=("TkDefaultFont", 9, "bold")).grid(
                 row=grid_row, column=0, columnspan=cols, sticky="w", pady=(8, 2))
             grid_row += 1
-            items = sorted(by_gate[gate], key=lambda x: scaled_skill_cost(x[1]["cost"]))
+            if getattr(self, "sort_var", None) and self.sort_var.get() == "Alphabetical":
+                items = sorted(by_gate[gate], key=lambda x: x[0].lower())
+            else:
+                items = sorted(by_gate[gate], key=lambda x: scaled_skill_cost(x[1]["cost"]))
             for i, (skill, info) in enumerate(items):
                 col = i % cols
                 if i > 0 and col == 0:
@@ -4433,9 +4488,10 @@ class CharacterCreator:
                      sticky="w", padx=(10, 0))
         Tooltip(_info_g,
                 "Growth rates directly decide your starting stats. "
-                "Strength/Magic and Defense/Resistance each share a Hybrid "
-                f"Discount: the cheaper of the pair costs "
-                f"{int(round(HYBRID_DISCOUNT * 100))}% less.",
+                "Strength and Magic share a Hybrid Discount: the cheaper of the "
+                f"two costs {int(round(HYBRID_DISCOUNT * 100))}% less. "
+                "Defense and Resistance are priced the same as each other but "
+                "get no discount.",
                 delay_ms=400)
 
         ttk.Label(frame, text="Attribute", font='bold').grid(row=0, column=0, padx=5, pady=2)
@@ -4865,7 +4921,7 @@ class CharacterCreator:
         pair the cheaper of the two current costs pays (1 - HYBRID_DISCOUNT)."""
         total = 0
         paired = set()
-        for a, b in ATTR_PAIRS:
+        for a, b in HYBRID_DISCOUNT_PAIRS:
             if a in cost_dict and b in cost_dict:
                 hi, lo = max(cost_dict[a], cost_dict[b]), min(cost_dict[a], cost_dict[b])
                 total += hi + math.floor((1 - HYBRID_DISCOUNT) * lo)
@@ -4933,7 +4989,7 @@ class CharacterCreator:
         pct = int(round(HYBRID_DISCOUNT * 100))
         total_discount = 0
         cheaper_names = []
-        for a, b in ATTR_PAIRS:
+        for a, b in HYBRID_DISCOUNT_PAIRS:
             if a in raw_attr_cost_dict and b in raw_attr_cost_dict:
                 ca, cb = raw_attr_cost_dict[a], raw_attr_cost_dict[b]
                 lo = min(ca, cb)

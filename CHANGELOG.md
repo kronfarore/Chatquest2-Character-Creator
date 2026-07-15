@@ -2,6 +2,21 @@
 
 All notable changes to the Chatquest 2 Character Creator are documented here.
 
+## 0.64.a
+
+### Changed
+- The **Hybrid Discount now applies to Strength/Magic only**. Defense and
+  Resistance still share a cost (priced the same as each other via **Use Same
+  Cost**) but receive no discount.
+
+### Skill Selection window
+- New **Sort** selector: sort skills by **Cost** or **Alphabetical** (within each
+  gate section).
+- The group filter no longer changes when you type while it isn't focused —
+  letter-jump only works while the group button has focus.
+- Dev builds get a **Reload skill_data.json** button (reloads the catalog from
+  disk without restarting). Hidden in stable releases.
+
 ## 0.63.b
 
 ### Changed
