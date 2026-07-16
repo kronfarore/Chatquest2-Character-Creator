@@ -2,6 +2,34 @@
 
 All notable changes to the Chatquest 2 Character Creator are documented here.
 
+## 0.64.b
+
+Code-review pass: fixes for all confirmed findings.
+
+### Fixed
+- **Weapon Creator Reset wiped the weapon on the first click** — the two-click
+  confirmation was inverted. It now arms first ("Click Again to Confirm Reset")
+  and only wipes on the second click, like the character Reset.
+- **Reset Character / Reset Everything** now close an open Skill Selection
+  window — previously its stale slots could silently re-populate the skills you
+  just cleared when Confirm was clicked later.
+- Importing a **pre-0.60 character file** with exactly 5 skills is no longer
+  misread as the new ordered-slot format (old flat lists are always re-slotted
+  by gate). Slot placement is also two-pass now: an entry that doesn't fit its
+  slot can no longer displace a later skill from its own legitimate slot.
+- The Base Weapon creator's "Not available for Base Weapon" note is no longer
+  wiped when the weapon type changes (or on reset).
+- **Reload skill_data.json** now recomputes the skill-cost scaling, refreshes
+  the Gate filter options, and pushes pruned slots to the main window
+  (previously a removed slotted skill could crash later cost updates).
+- Exported `points_summary.attribute_points` now includes the Hybrid Discount,
+  so the itemized components add up to `used_points` exactly.
+
+### Internal
+- Skill list derived live from the slots (no more manual re-sync), Hybrid
+  Discount readout derived from the same helper that charges it, removed a
+  doubled next-step-cost recompute per keystroke and a dead parameter.
+
 ## 0.64.a
 
 ### Changed

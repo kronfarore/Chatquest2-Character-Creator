@@ -9,7 +9,7 @@ import os
 # VERSION
 # ============================================================================
 
-VERSION = "0.64.a"
+VERSION = "0.64.b"
 
 print("Program starting...")
 # ============================================================================
@@ -446,11 +446,16 @@ def reload_skill_data():
         return False, f"skill_data.json is invalid JSON:\n{exc}"
     skill_data.clear()
     skill_data.update(data)
+    _recompute_skill_cost_scale()   # the scaling divisor derives from skill_data
     return True, f"Reloaded {len(skill_data)} skills from disk."
 
 # Pre-compute the scaling divisor from the raw costs in skill_data
-_max_raw_skill_cost = max((v["cost"] for v in skill_data.values()), default=1)
-_max_skill_name = max(skill_data, key=lambda k: skill_data[k]["cost"]) if skill_data else "N/A"
+def _recompute_skill_cost_scale():
+    global _max_raw_skill_cost, _max_skill_name
+    _max_raw_skill_cost = max((v["cost"] for v in skill_data.values()), default=1)
+    _max_skill_name = max(skill_data, key=lambda k: skill_data[k]["cost"]) if skill_data else "N/A"
+
+_recompute_skill_cost_scale()
 print(f"DEBUG: Highest raw skill cost = {_max_raw_skill_cost} ({_max_skill_name}), scales to MAX_SKILL_COST={MAX_SKILL_COST}")
 
 def scaled_skill_cost(raw_cost):
@@ -467,6 +472,15 @@ def skill_gate(name):
 def eligible_slots(gate):
     """0-based slot indices that can hold a skill of the given gate tier."""
     return [i for i, g in enumerate(SKILL_SLOT_GATES) if g >= gate]
+
+def file_version_at_least(version, major, minor):
+    """True when a save-file version string like '0.63.a' is >= major.minor.
+    Missing or unparseable versions count as older."""
+    try:
+        parts = str(version).split(".")
+        return (int(parts[0]), int(parts[1])) >= (major, minor)
+    except (ValueError, IndexError):
+        return False
 
 if skill_data_load_error:
     root = tk.Tk()
@@ -709,11 +723,11 @@ class SkillSelectionWindow:
 
         ttk.Label(filter_row, text="Gate:").pack(side="left", padx=(16, 0))
         self.gate_var = tk.StringVar(value="All")
-        gate_values = ["All"] + [str(g) for g in sorted({info.get("gate", 0) for info in skill_data.values()})]
-        gate_cb = ttk.Combobox(filter_row, textvariable=self.gate_var, values=gate_values,
-                               state="readonly", width=5)
-        gate_cb.pack(side="left", padx=(4, 0))
-        gate_cb.bind("<<ComboboxSelected>>", lambda e: self._refresh_skills())
+        self.gate_cb = ttk.Combobox(filter_row, textvariable=self.gate_var,
+                                    values=self._compute_gate_values(),
+                                    state="readonly", width=5)
+        self.gate_cb.pack(side="left", padx=(4, 0))
+        self.gate_cb.bind("<<ComboboxSelected>>", lambda e: self._refresh_skills())
 
         ttk.Label(filter_row, text="Sort:").pack(side="left", padx=(16, 0))
         self.sort_var = tk.StringVar(value="Cost")
@@ -883,21 +897,29 @@ class SkillSelectionWindow:
                 self._refresh_skills()
                 return
 
+    def _compute_gate_values(self):
+        return ["All"] + [str(g) for g in
+                          sorted({skill_gate(s) for s in skill_data})]
+
     def _reload_skill_data(self):
         """Dev-only: reload skill_data.json from disk and rebuild the view."""
         ok, msg = reload_skill_data()
         if not ok:
             messagebox.showerror("Reload skill_data.json", msg, parent=self.window)
             return
-        # Group values may have changed; keep the selection valid.
+        # Group and gate filter values may have changed; keep selections valid.
         self._group_values = ["All"] + sorted(
             {g for info in skill_data.values() for g in info["groups"]})
         if self.group_var.get() not in self._group_values:
             self.group_var.set("All")
-        # Drop any slotted skills that no longer exist.
+        self.gate_cb.configure(values=self._compute_gate_values())
+        if self.gate_var.get() not in self.gate_cb.cget("values"):
+            self.gate_var.set("All")
+        # Drop slotted skills that no longer exist, then push the pruned slots
+        # to the main window too — otherwise its budget/cost math still counts
+        # (and crashes on) the deleted skill names.
         self.slots = [s if s in skill_data else None for s in self.slots]
-        self._render_slot_header()
-        self._refresh_skills()
+        self._sync()
         messagebox.showinfo("Reload skill_data.json", msg, parent=self.window)
 
     def _visible_skills(self):
@@ -3387,16 +3409,24 @@ class CustomWeaponCreator:
             if self.staff_warning_label is not None:
                 self.staff_warning_label.grid_remove()
 
+    def _reset_effect_note(self, effect):
+        """Blank an effect's note — unless the effect is disabled for this
+        weapon kind, whose 'Not available' explanation must stay visible."""
+        if effect in self.disabled_effects:
+            self.fixed_effect_note_labels[effect].set(f"Not available for {self.kind_label}")
+        else:
+            self.fixed_effect_note_labels[effect].set("")
+
     def update_silver_weapon_cost(self):
         if "Silver Weapon" in self.fixed_effect_cost_labels:
             self.fixed_effect_cost_labels["Silver Weapon"].config(text=self._fmt_cost(SILVER_WEAPON_COST_PHYSICAL), foreground="blue")
-            self.fixed_effect_note_labels["Silver Weapon"].set("")
+            self._reset_effect_note("Silver Weapon")
             self.silver_weapon_adjusted_cost = SILVER_WEAPON_COST_PHYSICAL
 
     def update_s_rank_debuff_cost(self):
         if "S Rank Debuff" in self.fixed_effect_cost_labels:
             self.fixed_effect_cost_labels["S Rank Debuff"].config(text=self._fmt_cost(S_RANK_DEBUFF_COST_PHYSICAL), foreground="blue")
-            self.fixed_effect_note_labels["S Rank Debuff"].set("")
+            self._reset_effect_note("S Rank Debuff")
             self.s_rank_debuff_adjusted_cost = S_RANK_DEBUFF_COST_PHYSICAL
 
     def update_might_multiplier_notes(self):
@@ -3563,21 +3593,21 @@ class CustomWeaponCreator:
             self.update_total_debuff_cost()
 
     def reset_confirmation_cancel(self):
-        """Cancel the reset confirmation after timeout."""
-        if not self.reset_confirmation_needed:
-            self.reset_confirmation_needed = True
-            self.reset_button.config(text="Reset")
-            
-    def reset_weapon(self):
-        # Check if confirmation is needed
+        """Timer fired before the second click — disarm the confirmation."""
         if self.reset_confirmation_needed:
             self.reset_confirmation_needed = False
+            self.reset_button.config(text="Reset")
+
+    def reset_weapon(self):
+        # First click: arm the confirmation and wait for the second click
+        if not self.reset_confirmation_needed:
+            self.reset_confirmation_needed = True
             self.reset_button.config(text="Click Again to Confirm Reset")
             self.window.after(3000, self.reset_confirmation_cancel)
             return
-        
-        # Reset confirmation flag
-        self.reset_confirmation_needed = True
+
+        # Second click: perform the reset
+        self.reset_confirmation_needed = False
         self.reset_button.config(text="Reset")
 
         self.name_entry.delete(0, tk.END)
@@ -3606,7 +3636,7 @@ class CustomWeaponCreator:
         self.bold_was_forced = False
 
         for effect in self.fixed_effect_note_labels:
-            self.fixed_effect_note_labels[effect].set("")
+            self._reset_effect_note(effect)
 
         if "Silver Weapon" in self.fixed_effect_cost_labels:
             self.fixed_effect_cost_labels["Silver Weapon"].config(text=self._fmt_cost(SILVER_WEAPON_COST_PHYSICAL), foreground="blue")
@@ -4117,7 +4147,6 @@ class CharacterCreator:
         print("CharacterCreator init starting...")
         self.root = root
         self.root.title(f"Character Creator - Fire Emblem Fates Tool v{VERSION}")
-        self.selected_skills = []
         self.skill_slots = [None] * MAX_SKILLS   # slot index -> skill name or None
         self.remaining_points = initial_points
         self.points_var = tk.StringVar(value=str(int(self.remaining_points)))
@@ -4781,32 +4810,50 @@ class CharacterCreator:
                 self.root, self.update_skills_and_points,
                 self.remaining_points + current_skill_cost, self.skill_slots)
 
+    @property
+    def selected_skills(self):
+        """Skills currently slotted — always derived from skill_slots, so the
+        two can never drift out of sync."""
+        return [s for s in self.skill_slots if s]
+
     def update_skills_and_points(self, slots):
         self.skill_slots = list(slots)
-        self.selected_skills = [s for s in self.skill_slots if s]
         self.update_total_cost()
         self._render_skills_list()
 
-    def _slots_from_imported(self, raw):
+    def _slots_from_imported(self, raw, positional_ok=True):
         """Build a length-MAX_SKILLS slot list from imported skill data.
 
         Accepts the new ordered slot list (may contain null) or an old flat list.
-        Keeps a skill's original slot when it's gate-eligible, otherwise drops it
-        into the earliest eligible free slot; unknown skills and overflow are
-        skipped (verification surfaces any problems)."""
+        `positional_ok` says the file is new enough (>= 0.60) to use the ordered
+        slot format — older flat lists are always re-slotted by gate, never read
+        positionally. Placement is two-pass so an ineligible entry can never
+        steal a later entry's own slot: first every skill that fits its original
+        slot keeps it, then the rest drop into the earliest eligible free slot;
+        unknown skills and overflow are skipped (verification surfaces any
+        problems)."""
         slots = [None] * MAX_SKILLS
         if not isinstance(raw, list):
             return slots
-        positional = len(raw) == MAX_SKILLS
+        positional = positional_ok and len(raw) == MAX_SKILLS
+        entries = []
+        seen = set()
         for idx, name in enumerate(raw):
-            if not name or name not in skill_data or name in slots:
+            if not name or name not in skill_data or name in seen:
                 continue
-            gate = skill_gate(name)
+            seen.add(name)
+            entries.append((idx, name))
+        # Pass 1: keep skills that are gate-eligible for their original slot.
+        leftovers = []
+        for idx, name in entries:
             if (positional and idx < MAX_SKILLS
-                    and SKILL_SLOT_GATES[idx] >= gate and slots[idx] is None):
+                    and SKILL_SLOT_GATES[idx] >= skill_gate(name)):
                 slots[idx] = name
-                continue
-            for i in eligible_slots(gate):
+            else:
+                leftovers.append(name)
+        # Pass 2: re-slot everything else into the earliest eligible free slot.
+        for name in leftovers:
+            for i in eligible_slots(skill_gate(name)):
                 if slots[i] is None:
                     slots[i] = name
                     break
@@ -4819,8 +4866,9 @@ class CharacterCreator:
             self.growth_vars[attribute].set(rounded_value)
             self.spinboxes[attribute].delete(0, tk.END)
             self.spinboxes[attribute].insert(0, str(rounded_value))
+        # update_growth_cost -> update_total_cost already refreshes the
+        # next-step costs; no direct call needed (avoids a double recompute).
         self.update_growth_cost(attribute)
-        self.update_next_step_costs()
 
     def validate_pairup_spinboxes(self, row, limit):
         support_levels = ["No Support", "C Support", "B Support", "A Support", "S Support"]
@@ -4945,7 +4993,8 @@ class CharacterCreator:
         secondary_cost = sum(int(self.secondary_cost_vars[stat].get()) for stat in SECONDARY_STAT_BASE_COSTS.keys())
 
         attr_cost = self._pair_discount_total(raw_attr_cost_dict)
-        skill_cost = sum(scaled_skill_cost(skill_data[skill]["cost"]) for skill in self.selected_skills)
+        skill_cost = sum(scaled_skill_cost(skill_data[skill]["cost"])
+                         for skill in self.selected_skills if skill in skill_data)
 
         self.remaining_points = initial_points - (attr_cost + skill_cost + movement_cost + weapon_cost + personal_skill_cost + secondary_cost)
         if self.remaining_points != int(self.remaining_points):
@@ -4955,7 +5004,7 @@ class CharacterCreator:
             color = "red" if self.remaining_points < 0 else "blue"
             self.points_header_label.configure(foreground=color)
 
-        self.update_spinbox_limits(raw_attr_cost_dict)
+        self.update_spinbox_limits()
         self.update_discount_display(raw_attr_cost_dict)
         self.update_next_step_costs()
         self.update_secondary_spinbox_limits()
@@ -4964,7 +5013,7 @@ class CharacterCreator:
         if hasattr(self, "skill_window") and self.skill_window.window.winfo_exists():
             self.skill_window.set_budget(self.remaining_points + skill_cost)
 
-    def update_spinbox_limits(self, raw_attr_cost_dict):
+    def update_spinbox_limits(self):
         # No affordability cap — growth may exceed the budget (verified on export).
         for attr in self.attributes:
             self.spinboxes[attr].configure(to=100)
@@ -4987,14 +5036,13 @@ class CharacterCreator:
 
     def update_discount_display(self, raw_attr_cost_dict):
         pct = int(round(HYBRID_DISCOUNT * 100))
-        total_discount = 0
-        cheaper_names = []
-        for a, b in HYBRID_DISCOUNT_PAIRS:
-            if a in raw_attr_cost_dict and b in raw_attr_cost_dict:
-                ca, cb = raw_attr_cost_dict[a], raw_attr_cost_dict[b]
-                lo = min(ca, cb)
-                total_discount += lo - math.floor((1 - HYBRID_DISCOUNT) * lo)
-                cheaper_names.append(a if ca <= cb else b)
+        # Derive the discount from the same helper that charges it, so the
+        # label can never diverge from the actual total.
+        total_discount = (sum(raw_attr_cost_dict.values())
+                          - self._pair_discount_total(raw_attr_cost_dict))
+        cheaper_names = [a if raw_attr_cost_dict[a] <= raw_attr_cost_dict[b] else b
+                         for a, b in HYBRID_DISCOUNT_PAIRS
+                         if a in raw_attr_cost_dict and b in raw_attr_cost_dict]
 
         if cheaper_names:
             self.discount_label.config(
@@ -5278,7 +5326,8 @@ class CharacterCreator:
             "total_points": initial_points,
             "remaining_points": int(self.points_var.get()),
             "used_points": initial_points - float(self.points_var.get()),
-            "attribute_points": sum(float(self.cost_vars[attr].get()) for attr in self.attributes),
+            # Discount-adjusted, so the components sum to used_points exactly.
+            "attribute_points": self._pair_discount_total(self._attr_cost_dict()),
             "secondary_points": sum(float(self.secondary_cost_vars[stat].get()) for stat in SECONDARY_STAT_BASE_COSTS.keys()),
             "skill_points": sum(scaled_skill_cost(skill_data[skill]["cost"]) for skill in self.selected_skills),
             "movement_cost": MOVEMENT_COSTS.get(movement_type, 0),
@@ -5527,7 +5576,11 @@ class CharacterCreator:
             raw_skills = char_data.get("skills", []) or []
             named = list(dict.fromkeys(s for s in raw_skills if s))   # unique, ordered
             missing_skills = [s for s in named if s not in skill_data]
-            slots = self._slots_from_imported(raw_skills)
+            # Positional (ordered-slot) reading only applies to files from the
+            # gate/slot era (>= 0.60); older flat lists are re-slotted by gate.
+            slots = self._slots_from_imported(
+                raw_skills,
+                positional_ok=file_version_at_least(char_data.get("version"), 0, 60))
             placed = [s for s in slots if s]
             dropped = [s for s in named if s in skill_data and s not in placed]
             notes = []
@@ -5618,6 +5671,8 @@ class CharacterCreator:
             self._set_custom_weapon_display(kind, f"No {cfg['label']} created")
             win = self.weapon_windows.get(kind)
             if win is not None and win.window.winfo_exists():
+                # Skip the two-click arming — the dialog above already confirmed.
+                win.reset_confirmation_needed = True
                 win.reset_weapon()
         # Trigger the full character reset directly (skip the two-click arming).
         self.reset_confirmation_needed = True
@@ -5645,9 +5700,13 @@ class CharacterCreator:
         # Reset personal skill - FIXED
         self.personal_skill_var.set("None (0 pts)")
 
-        self.selected_skills = []
         self.skill_slots = [None] * MAX_SKILLS
         self._render_skills_list()
+
+        # Close an open Skill Selection window — its slots are now stale and a
+        # later Confirm would silently re-populate the skills we just cleared.
+        if hasattr(self, "skill_window") and self.skill_window.window.winfo_exists():
+            self.skill_window.window.destroy()
 
         for attr in self.attributes:
             self.growth_vars[attr].set(0)
