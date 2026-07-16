@@ -9,7 +9,7 @@ import os
 # VERSION
 # ============================================================================
 
-VERSION = "0.64.b"
+VERSION = "0.64.c"
 
 print("Program starting...")
 # ============================================================================
@@ -915,11 +915,38 @@ class SkillSelectionWindow:
         self.gate_cb.configure(values=self._compute_gate_values())
         if self.gate_var.get() not in self.gate_cb.cget("values"):
             self.gate_var.set("All")
-        # Drop slotted skills that no longer exist, then push the pruned slots
-        # to the main window too — otherwise its budget/cost math still counts
-        # (and crashes on) the deleted skill names.
-        self.slots = [s if s in skill_data else None for s in self.slots]
+        # Re-validate the slotted skills against the reloaded data: drop names
+        # that no longer exist, and re-check gate legality — a reloaded skill
+        # may now require a higher gate than its current slot provides (moved
+        # to an eligible free slot when possible, otherwise unslotted). The
+        # result is pushed to the main window too, otherwise its budget/cost
+        # math would still count (and crash on) the stale names.
+        removed, moved = [], []
+        new_slots = [None] * self.MAX_SKILLS
+        illegal = []
+        for i, s in enumerate(self.slots):
+            if not s:
+                continue
+            if s not in skill_data:
+                removed.append(f"{s} (no longer exists)")
+            elif SKILL_SLOT_GATES[i] >= skill_gate(s):
+                new_slots[i] = s
+            else:
+                illegal.append((i, s))
+        for i, s in illegal:
+            for j in eligible_slots(skill_gate(s)):
+                if new_slots[j] is None:
+                    new_slots[j] = s
+                    moved.append(f"{s} (gate {skill_gate(s)}): slot {i + 1} → {j + 1}")
+                    break
+            else:
+                removed.append(f"{s} (gate {skill_gate(s)} — no eligible free slot)")
+        self.slots = new_slots
         self._sync()
+        if moved:
+            msg += "\n\nMoved to a legal slot:\n" + "\n".join(f"  • {m}" for m in moved)
+        if removed:
+            msg += "\n\nUnslotted:\n" + "\n".join(f"  • {r}" for r in removed)
         messagebox.showinfo("Reload skill_data.json", msg, parent=self.window)
 
     def _visible_skills(self):

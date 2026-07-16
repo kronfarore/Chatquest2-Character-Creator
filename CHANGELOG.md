@@ -2,6 +2,15 @@
 
 All notable changes to the Chatquest 2 Character Creator are documented here.
 
+## 0.64.c
+
+### Fixed
+- **Reload skill_data.json** now also re-checks gate legality of slotted
+  skills: a skill whose gate was raised above its slot is moved to an eligible
+  free slot (or unslotted if none is free), and the reload dialog reports
+  every move/removal. Previously an illegal placement survived silently until
+  export validation.
+
 ## 0.64.b
 
 Code-review pass: fixes for all confirmed findings.
