@@ -9,7 +9,7 @@ import os
 # VERSION
 # ============================================================================
 
-VERSION = "0.64.c"
+VERSION = "0.65.a"
 
 print("Program starting...")
 # ============================================================================
@@ -39,6 +39,8 @@ DODGE_COST_SCALE = 2.0   # Scale factor for Dodge cost in both weapon stats and 
 # by Aptitude (+10%). Geometric marginal at ratio ~1.10 (the last +5% step costs
 # ~6x the first, so cost ramps up past ~60%), scaled so reaching 100% averages
 # ~70 points; per-stat spread preserved (HP cheapest, Magic priciest).
+# NOTE: these are the RAW values. GROWTH_STEP_COST_CAP (below) caps the per-step
+# cost afterwards, which is what the tool actually charges (~63 to reach 100%).
 ATTRIBUTE_COSTS = {
     "HP": [0, 1.11, 2.34, 3.69, 5.17, 6.8, 8.59, 10.56, 12.73, 15.12, 17.75, 20.64, 23.82, 27.32, 31.17, 35.4, 40.05, 45.17, 50.8, 56.99, 63.8, 71.29, 79.53],
     "Strength": [0, 1.21, 2.54, 4.0, 5.61, 7.38, 9.32, 11.46, 13.81, 16.4, 19.25, 22.38, 25.82, 29.61, 33.78, 38.36, 43.4, 48.94, 55.04, 61.75, 69.13, 77.25, 86.18],
@@ -50,19 +52,33 @@ ATTRIBUTE_COSTS = {
     "Resistance": [0, 1.24, 2.6, 4.1, 5.75, 7.56, 9.55, 11.74, 14.15, 16.8, 19.72, 22.93, 26.46, 30.34, 34.61, 39.31, 44.48, 50.17, 56.43, 63.31, 70.88, 79.21, 88.37]
 }
 
+# GROWTH_STEP_COST_CAP: no single +5% growth step may cost more than this many
+# points. Set to None for the uncapped (raw geometric) curve.
+# The raw curve's last step costs ~7x the first, which made maxing a stat the
+# worst-value purchase in the game — a build was always better off shaving its
+# maxed stat to buy skills. Capping the top step flattens only the expensive end
+# (the early curve is untouched, so nothing gets pricier) and brings reaching
+# 100% down from ~70 to ~63 points, making a maxed stat a real option again.
+GROWTH_STEP_COST_CAP = 5
+
 # Displayed integer cost per attribute: round each raw +5% marginal and enforce
 # that every step costs at least as much as the previous one (never cheaper than
 # the last step). Used instead of ceil(raw) so per-step cost is non-decreasing.
-def _monotone_int_table(raw):
+# Each step is then capped at GROWTH_STEP_COST_CAP (capping after the monotonic
+# pass keeps the sequence non-decreasing: once a step hits the cap it stays there).
+def _monotone_int_table(raw, cap=None):
     table = [0]
     prev_m = 0
     for i in range(1, len(raw)):
         m = max(prev_m, round(raw[i] - raw[i - 1]))
+        if cap is not None:
+            m = min(m, cap)
         table.append(table[-1] + m)
         prev_m = m
     return table
 
-ATTRIBUTE_COSTS_INT = {a: _monotone_int_table(t) for a, t in ATTRIBUTE_COSTS.items()}
+ATTRIBUTE_COSTS_INT = {a: _monotone_int_table(t, GROWTH_STEP_COST_CAP)
+                       for a, t in ATTRIBUTE_COSTS.items()}
 
 # ---- Stat-pair pricing --------------------------------------------------------
 # HYBRID_DISCOUNT: within a hybrid pair, the cheaper of the two current costs is

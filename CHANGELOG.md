@@ -2,6 +2,20 @@
 
 All notable changes to the Chatquest 2 Character Creator are documented here.
 
+## 0.65.a
+
+### Changed
+- **Attribute growth costs are now capped per step** — no single +5% step can
+  cost more than **5 points** (new `GROWTH_STEP_COST_CAP` option). Only the
+  expensive top of the curve is affected; the early steps are unchanged, so
+  nothing got more expensive. Reaching 100% in a stat now costs about **63
+  points instead of ~70**.
+- Why: the old curve made the last steps cost ~7x the first, so maxing a stat
+  was the worst-value purchase available — build analysis showed you were
+  always better off shaving a maxed stat to buy skills instead. Capping the top
+  step makes a maxed stat a real choice again without making anything else
+  cheaper.
+
 ## 0.64.c
 
 ### Fixed
