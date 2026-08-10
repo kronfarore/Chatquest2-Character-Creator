@@ -15,6 +15,8 @@ All notable changes to the Chatquest 2 Character Creator are documented here.
   always better off shaving a maxed stat to buy skills instead. Capping the top
   step makes a maxed stat a real choice again without making anything else
   cheaper.
+- **Build budget lowered 180 → 170**, offsetting the cheaper growth costs above
+  so overall character power stays roughly where it was.
 
 ## 0.64.c
 
