@@ -16,7 +16,7 @@ print("Program starting...")
 # CONSTANTS
 # ============================================================================
 
-initial_points = 180
+initial_points = 170
 MAX_SKILLS = 5  # Maximum number of skills a character may select (Skills section)
 
 # Skill slots: each of the MAX_SKILLS slots shows a chapter label (when it
