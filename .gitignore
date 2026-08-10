@@ -27,3 +27,6 @@ weapon_*.json
 class_data.json
 class_template.json
 Improvements.txt
+
+# Theorycraft / balance-analysis tooling (local-only, not part of the app)
+theorycraft/
